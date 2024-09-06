@@ -34,7 +34,7 @@
                                     <i class="bi bi-bar-chart-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>PPK</h6>
+                                    <h6>Proses Peningkatan Kinerja (PPK)</h6>
                                 </div>
                             </div>
                         </button>
