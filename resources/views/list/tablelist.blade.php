@@ -14,36 +14,35 @@
     @endif
 
     <form action="{{ route('list.tablelist') }}" method="GET">
-    <!-- Tambahkan @csrf jika Anda menggunakan metode POST di tempat lain -->
-    <div class="form-group mb-4">
-        <label for="id_divisi" style="font-weight: 900;">Silahkan Pilih Divisi:</label>
-        <div class="custom-field-wrapper">
-            <select name="id_divisi" id="id_divisi" class="form-control custom-field">
-                <option value="">-- Select Divisi --</option>
-                @foreach($divisi as $d)
-                    <option value="{{ $d->id }}" {{ (isset($selectedDivisi) && $selectedDivisi == $d->id) ? 'selected' : '' }}>
-                        {{ $d->nama_divisi }}
-                    </option>
-                @endforeach
-            </select>
+        <!-- Tambahkan @csrf jika Anda menggunakan metode POST di tempat lain -->
+        <div class="form-group mb-4">
+            <label for="id_divisi" style="font-weight: 900;">Silahkan Pilih Divisi:</label>
+            <div class="custom-field-wrapper">
+                <select name="id_divisi" id="id_divisi" class="form-control custom-field">
+                    <option value="">-- Select Divisi --</option>
+                    @foreach($divisi as $d)
+                        <option value="{{ $d->id }}" {{ (isset($selectedDivisi) && $selectedDivisi == $d->id) ? 'selected' : '' }}>
+                            {{ $d->nama_divisi }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group mb-4">
-        <label for="status" style="font-weight: 900;">Silahkan Pilih Statu:</label>
-        <div class="custom-field-wrapper">
-            <select name="status" id="status" class="form-control custom-field">
-                <option value="">-- Select Status --</option>
-                <option value="OPEN" {{ (isset($selectedStatus) && $selectedStatus == 'OPEN') ? 'selected' : '' }}>OPEN</option>
-                <option value="ON PROGRESS" {{ (isset($selectedStatus) && $selectedStatus == 'ON PROGRESS') ? 'selected' : '' }}>ON PROGRESS</option>
-                <option value="CLOSE" {{ (isset($selectedStatus) && $selectedStatus == 'CLOSE') ? 'selected' : '' }}>CLOSE</option>
-            </select>
+        <div class="form-group mb-4">
+            <label for="status" style="font-weight: 900;">Silahkan Pilih Status:</label>
+            <div class="custom-field-wrapper">
+                <select name="status" id="status" class="form-control custom-field">
+                    <option value="">-- Select Status --</option>
+                    <option value="OPEN" {{ (isset($selectedStatus) && $selectedStatus == 'OPEN') ? 'selected' : '' }}>OPEN</option>
+                    <option value="ON PROGRESS" {{ (isset($selectedStatus) && $selectedStatus == 'ON PROGRESS') ? 'selected' : '' }}>ON PROGRESS</option>
+                    <option value="CLOSE" {{ (isset($selectedStatus) && $selectedStatus == 'CLOSE') ? 'selected' : '' }}>CLOSE</option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Filter</button>
-</form>
-
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
 
     <div class="table-responsive mt-4">
         <table class="table table-striped table-bordered">
@@ -97,16 +96,20 @@
                         <td>
                             @if(!empty($form->tindakan))
                                 @foreach(explode(',', $form->tindakan) as $tindakanItem)
-                                    <span>{{ trim($tindakanItem) }}</span><br>
-                                    <a href="" class="btn btn-link btn-sm" style="padding: 0; margin: 0;">
-                                        <i class="ri-eject-fill"></i>
-                                    </a>
-                                    <hr style="border: 1px solid #000; margin: 5px 0;">
+                                    <div>
+                                        <a href="/tindakan/{{ trim($tindakanItem) }}" class="btn btn-link btn-sm" style="padding: 0;">
+                                            {{ trim($tindakanItem) }}
+                                        </a><br>
+                                        <a href="/breakdown" class="btn btn-link btn-sm" style="padding: 0; margin-top: 5px;">
+                                            <i class="ri-wallet-fill"></i> Eject
+                                        </a>
+                                    </div>
                                 @endforeach
                             @else
                                 <span>Unknown</span>
                             @endif
                         </td>
+
                         <td>
                             @if(!empty($form->pic))
                                 @foreach(explode(',', $form->pic) as $picItem)
@@ -121,13 +124,10 @@
                         <td>{{ $form->status }}</td>
                         <td>{{ $form->risk }}</td>
                         <td class="action-col">
-    <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
-    <a href="#" class="btn btn-success btn-sm">Print</a>
-</td>
-
-                        <td>
-                            {{ $form->updated_at }}
+                            <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="#" class="btn btn-success btn-sm">Print</a>
                         </td>
+                        <td>{{ $form->updated_at }}</td>
                     </tr>
                 @endforeach
             </tbody>

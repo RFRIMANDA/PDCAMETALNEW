@@ -26,18 +26,17 @@ class ListForm extends Model
 
     // Relasi ke model Divisi
     public function divisi()
-{
-    return $this->belongsTo(Divisi::class, 'id_divisi');
-}
-public function getPihakNamesAttribute()
-{
-    $pihakIds = json_decode($this->pihak, true); // Ambil ID dari JSON
-    if (is_array($pihakIds)) {
-        return Divisi::whereIn('id', $pihakIds)->pluck('nama_divisi')->toArray();
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi');
     }
-    return [];
-}
 
-
-    
+    // Accessor untuk mendapatkan nama pihak berdasarkan ID yang disimpan dalam bentuk JSON
+    public function getPihakNamesAttribute()
+    {
+        $pihakIds = json_decode($this->pihak, true); // Ambil ID dari JSON
+        if (is_array($pihakIds)) {
+            return Divisi::whereIn('id', $pihakIds)->pluck('nama_divisi')->toArray();
+        }
+        return [];
+    }
 }
