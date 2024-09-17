@@ -11,7 +11,7 @@ class AdminController extends Controller
     public function index()
     {
         $users = User::all(); // Ambil semua data user
-        return view('admin.kelolaakun', compact('users')); // Kirim data user ke view
+        return view('admin.index', compact('users')); // Kirim data user ke view
     }
 
     public function create()

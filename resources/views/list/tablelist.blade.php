@@ -1,48 +1,18 @@
 @extends('layouts.main')
 
 @section('content')
-
 <div class="container mt-5">
     <div class="text-center mb-4">
-        <h1><span class="badge bg-info">Table List Register TML</span></h1>
+        <h1><span class="badge bg-info">Table Risk Register TML</span></h1>
     </div>
-    
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <form action="{{ route('list.tablelist') }}" method="GET">
-        <!-- Tambahkan @csrf jika Anda menggunakan metode POST di tempat lain -->
-        <div class="form-group mb-4">
-            <label for="id_divisi" style="font-weight: 900;">Silahkan Pilih Divisi:</label>
-            <div class="custom-field-wrapper">
-                <select name="id_divisi" id="id_divisi" class="form-control custom-field">
-                    <option value="">-- Select Divisi --</option>
-                    @foreach($divisi as $d)
-                        <option value="{{ $d->id }}" {{ (isset($selectedDivisi) && $selectedDivisi == $d->id) ? 'selected' : '' }}>
-                            {{ $d->nama_divisi }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group mb-4">
-            <label for="status" style="font-weight: 900;">Silahkan Pilih Status:</label>
-            <div class="custom-field-wrapper">
-                <select name="status" id="status" class="form-control custom-field">
-                    <option value="">-- Select Status --</option>
-                    <option value="OPEN" {{ (isset($selectedStatus) && $selectedStatus == 'OPEN') ? 'selected' : '' }}>OPEN</option>
-                    <option value="ON PROGRESS" {{ (isset($selectedStatus) && $selectedStatus == 'ON PROGRESS') ? 'selected' : '' }}>ON PROGRESS</option>
-                    <option value="CLOSE" {{ (isset($selectedStatus) && $selectedStatus == 'CLOSE') ? 'selected' : '' }}>CLOSE</option>
-                </select>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
+    
 
     <div class="table-responsive mt-4">
         <table class="table table-striped table-bordered">
@@ -52,88 +22,133 @@
                     <th style="width: 200px;">Issue</th>
                     <th style="width: 200px;">Pihak Berkepentingan</th>
                     <th style="width: 200px;">Resiko (R)</th>
-                    <th style="width: 200px;">Peluang (P)</th>
+                    <th style="width: 150px;">Peluang (P)</th>
                     <th style="width: 100px;">Tingkatan</th>
-                    <th style="width: 200px;">Tindak Lanjut</th>
-                    <th style="width: 200px;">Target PIC</th>
+                    <th style="width: 300px;">Tindak Lanjut</th>
+                    <th style="width: 150px;">Target PIC</th>
                     <th style="width: 150px;">Status</th>
                     <th style="width: 100px;">Actual Risk</th>
                     <th style="width: 150px;">Action</th>
                     <th style="width: 200px;">Last Update</th>
+                    <th style="width: 200px;">Before</th>
+                    <th style="width: 200px;">After</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($forms as $form)
                     <tr>
-                        <td>{{ $form->id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $form->issue }}</td>
-                        
+
                         <td>
-                            @if(is_array($form->pihak_names) && count($form->pihak_names) > 0)
-                                @foreach($form->pihak_names as $pihakName)
-                                    <span>{{ $pihakName }}</span><br>
-                                    <hr style="border: 1px solid #000; margin: 5px 0;">
-                                @endforeach
-                            @else
-                                <span>Unknown</span>
-                            @endif
+                            @foreach($divisi[$form->id] as $name)
+                                {{ $name->nama_divisi }}
+                                <hr>
+                            @endforeach
                         </td>
 
                         <td>
-                            @if(!empty($form->resiko))
-                                @foreach(explode(',', $form->resiko) as $resikoItem)
-                                    <span>{{ trim($resikoItem) }}</span><br>
-                                    <hr style="border: 1px solid #000; margin: 5px 0;">
-                                @endforeach
-                            @else
-                                <span>Unknown</span>
-                            @endif
+                            @foreach($data[$form->id] as $tindakan)
+                                {{ $tindakan->resiko }}
+                                <hr>
+                            @endforeach
                         </td>
-
                         <td>{{ $form->peluang }}</td>
                         <td>{{ $form->tingkatan }}</td>
-
                         <td>
-                            @if(!empty($form->tindakan))
-                                @foreach(explode(',', $form->tindakan) as $tindakanItem)
-                                    <div>
-                                        <a href="/tindakan/{{ trim($tindakanItem) }}" class="btn btn-link btn-sm" style="padding: 0;">
-                                            {{ trim($tindakanItem) }}
-                                        </a><br>
-                                        <a href="/breakdown" class="btn btn-link btn-sm" style="padding: 0; margin-top: 5px;">
-                                            <i class="ri-wallet-fill"></i> Eject
-                                        </a>
-                                    </div>
-                                @endforeach
-                            @else
-                                <span>Unknown</span>
-                            @endif
+                            @foreach($data[$form->id] as $tindakan)
+                                {{ $tindakan->nama_tindakan }}
+                                <a href="{{ route('listkecil.show', $tindakan->id) }}"><br>
+                                    <i class="bi bi-caret-down-square-fill"></i> DETAIL
+                                </a>
+                                <a href="javascript:void(0)" onclick="loadDetail('{{ $form->id }}', {{ $loop->index }})" data-bs-toggle="modal" data-bs-target="#detailModal"><br>
+                                    <i class="fa fa-eye"></i> Track Record
+                                </a>
+                                <hr>
+                            @endforeach
                         </td>
 
                         <td>
-                            @if(!empty($form->pic))
-                                @foreach(explode(',', $form->pic) as $picItem)
-                                    <span>{{ trim($picItem) }}</span><br>
-                                    <hr style="border: 1px solid #000; margin: 5px 0;">
-                                @endforeach
-                            @else
-                                <span>Unknown</span>
-                            @endif
+                            @foreach($data[$form->id] as $tindakan)
+                                {{ $tindakan->pic }}
+                                <hr>
+                            @endforeach
                         </td>
-
                         <td>{{ $form->status }}</td>
                         <td>{{ $form->risk }}</td>
+                        
                         <td class="action-col">
                             <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
                             <a href="#" class="btn btn-success btn-sm">Print</a>
                         </td>
                         <td>{{ $form->updated_at }}</td>
+                        <td>{{ $form->before }}</td>
+                        <td>{{ $form->after }}</td>
                     </tr>
                 @endforeach
             </tbody>
+
+
+
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">Track Record Tindak Lanjut</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                Loading...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function loadDetail(id, index) {
+    $.ajax({
+        url: `/listkecil/${id}/detail/${index}`, // Pastikan ini sesuai dengan route Anda
+        method: 'GET',
+        success: function(response) {
+            if (response.realisasi && response.date) {
+                $('#modalContent').html(`
+                    <form id="detailForm">
+                        <div class="mb-3">
+                            <label for="realisasi" class="form-label">Realisasi:</label>
+                            <textarea class="form-control" id="realisasi" name="realisasi">${response.realisasi}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Tanggal Penyelesaian:</label>
+                            <input type="date" class="form-control" id="date" name="date" value="${response.date}" readonly>
+                        </div>
+                    </form>
+                `);
+            } else {
+                $('#modalContent').html('<p>Detail tidak tersedia.</p>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            console.error('Status:', status);
+            console.error('XHR:', xhr.responseText);
+            $('#modalContent').html(`<p>Terjadi kesalahan: ${xhr.responseText}</p>`);
+        }
+    });
+}
+
+
+</script>
+
+
 
 <style>
     .table {
@@ -163,5 +178,4 @@
         white-space: normal;
     }
 </style>
-
 @endsection

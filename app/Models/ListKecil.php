@@ -14,7 +14,7 @@ class ListKecil extends Model
 
     // Kolom-kolom yang bisa diisi massal
     protected $fillable = [
-        'target',
+        'id_tindakan',
         'realisasi',
         'responsible',
         'accountable',
@@ -23,6 +23,7 @@ class ListKecil extends Model
         'anumgoal',
         'anumbudget',
         'desc',
+        'date',
     ];
 
     // Kolom-kolom yang tidak bisa diisi massal
@@ -33,4 +34,10 @@ class ListKecil extends Model
         // Misalnya, jika Anda memiliki kolom yang menyimpan tanggal
         // 'created_at' => 'datetime',
     ];
+
+    public function listForm()
+{
+    return $this->belongsTo(ListForm::class, 'id', 'id'); // Sesuaikan field foreign key jika perlu
+}
+
 }

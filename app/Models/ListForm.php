@@ -14,14 +14,12 @@ class ListForm extends Model
     protected $fillable = [
         'id_divisi',
         'issue',
-        'pihak',   // Kolom pihak disimpan dalam bentuk JSON
-        'resiko',
         'peluang',
         'tingkatan',
-        'tindakan',
-        'pic',
         'status',
         'risk',
+        'before',
+        'after',
     ];
 
     // Relasi ke model Divisi
@@ -39,4 +37,6 @@ class ListForm extends Model
         }
         return [];
     }
+    
 }
+

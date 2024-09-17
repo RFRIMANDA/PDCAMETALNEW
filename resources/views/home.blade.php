@@ -6,19 +6,25 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
 
+
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }} {{ Auth::user()->nama_user }} 👋
+        </div>
+    @endif
             <!-- Card Container -->
             <div class="d-flex flex-wrap justify-content-center align-items-start">
 
                 <!-- Sales Card 1 -->
                 <div class="col-xxl-4 col-md-6 mb-4">
                     <div class="card info-card sales-card">
-                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('list.listregister') }}'">
+                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('list.listregister'); }}'">
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-file-text-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>List Register</h6>
+                                    <h6>Risk & Register</h6>
                                 </div>
                             </div>
                         </button>

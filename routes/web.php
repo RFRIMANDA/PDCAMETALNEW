@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\ListKecilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,8 +32,9 @@ Route::get('/list/create/{id}', [ListController::class, 'create'])->name('list.c
 Route::post('/list/store', [ListController::class, 'store'])->name('list.store');
 Route::get('/list/{id}/edit', [ListController::class, 'edit'])->name('list.edit');
 Route::put('/list/{id}', [ListController::class, 'update'])->name('list.update');
+Route::get('/tablelist/{id}', [ListController::class, 'tablelistawal'])->name('list.tablelistawal');
 Route::get('/tablelist', [ListController::class, 'tablelist'])->name('list.tablelist');
-Route::post('/tablelist', [ListController::class, 'tablelist'])->name('list.tablelist');
+Route::get('/biglist', [ListController::class, 'biglist'])->name('list.biglist'); // No parameter
 Route::get('logout', [ListController::class, 'logout'])->name('logout');
 });
 
@@ -54,3 +56,20 @@ Route::get('/admin/{id}/edit', [AdminController::class, 'edit'])->name('admin.ed
 Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update')->middleware('admin');
 Route::delete('/admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy')->middleware('admin');
 });
+
+
+// Route untuk menampilkan halaman index ListKecil
+// Route::get('/listkecil/index/{id}/{index}', [ListKecilController::class, 'index'])->name('listkecil.index');
+/// Route untuk mengupdate detail ListKecil via POST
+Route::post('/listkecil/{id}/update-detail', [ListKecilController::class, 'updateDetail'])->name('listkecil.update-detail');
+Route::get('/listkecil/{id}', [ListKecilController::class, 'detail'])->name('listkecil.detail');
+// Route untuk menampilkan detail ListKecil
+Route::get('/listkecil/show/{id}', [ListKecilController::class, 'show'])->name('listkecil.show');
+// Route untuk menampilkan form edit ListKecil
+Route::get('/listkecil/{id}/edit/{index}', [ListKecilController::class, 'edit'])->name('listkecil.edit');
+Route::post('/listkecil/update/{id}', [ListKecilController::class, 'update'])->name('listkecil.update');
+Route::get('/listkecil/{id}/detail/{index}', [ListKecilController::class, 'getDetail']);
+
+
+
+

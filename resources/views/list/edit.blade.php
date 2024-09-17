@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Edit Data ListForm</h1>
+<h5 class="card-title">Edit Data List Risk & Opportunity Register</h5>
 
     <form action="{{ route('list.update', $form->id) }}" method="POST">
         @csrf
@@ -28,14 +28,14 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div id="dynamicForm">
-                    @foreach (json_decode($form->pihak, true) as $index => $pihak)
+                    @foreach ($tindakanList as $index => $tindakan)
                         <div class="dynamic-entry">
                             <div class="form-group mb-4">
                                 <label for="pihak" class="form-label">Pihak yang Berkepentingan:</label>
-                                <select name="pihak[]" class="form-control">
+                                <select name="pihak[]" class="form-control" required>
                                     <option value="">-- Pilih Pihak --</option>
                                     @foreach($divisi as $d)
-                                        <option value="{{ $d->id }}" {{ $pihak == $d->id ? 'selected' : '' }}>
+                                        <option value="{{ $d->id }}" {{ $tindakan->pihak == $d->id ? 'selected' : '' }}>
                                             {{ $d->nama_divisi }}
                                         </option>
                                     @endforeach
@@ -44,17 +44,17 @@
 
                             <div class="form-group mb-4">
                                 <label for="resiko" class="form-label">Resiko:</label>
-                                <textarea name="resiko[]" class="form-control">{{ json_decode($form->resiko, true)[$index] ?? '' }}</textarea>
+                                <textarea name="resiko[]" class="form-control">{{ $tindakan->resiko }}</textarea>
                             </div>
 
                             <div class="form-group mb-4">
                                 <label for="tindakan" class="form-label">Tindakan:</label>
-                                <textarea name="tindakan[]" class="form-control">{{ json_decode($form->tindakan, true)[$index] ?? '' }}</textarea>
+                                <textarea name="tindakan[]" class="form-control">{{ $tindakan->nama_tindakan }}</textarea>
                             </div>
 
                             <div class="form-group mb-4">
                                 <label for="pic" class="form-label">Target PIC:</label>
-                                <textarea name="pic[]" class="form-control">{{ json_decode($form->pic, true)[$index] ?? '' }}</textarea>
+                                <textarea name="pic[]" class="form-control">{{ $tindakan->pic }}</textarea>
                             </div>
 
                             <button type="button" class="btn btn-danger remove-entry">Remove</button>
@@ -99,6 +99,16 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="before" class="form-label">Before</label>
+            <textarea name="before" class="form-control" rows="3" required>{{ $form->before }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="after" class="form-label">After</label>
+            <textarea name="after" class="form-control" rows="3" required>{{ $form->after }}</textarea>
+        </div>
+
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
     </form>
 </div>
@@ -130,5 +140,4 @@
         });
     });
 </script>
-
 @endsection

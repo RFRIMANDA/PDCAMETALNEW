@@ -54,7 +54,7 @@
                         </div>
 
                         <div class="form-group mb-4">
-                            <label for="tindakan" style="font-weight: 900;">Tindakan:</label>
+                            <label for="tindakan" style="font-weight: 900;">Tindak Lanjut:</label>
                             <textarea name="tindakan[]" class="form-control" rows="3">{{ old('tindakan.0') }}</textarea>
                             @error('tindakan')
                                 <div class="text-danger">{{ $message }}</div>
@@ -69,12 +69,12 @@
                             @enderror
                         </div>
 
-                        <hr class="my-4">
                         <button type="button" class="btn btn-danger remove-entry">Remove</button>
+                        <hr class="my-4">
                     </div>
                 </div>
-                <br>
                 <button type="button" class="btn btn-success" id="addEntry">Add More</button>
+                <br>
             </div>
         </div>
 
@@ -121,6 +121,22 @@
                 <option value="LOW" {{ old('risk') == 'LOW' ? 'selected' : '' }}>Low</option>
             </select>
             @error('risk')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="before" style="font-weight: 900;">Before:</label>
+            <textarea name="before" id="before" class="form-control" rows="3">{{ old('before') }}</textarea>
+            @error('before')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="after" style="font-weight: 900;">After:</label>
+            <textarea name="after" id="after" class="form-control" rows="3">{{ old('before') }}</textarea>
+            @error('after')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
