@@ -118,6 +118,7 @@
                 </div>
             @endforeach
             <a href="javascript:history.back()" class="btn btn-primary">Edit</a>
+            <a class="btn btn-danger" href="{{ route('list.listregister') }}">Back</a>
 
 
         <!-- Tautan Edit -->

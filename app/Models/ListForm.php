@@ -38,5 +38,9 @@ class ListForm extends Model
         return [];
     }
     
+    public function tindakan()
+    {
+        return $this->hasMany(Tindakan::class, 'id_listform', 'id');
+    }
 }
 

@@ -17,7 +17,7 @@
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="biglist">
+            <a href="/biglist">
               <i class="bi bi-circle"></i><span>Risk & Opportunity Register</span>
             </a>
           </li>
@@ -57,14 +57,14 @@
           </li>
 
           <li>
-            <a href="password">
+            <a href="/password">
               <i class="bi bi-circle"></i><span>Change Password</span>
             </a>
           </li>
           <li>
 
           <li>
-            <a href="logout">
+            <a href="/logout">
               <i class="bi bi-circle"></i><span>Logout</span>
             </a>
           </li>

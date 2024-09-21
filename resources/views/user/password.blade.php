@@ -27,7 +27,7 @@
                 <input class="form-control" type="password" name="new_password_confirmation" />
             </div>
             <div class="mb-3">
-                <button class="btn btn-primary">Change</button>
+                <button class="btn btn-primary">Update</button>
                 <a class="btn btn-danger" href="{{ route('home') }}">Back</a>
             </div>
         </form>

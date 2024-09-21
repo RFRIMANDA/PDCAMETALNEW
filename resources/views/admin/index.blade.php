@@ -12,23 +12,22 @@
           
           <!-- Tampilkan pesan sukses jika ada -->
           @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+              <div class="alert alert-success">
+                  {{ session('success') }}
+              </div>
+          @endif
 
-@if (session('danger'))
-    <div class="alert alert-danger">
-        {{ session('danger') }}
-    </div>
-@endif
-
+          @if (session('danger'))
+              <div class="alert alert-danger">
+                  {{ session('danger') }}
+              </div>
+          @endif
 
           <!-- User Data Table -->
           <table class="table table-responsive">
             <thead class="thead-dark">
               <tr>
-                <th scope="col" style="width: 80px;">ID</th>
+                <th scope="col" style="width: 80px;">No</th>
                 <th scope="col">Nama</th>
                 <th scope="col">Email</th>
                 <th scope="col" style="width: 80px;">Role</th>
@@ -38,15 +37,14 @@
             <tbody>
               @foreach($users as $user)
               <tr>
-                <td>{{ $user->id }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $user->nama_user }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->role }}</td>
                 <td>
-                  <!-- Contoh aksi, misalnya edit atau delete -->
                   <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                  <!-- Jika ada opsi hapus, bisa ditambahkan di sini -->
-                  <form action="{{ route('admin.destroy', $user->id) }}" method="POST" style="display:inline;">
+
+                  <form action="{{ route('admin.destroy', $user->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
@@ -64,4 +62,3 @@
 </section>
 
 @endsection
-

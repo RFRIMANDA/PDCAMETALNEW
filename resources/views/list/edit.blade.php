@@ -101,12 +101,12 @@
 
         <div class="mb-3">
             <label for="before" class="form-label">Before</label>
-            <textarea name="before" class="form-control" rows="3" required>{{ $form->before }}</textarea>
+            <textarea name="before" class="form-control" rows="3" >{{ $form->before }}</textarea>
         </div>
 
         <div class="mb-3">
             <label for="after" class="form-label">After</label>
-            <textarea name="after" class="form-control" rows="3" required>{{ $form->after }}</textarea>
+            <textarea name="after" class="form-control" rows="3" >{{ $form->after }}</textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

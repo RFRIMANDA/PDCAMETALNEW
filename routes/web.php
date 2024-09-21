@@ -68,7 +68,10 @@ Route::get('/listkecil/show/{id}', [ListKecilController::class, 'show'])->name('
 // Route untuk menampilkan form edit ListKecil
 Route::get('/listkecil/{id}/edit/{index}', [ListKecilController::class, 'edit'])->name('listkecil.edit');
 Route::post('/listkecil/update/{id}', [ListKecilController::class, 'update'])->name('listkecil.update');
-Route::get('/listkecil/{id}/detail/{index}', [ListKecilController::class, 'getDetail']);
+Route::get('/listkecil/{id}/detail', [ListKecilController::class, 'getDetail']);
+
+//PRINT
+Route::get('/list/print/{id}', [ListController::class, 'print'])->name('list.print');
 
 
 

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-5">
     <div class="text-center mb-4">
-        <h1><span class="badge bg-info">Table Risk Register TML</span></h1>
+        <h1><span class="badge bg-primary">Table Risk Register & Opportunity Divisi </span></h1>
     </div>
 
     @if(session('success'))
@@ -28,10 +28,10 @@
                     <th style="width: 150px;">Target PIC</th>
                     <th style="width: 150px;">Status</th>
                     <th style="width: 100px;">Actual Risk</th>
-                    <th style="width: 150px;">Action</th>
-                    <th style="width: 200px;">Last Update</th>
                     <th style="width: 200px;">Before</th>
                     <th style="width: 200px;">After</th>
+                    <th style="width: 200px;">Last Update</th>
+                    <th style="width: 150px;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,9 +59,13 @@
                             @foreach($data[$form->id] as $tindakan)
                                 {{ $tindakan->nama_tindakan }}
                                 <a href="{{ route('listkecil.show', $tindakan->id) }}"><br>
-                                    <i class="bi bi-caret-down-square-fill"></i> DETAIL
-                                </a>
-                                <a href="javascript:void(0)" onclick="loadDetail('{{ $form->id }}', {{ $loop->index }})" data-bs-toggle="modal" data-bs-target="#detailModal"><br>
+                                    <i class="bi bi-caret-down-square-fill"></i> Detail
+
+                                @php
+                                    $listKecilId = \App\Models\ListKecil::where('id_tindakan', $tindakan->id)->value('id');
+                                @endphp
+
+                                <a href="javascript:void(0)" onclick="loadDetail('{{ $listKecilId }}')" data-bs-toggle="modal" data-bs-target="#detailModal"><br>
                                     <i class="fa fa-eye"></i> Track Record
                                 </a>
                                 <hr>
@@ -77,13 +81,15 @@
                         <td>{{ $form->status }}</td>
                         <td>{{ $form->risk }}</td>
                         
-                        <td class="action-col">
-                            <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="#" class="btn btn-success btn-sm">Print</a>
-                        </td>
-                        <td>{{ $form->updated_at }}</td>
                         <td>{{ $form->before }}</td>
                         <td>{{ $form->after }}</td>
+                        <td>{{ $form->updated_at }}</td>
+
+                        <td class="action-col">
+                            <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="{{ route('list.print', $form->id) }}" class="btn btn-info btn-sm">Print</a>
+                            
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -115,38 +121,38 @@
 
 <script>
     function loadDetail(id, index) {
-    $.ajax({
-        url: `/listkecil/${id}/detail/${index}`, // Pastikan ini sesuai dengan route Anda
-        method: 'GET',
-        success: function(response) {
-            if (response.realisasi && response.date) {
-                $('#modalContent').html(`
-                    <form id="detailForm">
-                        <div class="mb-3">
-                            <label for="realisasi" class="form-label">Realisasi:</label>
-                            <textarea class="form-control" id="realisasi" name="realisasi">${response.realisasi}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="date" class="form-label">Tanggal Penyelesaian:</label>
-                            <input type="date" class="form-control" id="date" name="date" value="${response.date}" readonly>
-                        </div>
-                    </form>
-                `);
-            } else {
-                $('#modalContent').html('<p>Detail tidak tersedia.</p>');
+        $.ajax({
+            url: `/listkecil/${id}/detail/`, // Pastikan route ini sesuai
+            method: 'GET',
+            success: function(response) {
+                if (response.length > 0) {
+                    const detail = response[0]; // Ambil detail pertama dari array jika data ada
+                    $('#modalContent').html(`
+                        <form id="detailForm">
+                            <div class="mb-3">
+                                <label for="realisasi" class="form-label">Realisasi:</label>
+                                <textarea class="form-control" id="realisasi" name="realisasi" readonly>${detail.realisasi}  </textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Tanggal Penyelesaian:</label>
+                                <input type="date" class="form-control" id="date" name="date" value="${detail.date}" readonly>
+                            </div>
+                        </form>
+                    `);
+                } else {
+                    $('#modalContent').html('<p>Detail tidak tersedia.</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('XHR:', xhr.responseText);
+                $('#modalContent').html(`<p>Terjadi kesalahan: ${xhr.responseText}</p>`);
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            console.error('Status:', status);
-            console.error('XHR:', xhr.responseText);
-            $('#modalContent').html(`<p>Terjadi kesalahan: ${xhr.responseText}</p>`);
-        }
-    });
-}
-
-
+        });
+    }
 </script>
+
 
 
 

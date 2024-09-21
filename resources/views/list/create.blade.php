@@ -147,30 +147,33 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let dynamicForm = document.getElementById('dynamicForm');
-        let addEntryButton = document.getElementById('addEntry');
+    let dynamicForm = document.getElementById('dynamicForm');
+    let addEntryButton = document.getElementById('addEntry');
+    let entryCounter = 1; // Counter untuk ID unik
 
-        addEntryButton.addEventListener('click', function() {
-            let newEntry = dynamicForm.querySelector('.dynamic-entry').cloneNode(true);
-            newEntry.querySelectorAll('input, textarea, select').forEach(function(input) {
-                input.value = '';
-            });
-            dynamicForm.appendChild(newEntry);
-            addRemoveButtonListener(newEntry.querySelector('.remove-entry'));
+    addEntryButton.addEventListener('click', function() {
+        let newEntry = dynamicForm.querySelector('.dynamic-entry').cloneNode(true);
+        
+        // Update ID dan name attributes untuk elemen baru
+        newEntry.querySelectorAll('select, textarea').forEach((element) => {
+            let name = element.getAttribute('name');
+            if (name) {
+                element.setAttribute('name', name.replace(/\[\d*\]/, `[${entryCounter}]`));
+            }
         });
 
-        function addRemoveButtonListener(button) {
+        newEntry.querySelectorAll('button.remove-entry').forEach((button) => {
             button.addEventListener('click', function() {
-                if (dynamicForm.querySelectorAll('.dynamic-entry').length > 1) {
-                    button.closest('.dynamic-entry').remove();
-                }
+                newEntry.remove();
             });
-        }
-
-        dynamicForm.querySelectorAll('.remove-entry').forEach(function(button) {
-            addRemoveButtonListener(button);
         });
+
+        // Add the new entry to the form
+        dynamicForm.appendChild(newEntry);
+        entryCounter++;
     });
+});
+
 </script>
 
 @endsection

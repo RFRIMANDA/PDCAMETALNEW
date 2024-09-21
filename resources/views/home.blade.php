@@ -24,7 +24,7 @@
                                     <i class="bi bi-file-text-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>Risk & Register</h6>
+                                    <h6>Risk & Register Opportunity</h6>
                                 </div>
                             </div>
                         </button>

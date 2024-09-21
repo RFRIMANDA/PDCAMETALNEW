@@ -23,7 +23,9 @@ class ListKecilController extends Controller
 
     public function show($id)
     {
-        $form = ListForm::findOrFail($id);
+        $form = Tindakan::findOrFail($id);
+        $same = ListKecil::where('id', $id)->value('id_tindakan');
+        $dataform  = ListForm::where('id',$same)->get();
         $listKecil = ListKecil::where('id_tindakan', $id)->first();
         // dd($listKecil);
     
@@ -35,7 +37,7 @@ class ListKecilController extends Controller
     
         $selectedTindakan = Tindakan::get()->value('nama_tindakan');
     
-        return view('listkecil.show', compact('form', 'listKecil', 'selectedTindakan'));
+        return view('listkecil.show', compact('form', 'listKecil', 'selectedTindakan','dataform'));
     }
     
 
@@ -80,6 +82,8 @@ public function update(Request $request, $id)
         'anumbudget' => $request->input('anumbudget'),
         'desc' => $request->input('desc'),
     ]);
+
+    
 
     // Redirect ke route listkecil.detail dengan ID yang benar
     return redirect()->route('listkecil.detail', ['id' => $listKecil->id])
@@ -137,7 +141,7 @@ public function updateDetail(Request $request, $id)
         return view('listkecil.detail', compact('listKecil','same'));
     }
 
-    public function getDetail($id, $index)
+    public function getDetail($id)
 {
     $kecil = ListKecil::find($id); // Cek apakah data form ditemukan
     if (!$kecil) {
@@ -145,15 +149,21 @@ public function updateDetail(Request $request, $id)
     }
 
     $details = ListKecil::where('id', $id)->get(); // Ambil semua data terkait ID
-    if (isset($details[$index])) {
-        $detail = $details[$index];
-        return response()->json([
-            'realisasi' => $detail->realisasi,
-            'date' => $detail->date,
-        ]);
-    } else {
+
+    if ($details->isEmpty()) {
         return response()->json(['message' => 'Detail tidak ditemukan'], 404);
     }
+    
+    $response = [];
+    foreach ($details as $d) {
+        $response[] = [
+            'realisasi' => $d->realisasi,
+            'date' => $d->date,
+        ];
+    }
+    
+    return response()->json($response);
+    
 }
 
 }

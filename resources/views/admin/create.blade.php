@@ -32,7 +32,8 @@
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <br>
                         <br>
-                        <h5>Password untuk user baru sudah auto= "password123"</h5>
+                        
+                        <h5 class="card-title">Noted :Password untuk user baru sudah auto= "password123"</h5>
                     </form>
                 </div>
             </div>

@@ -14,15 +14,6 @@
     @endif
 
     <!-- Tampilkan tindakan yang dipilih -->
-    <div class="card mb-4">
-        <br>
-        <div class="card-body">
-            <p><strong>Divisi:</strong> {{ $form->divisi->nama_divisi }}</p>
-            <p><strong>Issue:</strong> {{ $form->issue }}</p>
-            <p><strong>Status:</strong> {{ $form->status }}</p>
-        </div>
-    </div>
-
     <!-- Form untuk mengedit ListKecil -->
     <form action="{{ route('listkecil.update-detail', $listKecil->id) }}" method="POST">
     @csrf
@@ -96,9 +87,10 @@
         <div class="row mb-3">
             <label for="anumbudget" class="col-md-3 col-form-label">Anum Budget</label>
             <div class="col-md-9">
-                <input type="text" name="anumbudget" id="anumbudget" class="form-control" value="{{ isset($listKecil['anumbudget']) ? $listKecil['anumbudget'] : '' }}" placeholder="Masukan Nilai IDR.">
+                <input type="number" name="anumbudget" id="anumbudget" class="form-control" value="{{ isset($listKecil['anumbudget']) ? $listKecil['anumbudget'] : '' }}" placeholder="Masukan Nilai IDR." min="0" step="any">
             </div>
         </div>
+
 
 
         <!-- Field Deskripsi -->
