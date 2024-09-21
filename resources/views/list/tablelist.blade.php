@@ -87,9 +87,9 @@
 
                         <td class="action-col">
                             <a href="{{ route('list.edit', $form->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="{{ route('list.print', $form->id) }}" class="btn btn-info btn-sm">Print</a>
-                            
+                            <a href="{{ route('list.print', $form->id) }}" class="btn btn-danger btn-sm">Print</a>
                         </td>
+
                     </tr>
                 @endforeach
             </tbody>

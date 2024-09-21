@@ -23,11 +23,11 @@ use Illuminate\Support\Facades\Route;
 // });
 
 //Dasboard HomeController
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
 //List Register ListController
-Route::get('/listregister', [ListController::class, 'index'])->name('list.listregister');
+Route::get('/riskregister', [ListController::class, 'index'])->name('list.listregister');
 Route::get('/list/create/{id}', [ListController::class, 'create'])->name('list.create');
 Route::post('/list/store', [ListController::class, 'store'])->name('list.store');
 Route::get('/list/{id}/edit', [ListController::class, 'edit'])->name('list.edit');
@@ -72,6 +72,8 @@ Route::get('/listkecil/{id}/detail', [ListKecilController::class, 'getDetail']);
 
 //PRINT
 Route::get('/list/print/{id}', [ListController::class, 'print'])->name('list.print');
+Route::get('/list/preview/{id}', [ListController::class, 'preview'])->name('list.preview');
+
 
 
 

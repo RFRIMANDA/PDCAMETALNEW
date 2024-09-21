@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Detail Form</title>
+    <title>Risk & Register Opportunity</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,19 +20,35 @@
             border: 1px solid black;
         }
 
-        h1, h3 {
+        h1, h3 , h2 {
             text-align: center;
         }
 
         .header {
             margin-bottom: 20px;
         }
+
+        button {
+            margin: 20px auto;
+            display: block;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Report Risk Register & Opportunity - Divisi {{ $divisi->nama_divisi }}</h1>
+        <h1>Report Risk & Register Opportunity</h1>
+        <h2>Divisi {{ $divisi->nama_divisi }}</h2>
         <h3>PT. Tata Metal Lestari</h3>
     </div>
 
@@ -67,13 +83,14 @@
         </tr>
     </table>
 
-    <h3>Daftar Tindak Lanjut</h3>
+    <h3>Daftar Tindakan</h3>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Nama Tindak Lanjut</th>
+                <th>Nama Tindakan</th>
+                <th>Pihak Berkepentingan</th>
                 <th>PIC</th>
                 <th>Resiko</th>
             </tr>
@@ -83,6 +100,7 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $tindakan->nama_tindakan }}</td>
+                    <td>{{ optional($tindakan->divisi)->nama_divisi }}</td> <!-- Mengambil nama_divisi -->
                     <td>{{ $tindakan->pic }}</td>
                     <td>{{ $tindakan->resiko }}</td>
                 </tr>
@@ -90,10 +108,13 @@
         </tbody>
     </table>
 
-</body>
-</html>
+    <!-- Tombol Cetak -->
+    
     <script type="text/javascript">
-        window.print();
+        function printReport() {
+            window.print();  // Fungsi untuk mencetak halaman saat tombol diklik
+        }
     </script>
+
 </body>
 </html>

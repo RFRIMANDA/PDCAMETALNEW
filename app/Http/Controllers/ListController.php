@@ -177,23 +177,25 @@ class ListController extends Controller
     }
 
     // Fungsi untuk generate PDF
-    public function print($id)
+public function print($id)
 {
     // Ambil data dari ListForm berdasarkan ID
     $form = ListForm::with('tindakan')->findOrFail($id);
     
     // Ambil data divisi yang terkait
-    $divisi = Divisi::find($form->id_divisi);
+    $divisi = Divisi::findOrFail($form->id_divisi);
 
     // Ambil semua tindakan terkait dari Tindakan model
-    $tindakanList = Tindakan::where('id_listform', $id)->get();
+    $tindakanList = Tindakan::where('id_listform', $id)->with('divisi')->get();
 
     // Render view untuk PDF
     $pdf = Pdf::loadView('list.print', compact('form', 'divisi', 'tindakanList'));
 
-    // Menghasilkan file PDF dengan nama file tertentu
-    return $pdf->download('form-detail-'.$form->id.'.pdf');
+    // Menampilkan file PDF di browser sebagai pratinjau tanpa memaksa unduhan
+    return $pdf->stream('form-detail-'.$form->id.'.pdf', ["Attachment" => false]);
 }
+
+
 
 
 

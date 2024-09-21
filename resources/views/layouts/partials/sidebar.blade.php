@@ -3,7 +3,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link" href="/home">
+      <a class="nav-link" href="/">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
       </a>
@@ -13,36 +13,23 @@
       <!-- End Components Nav -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-layout-text-window-reverse"></i><span>Risk & Opportunity Register</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="/biglist">
-              <i class="bi bi-circle"></i><span>Risk & Opportunity Register</span>
+              <i class="bi bi-circle"></i><span>All Risk & Opportunity Register</span>
             </a>
           </li>
 
           <li>
-            <a href="#">
-              <i class="bi bi-circle"></i><span>PPK (Proses Peningkatan Kinerja)</span>
+            <a href="/riskregister">
+              <i class="bi bi-circle"></i><span>Create Risk & Opportunity Register</span>
             </a>
-          </li>
-
-          <li>
-            <a href="#">
-              <i class="bi bi-circle"></i><span>Pengajuan Nomor Berita Acara</span>
-            </a>
-          </li>
-
-          <li>
-            <!-- <a href="/ppk">
-              <i class="bi bi-circle"></i><span>Proses Peningkatan Kinerja (PPK)</span>
-            </a> -->
           </li>
         </ul>
       </li>
-
-      
+  
       <!-- End Forms Nav -->
        <br>
       <li class="nav-item">
@@ -63,11 +50,6 @@
           </li>
           <li>
 
-          <li>
-            <a href="/logout">
-              <i class="bi bi-circle"></i><span>Logout</span>
-            </a>
-          </li>
           <li>
 
           

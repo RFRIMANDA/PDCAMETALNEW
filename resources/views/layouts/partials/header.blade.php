@@ -1,6 +1,6 @@
 <header id="header" class="header fixed-top d-flex align-items-center" style="background: linear-gradient(90deg, #87ceeb, #98FB98);">
     <div class="d-flex align-items-center justify-content-between">
-        <a href="https://www.instagram.com/tata_metal_lestari/" class="logo d-flex align-items-center">
+        <a href="/" class="logo d-flex align-items-center">
             <span class="d-none d-lg-block" style="color: white; font-size: 1.5rem; font-weight: 700; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">Tata Metal Lestari</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn text-light fs-3"></i>
@@ -18,7 +18,13 @@
                     <h6>Email: {{ Auth::user()->email }}</h6>
                     <span>Role: {{ Auth::user()->role }}</span>
                 </li>
-                <li><hr class="dropdown-divider"></li>
+                
+                <li><hr class="dropdown-divider">
+            
+                    <a href="/logout">
+                        <i class="ri-logout-box-line">Logout</i>
+                    </a>
+                </li>
                 <!-- Tambahkan item lainnya di sini jika diperlukan -->
             </ul>
         </li>

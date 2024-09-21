@@ -12,7 +12,7 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user(); // Ambil data pengguna yang sedang login
-        return view('home', compact('user'));
+        return view('/', compact('user'));
     }
 
 
@@ -58,8 +58,8 @@ class UserController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
-            // return redirect('home');
-            return redirect('home')->with('success', 'Selamat Datang,');
+            // return redirect('/');
+            return redirect('/')->with('success', 'Selamat Datang,');
         }
 
         return back()->withErrors([

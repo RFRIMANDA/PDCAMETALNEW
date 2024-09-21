@@ -51,7 +51,7 @@
     <h1 style="font-weight: bold; font-size: 2rem; color: #003366;">PDCA TML System Management Transformation</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
     </nav>
