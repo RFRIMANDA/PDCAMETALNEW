@@ -3,43 +3,19 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ListController;
-use App\Http\Controllers\ListKecilController;
+use App\Http\Controllers\RiskController;
+use App\Http\Controllers\ResikoController;
+use App\Http\Controllers\RealisasiController;
+use App\Http\Controllers\ExportController;
+use App\Exports\RiskOpportunityPdfExport;
+use App\Exports\RiskOpportunityExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-//Dasboard HomeController
+// Dasboard HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::middleware('auth')->group(function () {
-//List Register ListController
-Route::get('/riskregister', [ListController::class, 'index'])->name('list.listregister');
-Route::get('/list/create/{id}', [ListController::class, 'create'])->name('list.create');
-Route::post('/list/store', [ListController::class, 'store'])->name('list.store');
-Route::get('/list/{id}/edit', [ListController::class, 'edit'])->name('list.edit');
-Route::put('/list/{id}', [ListController::class, 'update'])->name('list.update');
-Route::get('/tablelist/{id}', [ListController::class, 'tablelistawal'])->name('list.tablelistawal');
-Route::get('/tablelist', [ListController::class, 'tablelist'])->name('list.tablelist');
-Route::get('/biglist', [ListController::class, 'biglist'])->name('list.biglist'); // No parameter
-Route::get('logout', [ListController::class, 'logout'])->name('logout');
-});
-
-//login regist
-// Route::get('/register', [UserController::class, 'register'])->name('register');
+// login regist
 Route::post('/register-act', [UserController::class, 'register_action'])->name('register.action');
 Route::get('login', [UserController::class, 'login'])->name('login');
 Route::post('login', [UserController::class, 'login_action'])->name('login.action');
@@ -48,32 +24,70 @@ Route::post('password', [UserController::class, 'password_action'])->name('passw
 Route::get('logout', [UserController::class, 'logout'])->name('logout');
 
 Route::middleware('admin')->group(function () {
-//admin kelola user
-Route::get('/kelolaakun', [AdminController::class, 'index'])->name('admin.kelolaakun');
-Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create')->middleware('admin');
-Route::post('/admin/store', [AdminController::class, 'store'])->name('admin.store')->middleware('admin');
-Route::get('/admin/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit')->middleware('admin');
-Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update')->middleware('admin');
-Route::delete('/admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy')->middleware('admin');
+    // Admin kelola user
+    Route::get('/kelolaakun', [AdminController::class, 'index'])->name('admin.kelolaakun');
+    Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::post('/admin/store', [AdminController::class, 'store'])->name('admin.store');
+    Route::get('/admin/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+    Route::delete('/admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
+    Route::get('/divisi', [AdminController::class, 'divisi'])->name('admin.divisi');
+    Route::get('/admin/divisi/create', [AdminController::class, 'createDivisi'])->name('admin.divisi.create');
+    Route::post('/admin/divisi/store', [AdminController::class, 'storeDivisi'])->name('admin.divisi.store');
+    // Route untuk Edit Divisi
+    Route::get('/admin/divisi/{id}/edit', [AdminController::class, 'editDivisi'])->name('admin.divisi.edit');
+    Route::put('/admin/divisi/{id}', [AdminController::class, 'updateDivisi'])->name('admin.divisi.update');
+    // Route untuk Hapus Divisi
+    Route::delete('/admin/divisi/{id}', [AdminController::class, 'destroyDivisi'])->name('admin.divisi.destroy');
+});
+
+// Risk
+Route::middleware('auth')->group(function () {
+    Route::get('/riskregister', [RiskController::class, 'index'])->name('riskregister.index');
+    Route::get('/riskregister/create/{id}', [RiskController::class, 'create'])->name('riskregister.create');
+    Route::get('/riskregister/{id}/edit', [RiskController::class, 'edit'])->name('riskregister.edit');
+    Route::get('/riskregister/{id}', [RiskController::class, 'tablerisk'])->name('riskregister.tablerisk');
+    Route::post('/riskregister/store', [RiskController::class, 'store'])->name('riskregister.store');
+    Route::put('/riskregister/update/{id}', [RiskController::class, 'update'])->name('riskregister.update');
+    Route::get('/bigrisk', [RiskController::class, 'biglist'])->name('riskregister.biglist');
+    Route::get('/riskregister/preview/{id}', [RiskController::class, 'preview'])->name('riskregister.preview');
+    Route::get('/riskregister/printAll/{id}', [RiskController::class, 'printAll'])->name('riskregister.printAll');
+    Route::get('/riskregister/export/{id}', [RiskController::class, 'exportExcel'])->name('riskregister.exportExcel');
+    Route::get('/riskregister/export-filtered/{id}', [RiskController::class, 'exportFilteredExcel'])->name('riskregister.exportFilteredExcel');
+    Route::delete('/riskregister/{id}', [RiskController::class, 'destroy'])->name('riskregister.destroy');
+
+   // Rute untuk ekspor excel
+   Route::get('/export-risks', function () {
+    $formattedData = []; // Gantilah dengan logika untuk mengambil data yang sesuai
+    return Excel::download(new RiskOpportunityExport($formattedData), 'risk_opportunity.xlsx');
+})->name('export.risks');
+});
+
+// Resiko
+Route::middleware('auth')->group(function () {
+    Route::get('/resiko/{id}', [ResikoController::class, 'index'])->name('resiko.index');
+    Route::get('/resiko/create/{id}', [ResikoController::class, 'create'])->name('resiko.create');
+    Route::post('/resiko/store', [ResikoController::class, 'store'])->name('resiko.store');
+    Route::get('/resiko/{id}/edit', [ResikoController::class, 'edit'])->name('resiko.edit');
+    Route::post('/resiko/{id}/update', [ResikoController::class, 'update'])->name('resiko.update');
+    Route::get('/resiko/matriks/{id}', [ResikoController::class, 'matriks'])->name('resiko.matriks');
+    Route::get('/matriks-risiko/{id}', [ResikoController::class, 'show'])->name('matriks-risiko.show');
+});
+
+// Realisasi
+Route::middleware('auth')->group(function () {
+    Route::get('/realisasi/{id}', [RealisasiController::class, 'index'])->name('realisasi.index');
+    Route::get('/realisasi/{id}/edit', [RealisasiController::class, 'edit'])->name('realisasi.edit');
+    Route::post('/realisasi/store', [RealisasiController::class, 'store'])->name('realisasi.store');
+    Route::put('/realisasi/{id}/update', [RealisasiController::class, 'update'])->name('realisasi.update');
+    Route::get('/realisasi/{id}/detail', [RealisasiController::class, 'getDetail'])->name('realisasi.detail');
 });
 
 
-// Route untuk menampilkan halaman index ListKecil
-// Route::get('/listkecil/index/{id}/{index}', [ListKecilController::class, 'index'])->name('listkecil.index');
-/// Route untuk mengupdate detail ListKecil via POST
-Route::post('/listkecil/{id}/update-detail', [ListKecilController::class, 'updateDetail'])->name('listkecil.update-detail');
-Route::get('/listkecil/{id}', [ListKecilController::class, 'detail'])->name('listkecil.detail');
-// Route untuk menampilkan detail ListKecil
-Route::get('/listkecil/show/{id}', [ListKecilController::class, 'show'])->name('listkecil.show');
-// Route untuk menampilkan form edit ListKecil
-Route::get('/listkecil/{id}/edit/{index}', [ListKecilController::class, 'edit'])->name('listkecil.edit');
-Route::post('/listkecil/update/{id}', [ListKecilController::class, 'update'])->name('listkecil.update');
-Route::get('/listkecil/{id}/detail', [ListKecilController::class, 'getDetail']);
-
-//PRINT
-Route::get('/list/print/{id}', [ListController::class, 'print'])->name('list.print');
-Route::get('/list/preview/{id}', [ListController::class, 'preview'])->name('list.preview');
-
+Route::get('/export/pdf', function () {
+    $formattedData = []; // Ambil data Anda di sini
+    return Excel::download(new RiskOpportunityPdfExport($formattedData), 'risk_register.pdf');
+})->name('export.pdf');
 
 
 

@@ -15,20 +15,24 @@
         <form action="{{ route('password.action') }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label>Password Sekarang<span class="text-danger"></span></label>
+                <label><strong>Password Sekarang*</strong><span class="text-danger"></span></label>
                 <input class="form-control" type="password" name="old_password" />
             </div>
             <div class="mb-3">
-                <label>Password Baru<span class="text-danger"></span></label>
+                <label><strong>Password Baru*</strong><span class="text-danger"></span></label>
                 <input class="form-control" type="password" name="new_password" />
             </div>
             <div class="mb-3">
-                <label>Konfirmasi Password Baru<span class="text-danger"></span></label>
+                <label><strong>Konfirmasi Password Baru*</strong><span class="text-danger"></span></label>
                 <input class="form-control" type="password" name="new_password_confirmation" />
             </div>
             <div class="mb-3">
-                <button class="btn btn-primary">Update</button>
-                <a class="btn btn-danger" href="{{ route('/') }}">Back</a>
+                <a class="btn btn-danger" href="/">
+                    <i class="bx bx-arrow-back"></i>
+                </a>
+                <button class="btn btn-primary">Save
+                    <i class="ri-save-3-fill"></i>
+                </button>
             </div>
         </form>
     </div>

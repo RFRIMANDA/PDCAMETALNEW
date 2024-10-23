@@ -4,7 +4,7 @@
 
     <li class="nav-item">
       <a class="nav-link" href="/">
-          <i class="bi bi-grid"></i>
+          <i class="ri-home-4-fill"></i>
           <span>Dashboard</span>
       </a>
     </li>
@@ -17,60 +17,57 @@
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="/biglist">
-              <i class="bi bi-circle"></i><span>All Risk & Opportunity Register</span>
-            </a>
-          </li>
-
-          <li>
             <a href="/riskregister">
               <i class="bi bi-circle"></i><span>Create Risk & Opportunity Register</span>
             </a>
+            {{-- <a href="/bigrisk">
+              <i class="bi bi-circle"></i><span>All Risk & Opportunity Register</span>
+            </a> --}}
+          </li>
+
+          <li>
+
           </li>
         </ul>
       </li>
-  
-      <!-- End Forms Nav -->
-       <br>
+
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Action</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-file-earmark-bar-graph"></i><span>Proses Peningkatan Kinerja</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span></span>
+            </a>
+          </li>
         <li>
-            <a href="/kelolaakun">
-              <i class="bi bi-circle"></i><span>List User</span>
+            <a href="#">
+              <i class="bi bi-circle"></i><span></span>
             </a>
-          </li>
-
-          <li>
-            <a href="/password">
-              <i class="bi bi-circle"></i><span>Change Password</span>
-            </a>
-          </li>
-          <li>
-
-          <li>
-
-          
-
-            <!-- <a href="/ppk/create">
-              <i class="bi bi-circle"></i><span>Create PPK</span>
-            </a> -->
-          </li>
-          <li>
-            <!-- <a href="forms-editors.html">
-              <i class="bi bi-circle"></i><span>Form Editors</span>
-            </a> -->
-          </li>
-          <li>
-            <!-- <a href="forms-validation.html">
-              <i class="bi bi-circle"></i><span>Form Validation</span>
-            </a> -->
-          </li>
+        </li>
         </ul>
-      </li>
-      
+      </li><!-- End Components Nav -->
+       <br>
+       @if(auth()->user()->role == 'admin')
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                <i class="bx bx-run"></i><span>Action</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                `   <a href="/divisi">
+                        <i class="bi bi-circle"></i><span>Kelola Departemen</span>
+                    </a>
+                    <a href="/kelolaakun">
+                        <i class="bi bi-circle"></i><span>Kelola User</span>
+                    </a>
+                </li>
+            </li>
+        @endif
+
+
+
       <!-- End Tables Nav -->
 
       <!-- End Charts Nav -->
@@ -105,12 +102,13 @@
         </a>
       </li>End Register Page Nav -->
 
-      
+
       <!-- End Login Page Nav -->
 
-      
+
       <!-- End Login Page Nav -->
 
-    </ul>
+
+
 
   </aside>

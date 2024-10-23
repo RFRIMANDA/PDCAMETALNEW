@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>TRANSFORMATION PDCA MANAGEMENT SYSTEM</title>
+  <title>TRANSFORMATION || PDCA MANAGEMENT SYSTEM</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -16,12 +16,15 @@
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 
   <!-- Select2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
+
   <link href="{{ asset('admin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
@@ -47,15 +50,16 @@
 
   <main id="main" class="main">
 
-  <div class="pagetitle" style="background-color: #e6f2ff; padding: 20px; border-radius: 8px;">
-    <h1 style="font-weight: bold; font-size: 2rem; color: #003366;">PDCA TML System Management Transformation</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-    </nav>
-</div>
+    <div class="pagetitle" style="background-color: #ddfadd; padding: 20px; border-radius: 8px;">
+    <h1 style="font-weight: bold; font-size: 2rem; color: #395f97;">TRANSFORMATION PDCA MANAGEMENT SYSTEM</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div>
+
 <!-- End Page Title -->
     @yield('content')
   </main><!-- End #main -->
@@ -78,6 +82,11 @@
   <script src="{{ asset('admin/vendor/php-email-form/validate.js') }}"></script>
   <script src="{{ asset('admin/vendor/js/modal.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
 
 
   <!-- jQuery (Harus disertakan sebelum Select2) -->
@@ -102,10 +111,7 @@
     });
   </script>
 
-  <!-- Template Main JS File -->
-  <script src="{{ asset('admin/js/main.js') }}"></script>
-
-</body>
-
+<!-- Template Main JS File -->
+<script src="{{ asset('admin/js/main.js') }}"></script>
 
 </html>

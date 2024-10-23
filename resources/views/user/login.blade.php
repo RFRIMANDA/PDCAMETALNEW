@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Login PDCA Transformation | TML</title>
+  <title>Login || PDCA Transformation</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -34,22 +34,55 @@
   <style>
     body {
         background: linear-gradient(135deg, #a2d2ff, #6a8caf);
+        animation: fadeIn 1s ease-in;
     }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     .section.register {
         padding: 20px;
         border-radius: 10px;
         background-color: rgba(0, 255, 255, 0.8);
         backdrop-filter: blur(10px);
     }
+
     .card {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    button.btn-primary {
+        transition: background-color 0.3s ease;
+    }
+
+    button.btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .logo img {
+        transition: transform 0.3s ease;
+    }
+
+    .logo img:hover {
+        transform: scale(1.1);
     }
   </style>
 </head>
 
-
 <body>
-  
+
   <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
     <div class="container">
       <div class="row justify-content-center">
@@ -66,13 +99,13 @@
             <div class="card-body">
               <div class="pt-4 pb-2">
                 <h5 class="card-title text-center pb-0 fs-4">Login to PDCA Transformation</h5>
-                <p class="text-center small">Enter your username & password to login</p>
+                <p class="text-center small">Enter your email & password to login</p>
               </div>
 
               <form action="{{ route('login.action') }}" method="POST">
                 @csrf
                 <div class="col-12">
-                  <label for="yourUsername" class="form-label">Username</label>
+                  <label for="yourUsername" class="form-label">Email</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text" id="inputGroupPrepend">@</span>
                     <input type="text" name="email" class="form-control" id="email" required>

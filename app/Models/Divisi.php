@@ -14,8 +14,8 @@ class Divisi extends Model
         'nama_divisi'
     ];
 
-    public function listForms()
+    public function riskregisters()
     {
-        return $this->hasMany(ListForm::class, 'id_divisi');
+        return $this->hasMany(Riskregister::class, 'id_divisi');
     }
 }

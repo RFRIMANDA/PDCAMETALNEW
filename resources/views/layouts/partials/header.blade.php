@@ -5,7 +5,7 @@
         </a>
         <i class="bi bi-list toggle-sidebar-btn text-light fs-3"></i>
     </div>
-    
+
 <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
         <li class="nav-item dropdown pe-3">
@@ -18,13 +18,27 @@
                     <h6>Email: {{ Auth::user()->email }}</h6>
                     <span>Role: {{ Auth::user()->role }}</span>
                 </li>
-                
+
                 <li><hr class="dropdown-divider">
-            
-                    <a href="/logout">
-                        <i class="ri-logout-box-line">Logout</i>
-                    </a>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/password">
+                          <i class="ri-lock-password-fill"></i>
+                          <span>Change Password</span>
+                        </a>
+                    </li>
                 </li>
+
+                <li><hr class="dropdown-divider">
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/logout">
+                          <i class="bi bi-box-arrow-right"></i>
+                          <span>Sign Out</span>
+                        </a>
+                      </li>
+                </li>
+
+          <li>
                 <!-- Tambahkan item lainnya di sini jika diperlukan -->
             </ul>
         </li>

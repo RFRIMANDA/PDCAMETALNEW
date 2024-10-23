@@ -18,5 +18,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'type',
     ];
+        public function divisi()
+    {
+        return $this->belongsToMany(Divisi::class, 'user_divisi', 'user_id', 'divisi_id');
+    }
 }
