@@ -8,8 +8,8 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Kelola Data User</h5>
-          <a href="/admin/create" title="Buat User" class="btn btn-sm btn-primary mb-3">
-            <i class="fa fa-plus"></i> Add User
+          <a href="/admin/create" title="Buat User" class="btn btn-sm btn-primary mb-3">Add
+            <i class="bi bi-person-plus-fill"></i>
           </a>
 
           <!-- Filter Form -->

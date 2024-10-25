@@ -39,18 +39,25 @@
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label"><strong>Divisi:</strong></label>
                 <div class="col-sm-10">
-                    @foreach ($divisi as $d)
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="type[]" value="{{ $d->id }}" id="divisi{{ $d->id }}"
-                            @if(is_array(old('type', $selectedDivisi ?? [])) && in_array($d->id, old('type', $selectedDivisi ?? []))) checked @endif>
-                        <label class="form-check-label" for="divisi{{ $d->id }}">
-                            {{ $d->nama_divisi }}
+                        <input class="form-check-input" type="checkbox" id="select-all">
+                        <label class="form-check-label" for="select-all">
+                            Select All
                         </label>
                     </div>
-                    @endforeach
+                    <div class="checkbox-group">
+                        @foreach ($divisi as $d)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="type[]" value="{{ $d->id }}" id="divisi{{ $d->id }}"
+                                @if(is_array(old('type', $selectedDivisi ?? [])) && in_array($d->id, old('type', $selectedDivisi ?? []))) checked @endif>
+                            <label class="form-check-label" for="divisi{{ $d->id }}">
+                                {{ $d->nama_divisi }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
-
 
             <div class="row mb-3">
                 <label for="password" class="col-sm-2 col-form-label"><strong>Password Baru:</strong></label>
@@ -80,4 +87,42 @@
     </div>
   </div>
 </section>
+
+<style>
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap; /* Agar checkbox bisa pindah ke baris baru jika tidak cukup ruang */
+        gap: 15px; /* Jarak antar checkbox */
+        margin-top: 10px; /* Jarak antara Select All dan checkbox lainnya */
+    }
+
+    .checkbox-group .form-check {
+        flex: 0 1 200px; /* Setiap checkbox akan mengambil lebar maksimal 200px, lalu wrap */
+        margin-bottom: 10px; /* Jarak antara tiap checkbox dengan baris bawah */
+    }
+
+    .form-check-input {
+        margin-right: 10px; /* Jarak antara checkbox dengan labelnya */
+    }
+
+    /* Untuk memastikan label dan checkbox align secara vertikal */
+    .form-check-label {
+        vertical-align: middle;
+    }
+
+    /* Untuk tampilan Select All di baris terpisah */
+    .form-check:first-child {
+        margin-bottom: 10px;
+    }
+</style>
+
+<script>
+    document.getElementById('select-all').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.checkbox-group .form-check-input');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+</script>
+
 @endsection
