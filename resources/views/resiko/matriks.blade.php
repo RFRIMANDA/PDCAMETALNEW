@@ -1,87 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>TRANSFORMATION || PDCA MANAGEMENT SYSTEM</title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
+@extends('layouts.main') <!-- Ganti dengan layout yang Anda gunakan -->
 
-
-  <!-- Favicons -->
-  <link href="{{ asset('admin/img/TML Logo.jpg') }}" rel="icon">
-  <link href="{{ asset('admin/img/TML Logo.jpg') }}" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-  <!-- Select2 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-  <!-- Vendor CSS Files -->
-  <link href="{{ asset('admin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/quill/quill.snow.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-  <link href="{{ asset('admin/vendor/simple-datatables/style.css') }}" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
-
-{{-- HEADER --}}
-  <header id="header" class="header fixed-top d-flex align-items-center" style="background: linear-gradient(90deg, #87ceeb, #98FB98);">
-    <div class="d-flex align-items-center justify-content-between">
-        <a href="/" class="logo d-flex align-items-center">
-            <span class="d-none d-lg-block" style="color: white; font-size: 1.5rem; font-weight: 700; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);">Tata Metal Lestari</span>
-        </a>
-        <i class="bi bi-list toggle-sidebar-btn text-light fs-3"></i>
-    </div>
-
-<nav class="header-nav ms-auto">
-    <ul class="d-flex align-items-center">
-        <li class="nav-item dropdown pe-3">
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="" data-bs-toggle="dropdown">
-                <img src="{{ asset('admin/img/TML3LOGO.png') }}" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #fff;">
-                <span class="d-none d-md-block dropdown-toggle ps-2 text-dark">{{ Auth::user()->nama_user }}</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                <li class="dropdown-header">
-                    <h6>Email: {{ Auth::user()->email }}</h6>
-                    <span>Role: {{ Auth::user()->role }}</span>
-                </li>
-
-                <li><hr class="dropdown-divider">
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/password">
-                          <i class="ri-lock-password-fill"></i>
-                          <span>Change Password</span>
-                        </a>
-                    </li>
-                </li>
-
-                <li><hr class="dropdown-divider">
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/logout">
-                          <i class="bi bi-box-arrow-right"></i>
-                          <span>Sign Out</span>
-                        </a>
-                      </li>
-                </li>
-
-          <li>
-                <!-- Tambahkan item lainnya di sini jika diperlukan -->
-            </ul>
-        </li>
-    </ul>
-</nav>
-
-</header>
-
+@section('content')
 
 <div class="container">
     <h1 class="card-title">Matriks Risiko: <br>{{ $resiko_nama }}</h1>
@@ -209,9 +128,9 @@
         </tbody>
     </table>
 
-<a class="btn btn-danger" href="{{ route('riskregister.tablerisk', $samee) }}" title="Back">
-    <i class="ri-arrow-go-back-line"></i>
-</a>
+    <a href="javascript:history.back()" class="btn btn-danger " title="Kembali">
+        <i class="ri-arrow-go-back-line"></i>
+    </a>
 
     <a class="btn btn-warning" href="{{ route('resiko.edit', ['id' => $same]) }}" title="Back">
         <i class="bx bx-edit"></i>
@@ -227,3 +146,5 @@
     </div>
   </footer>
 </html>
+
+@endsection

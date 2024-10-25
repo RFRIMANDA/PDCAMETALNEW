@@ -80,24 +80,23 @@
         <button type="submit" class="btn btn-primary">Filter</button>
 
             <!-- Tombol Export Excel -->
-            <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" class="btn btn-success">
+            <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
                 <i class="bi bi-printer-fill"></i>
             </a>
 
-        {{-- <a href="{{ route('riskregister.exportFilteredExcel', ['id' => $divisi->id, 'export' => 'excel']) }}" class="btn btn-success">Cetak</a> --}}
-        {{-- <a href="{{ route('export.pdf') }}" class="btn btn-primary">Export to PDF</a> --}}
-
-
+            <!-- Tombol Export to PDF -->
+            <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}" title="PDF" class="btn btn-danger">
+                <i class="bi bi-file-earmark-pdf"></i>
+            </a>
     </form>
 
-    <h1 class="card-title">All Risk Register & Opportunity of Issues</h1>
-
+<br>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Issue</th>
-                <th>Pihak Berkepentingan & Tindakan Lanjut</th>
+                <th>Tindakan Lanjut</th>
                 <th>Risiko</th>
                 <th>Peluang</th>
                 <th>Tingkatan</th>
@@ -116,12 +115,12 @@
                     <td>
                         <ul>
                             @foreach ($data['pihak'] as $index => $pihak)
-                                <li>
+                                {{-- <li> --}}
                                     <strong>{{ $pihak }}</strong>
                                     <ul>
                                         <li>{{ $data['tindak_lanjut'][$index] }}</li>
                                     </ul>
-                                </li>
+                                {{-- </li> --}}
                                 <hr>
                             @endforeach
                         </ul>
@@ -191,7 +190,6 @@
                         </div>
                     @endif
                 </td>
-
                 </tr>
             @endforeach
         </tbody>

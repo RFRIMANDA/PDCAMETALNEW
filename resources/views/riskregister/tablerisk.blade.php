@@ -4,15 +4,15 @@
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $divisi->nama_divisi ?? '' }}</h5>
+        <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $forms->first()->divisi->nama_divisi ?? '' }}</h5>
         <!-- Small tables -->
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Issue</th>
-                    <th scope="col">Resiko</th> <!-- Pindahkan kolom Resiko ke sini -->
-                    <th scope="col">Pihak Berkepentingan & Tindakan Lanjut</th> <!-- Pindahkan kolom Pihak Berkepentingan ke sini -->
+                    <th scope="col">Issue (Int:Ex)</th>
+                    <th scope="col">Resiko</th>
+                    <th scope="col">Tindakan Lanjut</th>
                     <th scope="col">Peluang</th>
                     <th scope="col">Target Penyelesaian</th>
                     <th scope="col">Status</th>
@@ -30,13 +30,13 @@
 
                     // Cek apakah ada resiko dengan status CLOSE dan after tidak null
                     $isClosed = $resikos->contains(function ($resiko) {
-                        return !is_null($resiko->after) && $resiko->status === 'CLOSE'; // Memastikan status juga CLOSE
+                        return !is_null($resiko->after) && $resiko->status === 'CLOSE';
                     });
                     @endphp
 
                     @if (!$isClosed)
                         <tr>
-                            <td>{{ $no++ }}</td> <!-- Menggunakan variabel $no yang akan meningkat setiap kali data ditampilkan -->
+                            <td>{{ $no++ }}</td>
                             <td>{{ $form->issue }}</td>
 
                             <!-- Kolom Resiko -->
@@ -52,37 +52,31 @@
 
                             <!-- Kolom pihak berkepentingan dan tindakan lanjut -->
                             <td>
-                                @if(isset($divisi[$form->id]) && isset($data[$form->id]))
+                                @if(isset($data[$form->id]))
                                     <ul>
-                                        @foreach($divisi[$form->id] as $index => $name)
+                                        @foreach($data[$form->id] as $tindakan)
                                             <li>
-                                                <strong>{{ $name->nama_divisi }}</strong>
+                                                <strong class="d-none">Pihak: {{ $tindakan->pihak }} </strong><!-- Menampilkan pihak sebagai string biasa -->
                                                 <ul>
-                                                    @foreach($data[$form->id] as $tindakan)
-                                                        @if($tindakan->pihak == $name->id) <!-- Sesuaikan ID divisi dan tindakan -->
-                                                            <li>
-                                                                <a href="{{ route('realisasi.index', $tindakan->id) }}">
-                                                                    {{ $tindakan->nama_tindakan }}
-                                                                </a>
-                                                                <div>
-                                                                    <span class="badge bg-success">{{ $tindakan->tgl_penyelesaian ?? '-' }}</span>
-                                                                </div>
+                                                    {{-- <li> --}}
+                                                        <a href="{{ route('realisasi.index', $tindakan->id) }}">
+                                                            {{ $tindakan->nama_tindakan }}
+                                                        </a>
+                                                        <div>
+                                                            <span class="badge bg-success">{{ $tindakan->tgl_penyelesaian ?? '-' }}</span>
+                                                        </div>
 
-                                                                @if($tindakan->isClosed)
-                                                                    <span class="badge bg-danger">CLOSE</span>
-                                                                @endif
-
-                                                                <hr>
-                                                            </li>
+                                                        @if($tindakan->isClosed)
+                                                            <span class="badge bg-danger">CLOSE</span>
                                                         @endif
-                                                    @endforeach
+                                                    {{-- </li> --}}
                                                 </ul>
                                             </li>
                                             <hr>
                                         @endforeach
                                     </ul>
                                 @else
-                                    Tidak ada pihak berkepentingan
+                                    Tidak ada tindakan lanjut
                                 @endif
                             </td>
 
@@ -150,11 +144,11 @@
 <script>
     function loadDetail(id) {
         $.ajax({
-            url: `/realisasi/${id}/detail`, // Sesuaikan dengan route
+            url: `/realisasi/${id}/detail`,
             method: 'GET',
             success: function(response) {
                 if (response.length > 0) {
-                    let modalContent = ''; // Buat form isian edit dari data yang diterima
+                    let modalContent = '';
                     response.forEach((detail, index) => {
                         modalContent += `
                             <div class="mb-3">
@@ -165,12 +159,12 @@
                                 <label for="tgl_penyelesaian_${index}" class="form-label"><strong>Tanggal Penyelesaian:</strong></label>
                                 <input type="date" class="form-control" id="tgl_penyelesaian_${index}" name="tgl_penyelesaian[]" value="${detail.tgl_penyelesaian}" readonly>
                             </div>
-                            <input type="hidden" name="id[]" value="${detail.id}"> <!-- Tambahkan ID untuk update -->
+                            <input type="hidden" name="id[]" value="${detail.id}">
                             <hr>
                         `;
                     });
 
-                    $('#modalContent').html(modalContent); // Masukkan data ke dalam modal
+                    $('#modalContent').html(modalContent);
                 } else {
                     $('#modalContent').html('<p>Detail tidak tersedia.</p>');
                 }
@@ -182,24 +176,21 @@
         });
     }
 
-    // Tangani submit form dan kirim data menggunakan AJAX
     $('#editForm').on('submit', function(e) {
-        e.preventDefault(); // Mencegah submit form secara default
+        e.preventDefault();
 
-        let formData = $(this).serialize(); // Ambil semua data dari form
+        let formData = $(this).serialize();
 
         $.ajax({
-            url: '/realisasi/update', // Sesuaikan dengan route update di Laravel
+            url: '/realisasi/update',
             method: 'POST',
             data: formData,
             success: function(response) {
-                // Tampilkan pesan sukses atau lakukan sesuatu setelah data berhasil disimpan
                 alert('Data berhasil diperbarui!');
-                $('#detailModal').modal('hide'); // Tutup modal
-                location.reload(); // Refresh halaman (opsional)
+                $('#detailModal').modal('hide');
+                location.reload();
             },
             error: function(xhr) {
-                // Tampilkan pesan error jika ada kesalahan
                 alert('Terjadi kesalahan: ' + xhr.responseText);
             }
         });

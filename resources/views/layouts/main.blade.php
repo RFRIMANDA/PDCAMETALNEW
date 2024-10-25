@@ -50,7 +50,7 @@
 
   <main id="main" class="main">
 
-    <div class="pagetitle" style="background-color: #ddfadd; padding: 20px; border-radius: 8px;">
+    <div class="pagetitle" style="background-color: #ddfadd; padding: 10px; border-radius: 8px;">
     <h1 style="font-weight: bold; font-size: 2rem; color: #395f97;">TRANSFORMATION PDCA MANAGEMENT SYSTEM</h1>
         <nav>
             <ol class="breadcrumb">

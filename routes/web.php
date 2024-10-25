@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RiskController;
 use App\Http\Controllers\ResikoController;
 use App\Http\Controllers\RealisasiController;
+use App\Http\Controllers\PpkController;
 use App\Http\Controllers\ExportController;
 use App\Exports\RiskOpportunityPdfExport;
 use App\Exports\RiskOpportunityExport;
@@ -54,7 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/riskregister/printAll/{id}', [RiskController::class, 'printAll'])->name('riskregister.printAll');
     Route::get('/riskregister/export/{id}', [RiskController::class, 'exportExcel'])->name('riskregister.exportExcel');
     Route::get('/riskregister/export-filtered/{id}', [RiskController::class, 'exportFilteredExcel'])->name('riskregister.exportFilteredExcel');
+    Route::get('/export-pdf/{id}', [RiskController::class, 'exportFilteredPDF'])->name('riskregister.export-pdf');
     Route::delete('/riskregister/{id}', [RiskController::class, 'destroy'])->name('riskregister.destroy');
+
 
    // Rute untuk ekspor excel
    Route::get('/export-risks', function () {
@@ -83,12 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/realisasi/{id}/detail', [RealisasiController::class, 'getDetail'])->name('realisasi.detail');
 });
 
-
-Route::get('/export/pdf', function () {
-    $formattedData = []; // Ambil data Anda di sini
-    return Excel::download(new RiskOpportunityPdfExport($formattedData), 'risk_register.pdf');
-})->name('export.pdf');
-
-
+// --PPK--//
+Route::get('/ppk', [PpkController::class, 'index'])->name('ppk.index');
+Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
+Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
+Route::get('/autocomplete/userppk', [PpkController::class, 'autocomplete'])->name('autocomplete.userppk');
 
 

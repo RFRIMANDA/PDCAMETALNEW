@@ -13,7 +13,7 @@
         <input type="hidden" name="id_riskregister" value="{{ $id }}">
 
         <div class="row mb-3">
-            <label for="nama_resiko" class="col-sm-2 col-form-label"><strong>Nama Resiko</strong></label>
+            <label for="nama_resiko" class="col-sm-2 col-form-label"><strong>Resiko</strong></label>
             <div class="col-sm-10">
                 <textarea name="nama_resiko" class="form-control" rows="3"></textarea>
             </div>

@@ -40,7 +40,7 @@
             <div id="collapseResiko" class="accordion-collapse collapse show" aria-labelledby="headingResiko" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <div class="row mb-3">
-                        <label for="inputRisiko" class="col-sm-2 col-form-label"><strong>Nama Risiko</strong></label>
+                        <label for="inputRisiko" class="col-sm-2 col-form-label"><strong>Risiko</strong></label>
                         <div class="col-sm-7">
                             <textarea id="inputRisiko" name="nama_resiko" class="form-control" placeholder="Masukkan Risiko" rows="3"></textarea>
                         </div>
@@ -149,12 +149,7 @@
         <div class="row mb-3">
             <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
             <div class="col-sm-7">
-                <select name="pihak[]" class="form-control" required>
-                    <option value="">-- Pilih Pihak --</option>
-                    @foreach($divisi as $d)
-                        <option value="{{ $d->id }}">{{ $d->nama_divisi }}</option>
-                    @endforeach
-                </select>
+                <textarea placeholder="Masukkan Departemen" name="pihak[]" class="form-control" rows="3" required></textarea>
             </div>
         </div>
 
@@ -475,21 +470,16 @@ function calculateTingkatan() {
 document.getElementById('addMore').addEventListener('click', function() {
     var newInputSection = `
     <hr>
-    <div class="row mb-3">
-        <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
-        <div class="col-sm-7">
-            <select name="pihak[]" class="form-control" required>
-                <option value="">-- Pilih Pihak --</option>
-                @foreach($divisi as $d)
-                    <option value="{{ $d->id }}">{{ $d->nama_divisi }}</option>
-                @endforeach
-            </select>
+        <div class="row mb-3">
+            <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
+            <div class="col-sm-7">
+                <textarea name="pihak[]" class="form-control" placeholder="Masukkan Pihak Berkepentingan" rows="3" required></textarea>
+            </div>
         </div>
-    </div>
     <div class="row mb-3">
         <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
         <div class="col-sm-7">
-            <textarea name="nama_tindakan[]" class="form-control" rows="3" required></textarea>
+            <textarea placeholder="Masukkan Departemen" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
         </div>
     </div>
     <div class="row mb-3">
@@ -501,7 +491,7 @@ document.getElementById('addMore').addEventListener('click', function() {
     <div class="row mb-3">
         <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
         <div class="col-sm-7">
-            <textarea name="targetpic[]" class="form-control" rows="3" required></textarea>
+            <textarea name="targetpic[]" class="form-control" placeholder="Masukkan Target PIC" rows="3" required></textarea>
         </div>
     </div>`;
     document.getElementById('inputContainer').insertAdjacentHTML('beforeend', newInputSection);

@@ -36,7 +36,11 @@ class Tindakan extends Model
     {
         return $this->hasMany(Realisasi::class, 'id_tindakan');
     }
-
+        // Relasi ke tabel 'realisasis'
+    public function realisasis()
+    {
+        return $this->hasMany(Realisasi::class, 'id_tindakan');
+    }
 
 }
 

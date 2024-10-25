@@ -210,6 +210,7 @@ class ResikoController extends Controller
         $riskregister = Riskregister::where('id', $form->id_riskregister)->first();
         $samee = $riskregister->id_divisi;
 
+
         $divisi = Divisi::where('id', $id)->value('nama_divisi');
         $resiko = Resiko::where('id_riskregister', $id)->first();
 

@@ -13,7 +13,7 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <!-- Select2 CSS -->
@@ -101,6 +101,13 @@
                 <h5 class="card-title text-center pb-0 fs-4">Login to PDCA Transformation</h5>
                 <p class="text-center small">Enter your email & password to login</p>
               </div>
+
+              <!-- Tambahkan alert error di sini -->
+              @if (session('error'))
+                  <div class="alert alert-danger">
+                      {{ session('error') }}
+                  </div>
+              @endif
 
               <form action="{{ route('login.action') }}" method="POST">
                 @csrf

@@ -39,6 +39,10 @@ class Riskregister extends Model
     {
         return $this->hasOne(Realisasi::class);
     }
+    public function tindakans()
+    {
+        return $this->hasMany(Tindakan::class, 'id_riskregister');
+    }
 
 }
 

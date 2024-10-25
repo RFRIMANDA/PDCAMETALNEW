@@ -58,13 +58,11 @@ class UserController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
-            // return redirect('/');
-            return redirect('/')->with('success', 'Selamat Datang,');
+            return redirect('/')->with('success', 'Selamat Datang!');
         }
 
-        return back()->withErrors([
-            'email' => 'Wrong email or password',
-        ]);
+        // Jika login gagal, kita tambahkan flash message error
+        return back()->with('error', 'Email atau password salah! ❌');
     }
 
     public function password()

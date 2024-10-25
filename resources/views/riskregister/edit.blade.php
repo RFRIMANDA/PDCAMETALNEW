@@ -43,16 +43,6 @@
             </div>
         </div>
 
-        <!-- Kriteria -->
-
-         <!-- Probability -->
-
-         <!-- Severitty -->
-
-         <!-- Tingkatan -->
-
-
-
         <!-- Target Penyelesaian -->
         <div class="row mb-3">
             <label for="target_penyelesaian" class="col-sm-2 col-form-label"><strong>Target Penyelesaian</strong></label>
@@ -67,17 +57,11 @@
         <div id="inputContainer">
             @foreach($tindakanList as $tindakan)
             <div class="action-block" data-id="{{ $tindakan->id }}">
+
                 <div class="row mb-3">
-                    <label for="pihak_{{ $tindakan->id }}" class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan:</strong></label>
+                    <label for="tindakan_{{ $tindakan->id }}" class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan:</strong></label>
                     <div class="col-sm-7">
-                        <select name="pihak[{{ $tindakan->id }}]" id="pihak_{{ $tindakan->id }}" class="form-control" required>
-                            <option value="">-- Pilih Pihak --</option>
-                            @foreach($divisi as $d)
-                                <option value="{{ $d->id }}" {{ $tindakan->pihak == $d->id ? 'selected' : '' }}>
-                                    {{ $d->nama_divisi }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <textarea name="pihak[{{ $tindakan->id }}]" id="pihak_{{ $tindakan->id }}" class="form-control" required>{{ old('pihak.' . $tindakan->id, $tindakan->pihak) }}</textarea>
                     </div>
                 </div>
 
@@ -130,26 +114,22 @@
         <hr>
         <div class="action-block">
             <div class="row mb-3">
-                <label class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
+                <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
                 <div class="col-sm-7">
-                    <select name="pihak[]" class="form-control" required>
-                        <option value="">-- Pilih Pihak --</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id }}">{{ $d->nama_divisi }}</option>
-                        @endforeach
-                    </select>
+                    <textarea name="pihak[]" class="form-control" rows="3" placeholder="Masukkan Pihak Berkepentingan" required></textarea>
                 </div>
+            </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label"><strong>Tindak Lanjut</strong></label>
                 <div class="col-sm-7">
-                    <textarea name="tindakan[]" class="form-control" rows="3" required></textarea>
+                    <textarea name="tindakan[]" class="form-control" rows="3" placeholder="Masukkan Tindakan Lanjut" required></textarea>
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label"><strong>Target PIC</strong></label>
                 <div class="col-sm-7">
-                    <textarea name="targetpic[]" class="form-control" rows="3" required></textarea>
+                    <textarea name="targetpic[]" class="form-control" placeholder="Masukkan Target PIC" rows="3" required></textarea>
                 </div>
             </div>
             <div class="row mb-3">
