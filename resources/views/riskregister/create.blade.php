@@ -321,6 +321,8 @@
                             <td>Polusi besar-besaran baik kedalam maupun keluar, ada tuntutan dari pihak luar serta membutuhkan pekerjaan perbaikan besar dan dapat dipulihkan lebih dari 1 tahun.</td>
                         </tr>
                         <hr>
+                    </tbody>
+                </table>
                 <!-- Reputasi -->
                 <h6><strong>Reputasi</strong></h6>
                 <table class="table table-bordered">

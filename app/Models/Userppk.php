@@ -9,7 +9,7 @@ class Userppk extends Model
 {
     use HasFactory;
 
-    protected $table = 'realisasi';
+    protected $table = 'userppk';
 
     protected $fillable = [
         'nama',

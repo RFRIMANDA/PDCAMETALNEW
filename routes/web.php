@@ -90,6 +90,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/ppk', [PpkController::class, 'index'])->name('ppk.index');
 Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
 Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
-Route::get('/autocomplete/userppk', [PpkController::class, 'autocomplete'])->name('autocomplete.userppk');
+
 
 

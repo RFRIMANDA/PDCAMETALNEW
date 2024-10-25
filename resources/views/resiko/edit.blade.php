@@ -67,7 +67,7 @@
         <div class="row mb-3">
             <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" name="tingkatan" id="tingkatan"  value="{{ old('tingkatan', $resiko->tingkatan) }}">
+                <input type="text" class="form-control" name="tingkatan" id="tingkatan"  value="{{ old('tingkatan', $resiko->tingkatan) }}" readonly>
             </div>
         </div>
 
@@ -80,7 +80,7 @@
         <div class="row mb-3">
             <label for="probabilityrisk" class="col-sm-2 col-form-label"><strong>Probability / Dampak (1-5)</strong></label>
             <div class="col-sm-4 d-flex align-items-center">
-                <input type="number" class="form-control" name="probabilityrisk" id="probabilityrisk" min="1" max="5" oninput="calculateRisk()" value="{{ old('probabilityrisk', $resiko->probabilityrisk) }}" >
+                <input type="number" placeholder="Masukan Nilai Probability" class="form-control" name="probabilityrisk" id="probabilityrisk" min="1" max="5" oninput="calculateRisk()" value="{{ old('probabilityrisk', $resiko->probabilityrisk) }}" >
             </div>
             <div class="col-sm-5">
                 <p class="form-text"><strong>1. Sangat jarang terjadi | 2. Jarang terjadi | 3. Dapat Terjadi | 4. Sering terjadi | 5. Selalu terjadi</strong></p>
@@ -89,9 +89,9 @@
 
         <!-- Severity Risk -->
         <div class="row mb-3">
-            <label for="severityrisk" class="col-sm-2 col-form-label"><strong>Severity / Keparahan</strong></label>
+            <label for="severityrisk" class="col-sm-2 col-form-label"><strong>Severity / Keparahan (Check Tool Box)</strong></label>
             <div class="col-sm-4 d-flex align-items-center justify-content-between">
-                <input type="number" class="form-control me-2" name="severityrisk" id="severityrisk" min="1" max="5" oninput="calculateRisk()" value="{{ old('severityrisk', $resiko->severityrisk) }}">
+                <input type="number" placeholder="Masukan Nilai Severity" class="form-control me-2" name="severityrisk" id="severityrisk" min="1" max="5" oninput="calculateRisk()" value="{{ old('severityrisk', $resiko->severityrisk) }}">
                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#fullscreenModal">
                     <i class="bx bxs-bar-chart-square"></i>
                 </button>
@@ -102,7 +102,7 @@
         <div class="row mb-3">
             <label for="risk" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" name="risk" id="risk"  value="{{ old('risk', $resiko->risk) }}">
+                <input type="text" class="form-control" name="risk" id="risk"  value="{{ old('risk', $resiko->risk) }}" readonly>
             </div>
         </div>
 
@@ -126,7 +126,7 @@
         <div class="row mb-3">
             <label for="after" class="col-sm-2 col-form-label"><strong>After</strong></label>
             <div class="col-sm-10">
-                <textarea name="after" class="form-control" rows="3">{{ old('after', $resiko->after) }}</textarea>
+                <textarea name="after" placeholder="Deskripsikan Kondisi Setelah Ditindak Lanjuti" class="form-control" rows="3">{{ old('after', $resiko->after) }}</textarea>
             </div>
         </div>
 
@@ -161,7 +161,7 @@
 
 </div>
 
-<!-- Full Screen Modal -->
+<!-<!-- Full Screen Modal -->
 <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
@@ -266,6 +266,8 @@
                             <td>Polusi besar-besaran baik kedalam maupun keluar, ada tuntutan dari pihak luar serta membutuhkan pekerjaan perbaikan besar dan dapat dipulihkan lebih dari 1 tahun.</td>
                         </tr>
                         <hr>
+                    </tbody>
+                </table>
                 <!-- Reputasi -->
                 <h6><strong>Reputasi</strong></h6>
                 <table class="table table-bordered">

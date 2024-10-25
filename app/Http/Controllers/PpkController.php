@@ -8,57 +8,54 @@ use Illuminate\Http\Request;
 
 class PpkController extends Controller
 {
-    public function create()
+    public function index()
     {
-        return view('ppk.create');
+        $ppks = Ppk::all(); // Ambil semua data Ppk dari database
+        return view('ppk.index', compact('ppks')); // Kirim data ke view
     }
 
+    public function create()
+    {
+        $data = Userppk::all(); // Ambil data user untuk dropdown
+        return view('ppk.create', compact('data'));
+    }
+    
     public function store(Request $request)
     {
         // Validasi input
         $request->validate([
             'judul' => 'nullable|string|max:255',
-            'jenisketidaksesuaian' => 'nullable|in:Sistem,Proses,Produk,Audit',
-            'pembuat' => 'nullable|string|max:255',
-            'emailpembuat' => 'nullable|email|max:255',
-            'divisipembuat' => 'nullable|string|max:255',
-            'penerima' => 'nullable|string|max:255',
-            'emailpenerima' => 'nullable|email|max:255',
-            'divisipenerima' => 'nullable|string|max:255',
+            'jenisketidaksesuaian' => 'nullable|array',
+            'pembuat' => 'required|string|max:255',
+            'emailpembuat' => 'required|email|max:255',
+            'divisipembuat' => 'required|string|max:255',
+            'penerima' => 'required|string|max:255',
+            'emailpenerima' => 'required|email|max:255',
+            'divisipenerima' => 'required|string|max:255',
         ]);
-
-        // Simpan data ke dalam database
-        Ppk::create([
-            'judul' => $request->judul,
-            'jenisketidaksesuaian' => implode(',', $request->jenisketidaksesuaian ?? []),
-            'pembuat' => $request->pembuat,
-            'emailpembuat' => $request->emailpembuat,
-            'divisipembuat' => $request->divisipembuat,
-            'penerima' => $request->penerima,
-            'emailpenerima' => $request->emailpenerima,
-            'divisipenerima' => $request->divisipenerima,
-        ]);
-
-        // Redirect kembali ke form dengan pesan sukses
-        return redirect()->route('ppk.create')->with('success', 'Data PPK berhasil disimpan.✅');
-    }
-
-        public function autocomplete(Request $request)
-    {
-        $term = $request->get('term');
-        $users = Userppk::table('userppk')
-                    ->where('nama', 'LIKE', '%' . $term . '%')
-                    ->get();
-
-        $results = [];
-        foreach ($users as $user) {
-            $results[] = [
-                'nama' => $user->nama,
-                'email' => $user->email,
-                'divisi' => $user->divisi
-            ];
+    
+        // Gabungkan nilai untuk kolom jenisketidaksesuaian
+        $jenisketidaksesuaian = is_array($request->jenisketidaksesuaian) ? implode(',', $request->jenisketidaksesuaian) : null;
+    
+        // Pastikan panjang data tidak melebihi batas yang diizinkan
+        if (strlen($jenisketidaksesuaian) > 65535) {
+            return back()->withErrors(['jenisketidaksesuaian' => 'Data ketidaksesuaian terlalu panjang.']);
         }
-        return response()->json($results);
-    }
-
+    
+        try {
+            Ppk::create([
+                'judul' => $request->judul,
+                'jenisketidaksesuaian' => $jenisketidaksesuaian,
+                'pembuat' => $request->pembuat,
+                'emailpembuat' => $request->emailpembuat,
+                'divisipembuat' => $request->divisipembuat,
+                'penerima' => $request->penerima,
+                'emailpenerima' => $request->emailpenerima,
+                'divisipenerima' => $request->divisipenerima,
+            ]);
+            return redirect()->route('ppk.index')->with('success', 'Data PPK berhasil disimpan.✅');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+        }
+    }    
 }
