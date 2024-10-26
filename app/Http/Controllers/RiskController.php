@@ -606,6 +606,7 @@ class RiskController extends Controller
                     'targetpic' => array_column($tindakanData, 'targetpic'),
                     'tgl_realisasi' => array_column($tindakanData, 'tgl_realisasi'),
                     'status' => $resiko->status,
+                    'risk' => $resiko->risk,
                     'before' => $resiko->before,
                     'after' => $resiko->after,
                 ];

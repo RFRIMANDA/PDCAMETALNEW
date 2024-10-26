@@ -11,7 +11,7 @@
         }
         h2 {
             text-align: center; /* Header h2 di tengah */
-            background-color: #d9f99d; /* Warna latar belakang hijau muda */
+            background-color: #56dbc5; /* Warna latar belakang hijau muda */
             padding: 10px; /* Menambahkan padding untuk tampilan yang lebih baik */
         }
         table {
@@ -27,7 +27,7 @@
             text-align: left;
         }
         th {
-            background-color: #d9f99d; /* Menambahkan warna latar belakang hijau muda */
+            background-color: #a6f119; /* Menambahkan warna latar belakang hijau muda */
             text-align: center; /* Header di tengah */
         }
         .separator {
@@ -39,7 +39,7 @@
     </style>
 </head>
 <body>
-    <h2>Report Risk & Opportunity Register</h2>
+    <h2>Report Risk & Opportunity Register<br>PT. Tata Metal Lestari</h2>
     <table>
         <thead>
             <tr>
@@ -53,6 +53,7 @@
                 <th>Target PIC</th>
                 <th>Tanggal Penyelesaian</th>
                 <th>Status</th>
+                <th>Actual Risk</th>
                 <th>Before</th>
                 <th>After</th>
             </tr>
@@ -63,9 +64,9 @@
                 <td>{{ $index + 1 }}</td> <!-- Menambahkan nomor urut -->
                 <td>{{ $data['issue'] }}</td>
                 <td>
-                    @foreach ($data['pihak'] as $pihak)
-                        {{ $pihak }}<br>
-                        @if (!$loop->last) <!-- Menambahkan pemisah hanya jika ini bukan elemen terakhir -->
+                    @foreach ($data['pihak'] as $index => $pihak)
+                        {{ $index + 1 }}. {{ $pihak }}<br>
+                        @if (!$loop->last)
                             <hr class="separator">
                         @endif
                     @endforeach
@@ -74,30 +75,31 @@
                 <td>{{ $data['peluang'] }}</td>
                 <td>{{ $data['tingkatan'] }}</td>
                 <td>
-                    @foreach ($data['tindak_lanjut'] as $tindak_lanjut)
-                        {{ $tindak_lanjut }}<br>
-                        @if (!$loop->last) <!-- Menambahkan pemisah hanya jika ini bukan elemen terakhir -->
+                    @foreach ($data['tindak_lanjut'] as $index => $tindak_lanjut)
+                        {{ $index + 1 }}. {{ $tindak_lanjut }}<br>
+                        @if (!$loop->last)
                             <hr class="separator">
                         @endif
                     @endforeach
                 </td>
                 <td>
-                    @foreach ($data['targetpic'] as $targetpic)
-                        {{ $targetpic }}<br>
-                        @if (!$loop->last) <!-- Menambahkan pemisah hanya jika ini bukan elemen terakhir -->
+                    @foreach ($data['targetpic'] as $index => $targetpic)
+                        {{ $index + 1 }}. {{ $targetpic }}<br>
+                        @if (!$loop->last)
                             <hr class="separator">
                         @endif
                     @endforeach
                 </td>
                 <td>
-                    @foreach ($data['tgl_realisasi'] as $tgl_realisasi)
-                        {{ $tgl_realisasi }}<br>
-                        @if (!$loop->last) <!-- Menambahkan pemisah hanya jika ini bukan elemen terakhir -->
+                    @foreach ($data['tgl_realisasi'] as $index => $tgl_realisasi)
+                        {{ $index + 1 }}. {{ $tgl_realisasi }}<br>
+                        @if (!$loop->last)
                             <hr class="separator">
                         @endif
                     @endforeach
                 </td>
                 <td>{{ $data['status'] }}</td>
+                <td>{{ $data['risk'] }}</td>
                 <td>{{ $data['before'] }}</td>
                 <td>{{ $data['after'] }}</td>
             </tr>

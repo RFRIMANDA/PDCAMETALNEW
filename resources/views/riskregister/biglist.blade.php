@@ -78,11 +78,12 @@
 
         <!-- Tombol Submit Filter -->
         <button type="submit" class="btn btn-primary">Filter</button>
-
+        @if(auth()->user()->role === 'admin')
             <!-- Tombol Export Excel -->
             <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
-                <i class="bi bi-printer-fill"></i>
+                <i class="bi bi-file-earmark-excel"></i>
             </a>
+        @endif
 
             <!-- Tombol Export to PDF -->
             <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}" title="PDF" class="btn btn-danger">
