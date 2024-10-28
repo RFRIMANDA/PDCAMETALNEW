@@ -19,6 +19,7 @@ class User extends Authenticatable
         'password',
         'role',
         'type',
+        'divisi',
     ];
         public function divisi()
     {

@@ -9,7 +9,7 @@
             <h5 class="card-title">PROSES PENINGKATAN KINERJA</h5>
 
             <!-- General Form Elements -->
-            <form method="POST" action="{{ route('ppk.store') }}">
+            <form method="POST" action="{{ route('ppk.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 @if($errors->any())
@@ -29,7 +29,7 @@
                         <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK">{{ old('judul') }}</textarea>
                     </div>
                 </div>
-                
+
                 <!-- Jenis Ketidaksesuaian -->
                 <div class="row mb-3">
                     <label for="inputJenis" class="col-sm-2 col-form-label">Jenis Ketidaksesuaian</label>
@@ -52,71 +52,88 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Pembuat dan Divisi Pembuat -->
                 <div class="row mb-3">
-                    <label for="pembuat" class="col-sm-2 col-form-label">Pembuat</label>
+                    <label for="pembuat" class="col-sm-2 col-form-label">Nama Inisiator</label>
                     <div class="col-sm-10">
                         <select id="pembuat" name="pembuat" class="form-control">
                             <option value="">Pilih Pembuat</option>
                             @foreach($data as $user)
-                                <option value="{{ $user->nama }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
-                                    {{ $user->nama }}
+                                <option value="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
+                                    {{ $user->nama_user }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="row mb-3">
-                    <label for="emailpembuat" class="col-sm-2 col-form-label">Email Pembuat</label>
+                    <label for="emailpembuat" class="col-sm-2 col-form-label">Email Inisiator</label>
                     <div class="col-sm-10">
                         <input type="email" id="emailpembuat" name="emailpembuat" class="form-control" value="{{ old('emailpembuat') }}" placeholder="Email Pembuat" readonly>
                     </div>
                 </div>
-                
+
                 <div class="row mb-3">
-                    <label for="divisipembuat" class="col-sm-2 col-form-label">Divisi Pembuat</label>
+                    <label for="divisipembuat" class="col-sm-2 col-form-label">Divisi Inisiator</label>
                     <div class="col-sm-10">
                         <input type="text" name="divisipembuat" id="divisipembuat" class="form-control" value="{{ old('divisipembuat') }}" placeholder="Divisi Pembuat" readonly>
                     </div>
                 </div>
-                
+
                 <!-- Lakukan hal yang sama untuk Penerima -->
                 <div class="row mb-3">
-                    <label for="penerima" class="col-sm-2 col-form-label">Penerima</label>
+                    <label for="penerima" class="col-sm-2 col-form-label">Nama Penerima</label>
                     <div class="col-sm-10">
                         <select id="penerima" name="penerima" class="form-control">
                             <option value="">Pilih Penerima</option>
                             @foreach($data as $user)
-                                <option value="{{ $user->nama }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
-                                    {{ $user->nama }}
+                                <option value="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
+                                    {{ $user->nama_user }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="row mb-3">
                     <label for="emailpenerima" class="col-sm-2 col-form-label">Email Penerima</label>
                     <div class="col-sm-10">
                         <input type="email" name="emailpenerima" id="emailpenerima" class="form-control" value="{{ old('emailpenerima') }}" placeholder="Email Penerima" readonly>
                     </div>
                 </div>
-                
+
                 <div class="row mb-3">
                     <label for="divisipenerima" class="col-sm-2 col-form-label">Divisi Penerima</label>
                     <div class="col-sm-10">
                         <input type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" placeholder="Divisi Penerima" readonly>
                     </div>
                 </div>
-                
+
+                <div class="row mb-3">
+                    <label for="ccemail" class="col-sm-2 col-form-label">CC Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 1">
+                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 2">
+                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 3">
+                        <!-- Tambahkan lebih banyak input jika perlu -->
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="evidence" class="col-sm-2 col-form-label">Evidence</label>
+                    <div class="col-sm-10">
+                        <input type="file" name="evidence" class="form-control">
+                    </div>
+                </div>
+
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
-            </form>            
+            </form>
         </div>
     </div>
 </body>

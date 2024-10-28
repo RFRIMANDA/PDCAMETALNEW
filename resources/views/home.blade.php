@@ -88,7 +88,7 @@
                 <!-- Sales Card 2 -->
                 <div class="col-xxl-4 col-md-6 mb-4">
                     <div class="card info-card sales-card">
-                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('ppk.create')}}'">
+                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('ppk.index')}}'">
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-bar-chart-fill"></i>

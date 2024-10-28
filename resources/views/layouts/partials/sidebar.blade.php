@@ -37,8 +37,8 @@
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="#">
-              <i class="bi bi-circle"></i><span></span>
+            <a href="/formppk">
+              <i class="bi bi-circle"></i><span>Create Proses Peningkatan Kinerja (PPK)</span>
             </a>
           </li>
         <li>

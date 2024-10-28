@@ -163,7 +163,7 @@
 
 <!-<!-- Full Screen Modal -->
 <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="fullscreenModalLabel">Severity / Keparahan</h3>
@@ -386,6 +386,9 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
