@@ -88,6 +88,7 @@
 
     <h1 class="card-title">PIC: {{$pic}}<br><hr>Target Tanggal: {{$deadline}}</h1>
 
+
     <!-- Tabel Data Realisasi -->
     <table class="table table-striped mt-4">
         <thead>
@@ -112,7 +113,7 @@
                 <td>{{ $realisasi->nama_realisasi ?? '-' }}</td>
                 <td>{{ $realisasi->target ?? '-' }}</td>
                 <td>{{ $realisasi->desc ?? '-' }}</td>
-                <td>{{ $realisasi->tgl_realisasi ?? '-' }}</td>
+                <td>{{ \Carbon\Carbon::parse($realisasi->tgl_realisasi)->format('d-m-Y') ?? '-' }}</td>
                 <td>{{ $realisasi->presentase ?? '-' }}%</td>
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#basicModal{{ $realisasi->id }}">
@@ -141,7 +142,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="tgl_realisasi" class="form-label">Tanggal Penyelesaian</label>
-                                        <input type="date" name="tgl_realisasi" class="form-control" required value="{{ $realisasi->tgl_realisasi }}">
+                                        <input type="date" name="tgl_realisasi" class="form-control" required value="{{ \Carbon\Carbon::parse($realisasi->tgl_realisasi)->format('Y-m-d') }}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="desc" class="form-label">Noted</label>

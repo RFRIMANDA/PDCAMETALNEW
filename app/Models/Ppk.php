@@ -20,11 +20,9 @@ class Ppk extends Model
         'penerima',
         'emailpenerima',
         'divisipenerima',
-        'ccemail',
         'evidence',
+        'signature',
+        'created_at'
     ];
 
-    protected $casts = [
-        'ccemail' => 'array', // Untuk menyimpan beberapa email sebagai array
-    ];
 }

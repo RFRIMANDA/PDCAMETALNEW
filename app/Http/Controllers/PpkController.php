@@ -32,13 +32,38 @@ class PpkController extends Controller
             'penerima' => 'required|string|max:255',
             'emailpenerima' => 'required|email|max:255',
             'divisipenerima' => 'required|string|max:255',
-            'ccemail' => 'nullable|email',
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,xlsx,xls,doc,docx',
+            'signature' => 'required|string', // Pastikan tanda tangan wajib diisi
         ]);
 
         // Simpan data termasuk file evidence jika ada
         if ($request->hasFile('evidence')) {
-            $evidencePath = $request->file('evidence')->store('evidence', 'public');
+            // Pastikan direktori dokumen ada
+            $path = public_path('dokumen');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            // Simpan file dengan nama unik
+            $file = $request->file('evidence');
+            $filename = 'FT' . date('Ymdhis') . '.' . $file->getClientOriginalExtension();
+            $file->move($path, $filename);
+        } else {
+            $filename = null;
+        }
+
+        // Simpan tanda tangan ke folder yang diinginkan
+        if ($request->signature) {
+            $signaturePath = public_path('admin/img'); // Folder tempat menyimpan tanda tangan
+            $signatureData = $request->signature;
+
+            // Menghapus header data URL
+            list($type, $signatureData) = explode(';', $signatureData);
+            list(, $signatureData)      = explode(',', $signatureData);
+
+            // Simpan file tanda tangan
+            $signatureFileName = 'signature_' . time() . '.png';
+            file_put_contents($signaturePath . '/' . $signatureFileName, base64_decode($signatureData));
         }
 
         try {
@@ -51,8 +76,8 @@ class PpkController extends Controller
                 'penerima' => $request->penerima,
                 'emailpenerima' => $request->emailpenerima,
                 'divisipenerima' => $request->divisipenerima,
-                'ccemail' => $request->ccemail,
-                'evidence' => isset($evidencePath) ? $evidencePath : null,
+                'evidence' => $filename,
+                'signature' => isset($signatureFileName) ? $signatureFileName : null, // Simpan nama file tanda tangan
             ]);
 
             return redirect()->route('ppk.index')->with('success', 'Data PPK berhasil disimpan.✅');

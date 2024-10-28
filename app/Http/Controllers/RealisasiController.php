@@ -7,6 +7,7 @@ use App\Models\Realisasi;
 use App\Models\Riskregister;
 use App\Models\Tindakan;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class RealisasiController extends Controller
 {
@@ -19,7 +20,7 @@ class RealisasiController extends Controller
         $realisasiList = Realisasi::where('id_tindakan', $id)->get();
         $tindak = Tindakan::where('id', $id)->value('nama_tindakan');
         $pic = Tindakan::where('id',$id)->value('targetpic');
-        $deadline = Tindakan::where('id',$id)->value('tgl_penyelesaian');
+        $deadline = Carbon::parse(Tindakan::where('id', $id)->value('tgl_penyelesaian'))->format('d-m-Y');
 
         // Ambil id_divisi dari tabel Riskregister berdasarkan id_tindakan
         $riskregister = Riskregister::where('id', $form->id_riskregister)->first();

@@ -3,7 +3,6 @@
 @section('content')
 
 <body>
-
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">PROSES PENINGKATAN KINERJA</h5>
@@ -36,19 +35,19 @@
                     <div class="col-sm-10">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Sistem">
-                            <label class="form-check-label" for="Sistem">Sistem</label>
+                            <label class="form-check-label">Sistem</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Proses">
-                            <label class="form-check-label" for="Proses">Proses</label>
+                            <label class="form-check-label">Proses</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Produk">
-                            <label class="form-check-label" for="Produk">Produk</label>
+                            <label class="form-check-label">Produk</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Audit">
-                            <label class="form-check-label" for="Audit">Audit</label>
+                            <label class="form-check-label">Audit</label>
                         </div>
                     </div>
                 </div>
@@ -112,25 +111,26 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label for="ccemail" class="col-sm-2 col-form-label">CC Email</label>
+                    <label for="signature" class="col-sm-2 col-form-label">Tanda Tangan</label>
                     <div class="col-sm-10">
-                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 1">
-                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 2">
-                        <input type="email" name="ccemail[]" class="form-control mb-2" placeholder="Email 3">
-                        <!-- Tambahkan lebih banyak input jika perlu -->
+                        <canvas id="signature-pad" style="border: 1px solid #ccc; width: 100%; height: 200px;"></canvas>
+                        <button id="clear" title="Clear" type="button" class="btn btn-secondary mt-2"><i class="bx bxs-eraser"></i></button>
+                        <input type="hidden" name="signature" id="signature">
                     </div>
                 </div>
 
+                <!-- Evidence Input with Preview -->
                 <div class="row mb-3">
                     <label for="evidence" class="col-sm-2 col-form-label">Evidence</label>
                     <div class="col-sm-10">
-                        <input type="file" name="evidence" class="form-control">
+                        <input type="file" name="evidence" id="evidence" class="form-control" accept="image/*">
+                        <img id="evidencePreview" src="#" alt="Evidence Preview" style="display: none; margin-top: 10px; max-width: 200px;"/>
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
                     </div>
                 </div>
             </form>
@@ -139,8 +139,43 @@
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/dist/signature_pad.umd.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Inisialisasi Signature Pad
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas);
+        const ctx = canvas.getContext('2d');
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+        // Set canvas size
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        ctx.scale(ratio, ratio);
+
+        // Clear signature pad
+        document.getElementById('clear').addEventListener('click', function () {
+            signaturePad.clear();
+        });
+
+        // Menyimpan tanda tangan sebagai data URL dalam input hidden saat form disubmit
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (signaturePad.isEmpty()) {
+                alert("Silakan buat tanda tangan terlebih dahulu.");
+                e.preventDefault();
+            } else {
+                const signatureDataUrl = signaturePad.toDataURL();
+                document.getElementById('signature').value = signatureDataUrl;
+            }
+        });
+
+        // Resize event
+        window.addEventListener('resize', function () {
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            ctx.scale(ratio, ratio);
+        });
+
         // Mengisi data pembuat
         document.getElementById("pembuat").addEventListener("change", function () {
             const selectedOption = this.options[this.selectedIndex];
@@ -153,6 +188,21 @@
             const selectedOption = this.options[this.selectedIndex];
             document.getElementById("emailpenerima").value = selectedOption.getAttribute("data-email");
             document.getElementById("divisipenerima").value = selectedOption.getAttribute("data-divisi");
+        });
+
+        // Preview image sebelum diunggah
+        document.getElementById("evidence").addEventListener("change", function () {
+            const file = this.files[0];
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("evidencePreview").src = e.target.result;
+                    document.getElementById("evidencePreview").style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById("evidencePreview").style.display = 'none';
+            }
         });
     });
 </script>

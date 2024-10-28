@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class RiskController extends Controller
@@ -266,26 +267,40 @@ class RiskController extends Controller
         // Ambil semua riskregister terkait dengan divisi
         $forms = Riskregister::where('id_divisi', $id)->get();
         $data = [];
-        $statusIndicators = []; // Array untuk menyimpan status indikator
 
         foreach ($forms as $form) {
             // Ambil semua tindakan terkait dengan setiap riskregister
             $tindakanList = Tindakan::where('id_riskregister', $form->id)->get();
-            $data[$form->id] = $tindakanList;
 
             // Memeriksa apakah ada tindakan yang sudah berstatus CLOSE
-            $data[$form->id] = $tindakanList->map(function ($tindakan) {
+            $tindakanList = $tindakanList->map(function ($tindakan) {
                 $tindakan->isClosed = Realisasi::where('id_tindakan', $tindakan->id)
                                     ->where('status', 'CLOSE')
                                     ->exists();
+
+                // Jika ada tanggal yang ingin diformat
+                if ($tindakan->tgl_penyelesaian) {
+                    $tindakan->tgl_penyelesaian = Carbon::parse($tindakan->tgl_penyelesaian)->format('d-m-Y');
+                } else {
+                    $tindakan->tgl_penyelesaian = '-';
+                }
+
                 return $tindakan;
             });
+
+            // Format target_penyelesaian
+            if ($form->target_penyelesaian) {
+                $form->target_penyelesaian = Carbon::parse($form->target_penyelesaian)->format('d-m-Y');
+            } else {
+                $form->target_penyelesaian = '-';
+            }
+
+            $data[$form->id] = $tindakanList;
         }
 
         // Tampilkan view dengan data riskregister, tindakan terkait, serta status
         return view('riskregister.tablerisk', compact('forms', 'data'));
     }
-
 
     public function biglist(Request $request)
     {

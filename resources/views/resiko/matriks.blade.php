@@ -128,7 +128,7 @@
         </tbody>
     </table>
 
-    <a href="javascript:history.back()" class="btn btn-danger " title="Kembali">
+    <a href="{{ route('riskregister.index')}}" class="btn btn-danger " title="Kembali">
         <i class="ri-arrow-go-back-line"></i>
     </a>
 
@@ -136,15 +136,5 @@
         <i class="bx bx-edit"></i>
     </a>
 </div>
-
-<footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>PT. TATA METAL LESTARI</span></strong>. All Rights Reserved
-    </div>
-    <div class="credits">
-      Designed by <a href="">TATA METAL LESTARI PRODUCTION</a>
-    </div>
-  </footer>
-</html>
 
 @endsection
