@@ -22,7 +22,14 @@ class Ppk extends Model
         'divisipenerima',
         'evidence',
         'signature',
-        'created_at'
+        'created_at',
+        'nomor_surat',
+        'cc_email'
     ];
+
+    public function formppkkedua()
+    {
+        return $this->hasOne(Ppkkedua::class, 'id_formppk', 'id');
+    }
 
 }

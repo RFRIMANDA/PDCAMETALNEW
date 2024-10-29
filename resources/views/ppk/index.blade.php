@@ -10,198 +10,182 @@
         </div>
     @endif
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Judul</th>
-                <th>Jenis Ketidaksesuaian</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($ppks as $ppk)
+    @if($ppks->isEmpty())
+        <div class="alert alert-warning">Tidak ada data PPK yang tersedia untuk Anda.</div>
+    @else
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $ppk->judul }}</td>
-                    <td>{{ $ppk->jenisketidaksesuaian }}</td>
-                    <td>
-                        <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
-                            <i class="bi bi-eye-fill">
-
-                            </i>
-                        </button>
-                    </td>
+                    <th>No</th>
+                    <th>Judul</th>
+                    <th>Jenis Ketidaksesuaian</th>
+                    <th>Action</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($ppks as $ppk)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $ppk->judul }}</td>
+                        <td>{{ $ppk->jenisketidaksesuaian }}</td>
+                        <td>
+                            <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                            <a href="{{ route('ppk.formppkkedua', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
-    <!-- Modal Detail Data PPK -->
-    @foreach ($ppks as $ppk)
-        <div class="modal fade" id="detailModal{{ $ppk->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $ppk->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="card-title" id="detailModalLabel{{ $ppk->id }}">Detail Data Proses Peningkatan Kinerja</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Modal Detail Data PPK -->
+@foreach ($ppks as $ppk)
+    <div class="modal fade" id="detailModal{{ $ppk->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $ppk->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="card-title" id="detailModalLabel{{ $ppk->id }}">Detail Data Proses Peningkatan Kinerja</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tampilkan Nomor Surat di atas Judul -->
+                    <div class="mb-3">
+                        <h6><strong>PPK NO. </strong> {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}</h6>
                     </div>
-                    <div class="modal-body">
-                        <table class="table table-bordered">
-                            <tr>
-                                <th>Judul</th>
-                                <td>{{ $ppk->judul }}</td>
-                            </tr>
-                            <tr>
-                                <th>Jenis Ketidaksesuaian</th>
-                                <td>{{ $ppk->jenisketidaksesuaian }}</td>
-                            </tr>
-                            <tr>
-                                <th>Pembuat</th>
-                                <td>{{ $ppk->pembuat }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email Pembuat</th>
-                                <td>{{ $ppk->emailpembuat }}</td>
-                            </tr>
-                            <tr>
-                                <th>Divisi Pembuat</th>
-                                <td>{{ $ppk->divisipembuat }}</td>
-                            </tr>
-                            <tr>
-                                <th>Penerima</th>
-                                <td>{{ $ppk->penerima }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email Penerima</th>
-                                <td>{{ $ppk->emailpenerima }}</td>
-                            </tr>
-                            <tr>
-                                <th>Divisi Penerima</th>
-                                <td>{{ $ppk->divisipenerima }}</td>
-                            </tr>
-                            <tr>
-                                <th>CC Email</th>
-                                <td>{{ $ppk->ccemail }}</td>
-                            </tr>
-                            <tr>
-                                <th>Tanda Tangan Inisiator/Auditor</th>
-                                <td>
-                                    @if ($ppk->signature)
-                                        @php
-                                            // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
-                                            $signatureExtension = pathinfo($ppk->signature, PATHINFO_EXTENSION);
-                                        @endphp
 
-                                        @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
-                                            <!-- Preview tanda tangan -->
-                                            <img src="{{ asset('admin/img/' . $ppk->signature) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                        @endif
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Judul</th>
+                            <td>{{ $ppk->judul }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jenis Ketidaksesuaian</th>
+                            <td>{{ $ppk->jenisketidaksesuaian }}</td>
+                        </tr>
+                        <tr>
+                            <th>Inisiator</th>
+                            <td>{{ $ppk->pembuat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email Inisiator</th>
+                            <td>{{ $ppk->emailpembuat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Divisi Inisiator</th>
+                            <td>{{ $ppk->divisipembuat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Penerima</th>
+                            <td>{{ $ppk->penerima }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email Penerima</th>
+                            <td>{{ $ppk->emailpenerima }}</td>
+                        </tr>
+                        <tr>
+                            <th>Divisi Penerima</th>
+                            <td>{{ $ppk->divisipenerima }}</td>
+                        </tr>
+                        <tr>
+                            <th>CC Email</th>
+                            <td>
+                                @php
+                                    $ccEmails = explode(',', $ppk->cc_email);
+                                @endphp
+                                @if(count($ccEmails) > 0)
+                                    <ul>
+                                        @foreach($ccEmails as $email)
+                                            <li>{{ trim($email) }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    Tidak ada CC Email.
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tanda Tangan Inisiator/Auditor</th>
+                            <td>
+                                @if ($ppk->signature)
+                                    @php
+                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
+                                        $signatureExtension = pathinfo($ppk->signature, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
+                                        <!-- Preview tanda tangan -->
+                                        <img src="{{ asset('admin/img/' . $ppk->signature) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
+                                    @endif
+                                @else
+                                    Tidak ada tanda tangan
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Evidence</th>
+                            <td>
+                                @if ($ppk->evidence)
+                                    @php
+                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
+                                        $extension = pathinfo($ppk->evidence, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png']))
+                                        <!-- Preview gambar -->
+                                        <img src="{{ asset('dokumen/' . $ppk->evidence) }}" alt="Evidence Image" style="max-width: 200px; display: block; margin-bottom: 10px;">
+                                    @endif
+
+                                    <!-- Link download -->
+                                    <a href="{{ asset('dokumen/' . $ppk->evidence) }}" target="_blank" class="btn btn-primary">
+                                        <i class="ri-download-line"></i>Download
+                                    </a>
+                                @else
+                                    Tidak ada file
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Terbit</th>
+                            <td>{{ $ppk->created_at->format('d-m-Y') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Identifikasi</th>
+                            <td>{{ $ppk->formppkkedua->identifikasi ?? 'Tidak ada identifikasi' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tanda Tangan Penerima</th>
+                            <td>
+                                @if ($ppk->formppkkedua && $ppk->formppkkedua->signaturepenerima)
+                                    @php
+                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
+                                        $signatureExtension = pathinfo($ppk->formppkkedua->signaturepenerima, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
+                                        <img src="{{ asset('admin/img/' . $ppk->formppkkedua->signaturepenerima) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
                                     @else
                                         Tidak ada tanda tangan
                                     @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Evidence</th>
-                                <td>
-                                    @if ($ppk->evidence)
-                                        @php
-                                            // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
-                                            $extension = pathinfo($ppk->evidence, PATHINFO_EXTENSION);
-                                        @endphp
+                                @else
+                                    Tidak ada tanda tangan
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
 
-                                        @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png']))
-                                            <!-- Preview gambar -->
-                                            <img src="{{ asset('dokumen/' . $ppk->evidence) }}" alt="Evidence Image" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                        @endif
-
-                                        <!-- Link download -->
-                                            <!-- Button download -->
-                                        <a href="{{ asset('dokumen/' . $ppk->evidence) }}" target="_blank" class="btn btn-primary">
-                                            <i class="ri-download-line"></i>Download
-                                        </a>
-                                    @else
-                                        Tidak ada file
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Tanggal Terbit</th>
-                                <td>{{ $ppk->created_at->format('d-m-Y') }}</td>
-                            </tr>
-                        </table>
-
-                        <section class="section dashboard">
-                            <div class="activity d-flex justify-content-center flex-wrap">
-                                    <!-- Recent Activity -->
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">TRACK RECORD <span>| History</span></h5>
-                                            <div class="activity">
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 MINUTE</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Pengisian form pertama Judul dan Jenis Ketidaksesuaian Proses Peningkatan Kinerja
-                                                    </div>
-                                                </div><!-- End activity item-->
-
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 HOUR</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Form Judul dan Jenis Ketidaksesuaian Proses Peningkatan Kinerja Diterima
-                                                    </div>
-                                                </div><!-- End activity item-->
-
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 DAY</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Pengisian form Identifikasi dan Evaluasi Proses Peningkatan Kinerja
-                                                    </div>
-                                                </div><!-- End activity item-->
-
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 WEEK</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Pengisian form Penanggulangan dan Pencegahan Proses Peningkatan Kinerja
-                                                    </div>
-                                                </div><!-- End activity item-->
-
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 MONTH</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Tahap Tinjauan dan Verifikasi Tindakan dalam kurun waktu 1 Bulan
-                                                    </div>
-                                                </div><!-- End activity item-->
-
-                                                <div class="activity-item d-flex">
-                                                    <div class="activite-label">1 YEAR</div>
-                                                    <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                                                    <div class="activity-content">
-                                                        Tinjauan Status Penanggulangan dan  Efektivitas Penyelesaian
-                                                    </div>
-                                                </div><!-- End activity item-->
-                                            </div>
-                                        </div>
-                                    </div><!-- End Recent Activity -->
-                                </div><!-- End Right side columns -->
-                            </div>
-                        </section>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End Modal -->
-
-    @endforeach
+    </div>
+    <!-- End Modal -->
+@endforeach
 </div>
 
 <style>
@@ -218,6 +202,5 @@
 .activity-content {
     margin-left: 10px; /* Memberikan jarak antara ikon dan konten aktivitas */
 }
-
 </style>
 @endsection

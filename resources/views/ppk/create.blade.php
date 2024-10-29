@@ -88,7 +88,7 @@
                         <select id="penerima" name="penerima" class="form-control">
                             <option value="">Pilih Penerima</option>
                             @foreach($data as $user)
-                                <option value="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
+                                <option value="{{ $user->id }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
                                     {{ $user->nama_user }}
                                 </option>
                             @endforeach
@@ -113,11 +113,18 @@
                 <div class="row mb-3">
                     <label for="signature" class="col-sm-2 col-form-label">Tanda Tangan</label>
                     <div class="col-sm-10">
+                        <!-- Opsi untuk Menggambar Tanda Tangan -->
+                        <p><strong>Opsi 1:</strong> Tanda tangan langsung</p>
                         <canvas id="signature-pad" style="border: 1px solid #ccc; width: 100%; height: 200px;"></canvas>
-                        <button id="clear" title="Clear" type="button" class="btn btn-secondary mt-2"><i class="bx bxs-eraser"></i></button>
+                        <button id="clear" title="Clear" type="button" class="btn btn-secondary mt-2"><i class="bx bxs-eraser"></i> Clear</button>
                         <input type="hidden" name="signature" id="signature">
+
+                        <!-- Opsi untuk Mengunggah Tanda Tangan -->
+                        <p class="mt-3"><strong>Opsi 2:</strong> Unggah file tanda tangan (jpg, jpeg, png)</p>
+                        <input type="file" name="signature_file" id="signature-file" class="form-control" accept="image/*">
                     </div>
                 </div>
+
 
                 <!-- Evidence Input with Preview -->
                 <div class="row mb-3">
@@ -128,11 +135,25 @@
                     </div>
                 </div>
 
+                <!-- CC Email -->
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">CC Email</label>
+                    <div class="col-sm-10">
+                        <div id="cc-email-container">
+                            <div class="input-group mb-2">
+                                <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
+                                <button type="button" class="btn btn-outline-warning add-cc-email">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
                         <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>
@@ -141,6 +162,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/dist/signature_pad.umd.js"></script>
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         // Inisialisasi Signature Pad
         const canvas = document.getElementById('signature-pad');
@@ -158,14 +180,31 @@
             signaturePad.clear();
         });
 
+        // Add more CC email input
+        $('.add-cc-email').click(function () {
+            $('#cc-email-container').append(`
+                <div class="input-group mb-2">
+                    <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email" required>
+                    <button type="button" class="btn btn-outline-warning remove-cc-email">-</button>
+                </div>
+            `);
+        });
+
+        // Remove CC email input
+        $(document).on('click', '.remove-cc-email', function () {
+            $(this).closest('.input-group').remove();
+        });
+
         // Menyimpan tanda tangan sebagai data URL dalam input hidden saat form disubmit
         document.querySelector('form').addEventListener('submit', function (e) {
-            if (signaturePad.isEmpty()) {
-                alert("Silakan buat tanda tangan terlebih dahulu.");
-                e.preventDefault();
-            } else {
+            if (!signaturePad.isEmpty()) {
+                // Jika pengguna menggambar di canvas, simpan hasilnya ke input hidden
                 const signatureDataUrl = signaturePad.toDataURL();
                 document.getElementById('signature').value = signatureDataUrl;
+            } else if (document.getElementById("signature-file").files.length === 0) {
+                // Jika tidak ada tanda tangan di canvas dan tidak ada file diunggah, tampilkan peringatan
+                alert("Silakan buat tanda tangan di canvas atau unggah file tanda tangan.");
+                e.preventDefault();
             }
         });
 
