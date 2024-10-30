@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Ppk;
 use App\Models\Ppkkedua;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PpkExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -12,18 +14,15 @@ class PpkController extends Controller
 {
     public function index(Request $request)
     {
-        $userId = auth()->id(); // Ambil ID pengguna yang sedang login
+        $userId = auth()->id();
 
-        // Ambil data PPK yang melibatkan pengguna baik sebagai pembuat atau penerima
         $ppks = Ppk::where('pembuat', $userId)
                     ->orWhere('penerima', $userId)
-                    ->with('formppkkedua') // Pastikan ada relasi yang terdefinisi
+                    ->with(['formppkkedua', 'pembuatUser', 'penerimaUser']) // Tambahkan relasi pengguna
                     ->get();
 
         return view('ppk.index', compact('ppks'));
     }
-
-
 
     public function create()
     {
@@ -182,4 +181,11 @@ class PpkController extends Controller
             return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
     }
+    public function exportSingle($id)
+    {
+        // Mengambil data PPK beserta relasi 'pembuatUser' dan 'penerimaUser'
+        $ppk = Ppk::with('pembuatUser', 'penerimaUser')->findOrFail($id);
+        return Excel::download(new PpkExport($ppk), 'ppk_' . $ppk->pembuatUser->name . '_' . $ppk->penerimaUser->name . '.xlsx');
+    }
+    
 }

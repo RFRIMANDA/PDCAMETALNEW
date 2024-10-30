@@ -2,7 +2,12 @@
 
 @section('content')
 
-<body>
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">PROSES PENINGKATAN KINERJA</h5>

@@ -4,6 +4,12 @@
 <div class="container">
     <h1 class="card-title">Proses Peningkatan Kinerja</h1>
 
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -34,6 +40,9 @@
                             </button>
                             <a href="{{ route('ppk.formppkkedua', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
                                 <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="{{ route('ppk.export', $ppk->id) }}" class="btn btn-success btn-sm" title="Export to Excel">
+                                <i class="bi bi-file-earmark-excel-fill"></i>
                             </a>
                         </td>
                     </tr>
@@ -68,7 +77,7 @@
                         </tr>
                         <tr>
                             <th>Inisiator</th>
-                            <td>{{ $ppk->pembuat }}</td>
+                            <td>{{ $ppk->pembuatUser->nama_user ?? 'Tidak ada nama inisiator' }}</td>
                         </tr>
                         <tr>
                             <th>Email Inisiator</th>
@@ -80,7 +89,7 @@
                         </tr>
                         <tr>
                             <th>Penerima</th>
-                            <td>{{ $ppk->penerima }}</td>
+                            <td>{{ $ppk->penerimaUser->nama_user ?? 'Tidak ada nama penerima' }}</td>
                         </tr>
                         <tr>
                             <th>Email Penerima</th>

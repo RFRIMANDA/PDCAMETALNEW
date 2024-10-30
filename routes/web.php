@@ -9,8 +9,10 @@ use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\PpkController;
 use App\Http\Controllers\ExportController;
 use App\Exports\RiskOpportunityPdfExport;
+use App\Exports\PpkExport;
 use App\Exports\RiskOpportunityExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Ppk;
 use Illuminate\Support\Facades\Route;
 
 // Dasboard HomeController
@@ -92,6 +94,7 @@ Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
 Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
 Route::get('/formidentifikasi/{id}', [PpkController::class, 'create2'])->name('ppk.formppkkedua');
 Route::post('/ppk/store-formppkkedua', [PpkController::class, 'storeFormPpkkedua'])->name('ppk.storeformppkkedua');
+Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');
 
 
 

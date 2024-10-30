@@ -27,6 +27,16 @@ class Ppk extends Model
         'cc_email'
     ];
 
+    public function pembuatUser()
+    {
+        return $this->belongsTo(User::class, 'pembuat', 'id');
+    }
+
+    public function penerimaUser()
+    {
+        return $this->belongsTo(User::class, 'penerima', 'id');
+    }
+
     public function formppkkedua()
     {
         return $this->hasOne(Ppkkedua::class, 'id_formppk', 'id');
