@@ -17,24 +17,22 @@
     @endif
 
     @if($ppks->isEmpty())
-        <div class="alert alert-warning">Tidak ada data PPK yang tersedia untuk Anda.</div>
+        <div class="alert alert-warning">Tidak ada data yang tersedia.</div>
     @else
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Judul</th>
-                    <th>Jenis Ketidaksesuaian</th>
-                    <th>Action</th>
+                    <th style="width: 10px; text-align: center;">No</th> <!-- Mengatur lebar kolom No dan meratakan teks ke tengah -->
+                    <th style="width: 300px;">Judul</th> <!-- Mengatur lebar kolom Judul -->
+                    <th style="width: 60px; text-align: center;">Action</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
                 </tr>
             </thead>
             <tbody>
                 @foreach ($ppks as $ppk)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td style="text-align: center;">{{ $loop->iteration }}</td> <!-- Meratakan teks ke tengah -->
                         <td>{{ $ppk->judul }}</td>
-                        <td>{{ $ppk->jenisketidaksesuaian }}</td>
-                        <td>
+                        <td style="text-align: center;"> <!-- Meratakan teks ke tengah -->
                             <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
@@ -163,7 +161,7 @@
                         </tr>
                         <tr>
                             <th>Identifikasi</th>
-                            <td>{{ $ppk->formppkkedua->identifikasi ?? 'Tidak ada identifikasi' }}</td>
+                            <td>{{ $ppk->formppkkedua->identifikasi ?? 'Tidak ada identifikasi oleh Penerima' }}</td>
                         </tr>
                         <tr>
                             <th>Tanda Tangan Penerima</th>

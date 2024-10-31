@@ -92,6 +92,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/ppk', [PpkController::class, 'index'])->name('ppk.index');
 Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
 Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
+Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
+Route::put('/ppk/{id}', [PpkController::class, 'update'])->name('ppk.update');
 Route::get('/formidentifikasi/{id}', [PpkController::class, 'create2'])->name('ppk.formppkkedua');
 Route::post('/ppk/store-formppkkedua', [PpkController::class, 'storeFormPpkkedua'])->name('ppk.storeformppkkedua');
 Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');

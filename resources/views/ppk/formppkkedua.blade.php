@@ -46,7 +46,7 @@
 
                         <!-- Opsi untuk Mengunggah Tanda Tangan -->
                         <p class="mt-3"><strong>Opsi 2:</strong> Unggah file tanda tangan (jpg, jpeg, png)</p>
-                        <input type="file" name="signature_file" id="signature-file" class="form-control" accept="image/*">
+                        <input type="file" name="signaturepenerima_file" id="signature-file" class="form-control" accept="image/*">
                     </div>
                 </div>
 
@@ -64,7 +64,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/dist/signature_pad.umd.js"></script>
 <script>
-
     document.addEventListener("DOMContentLoaded", function () {
         // Inisialisasi Signature Pad
         const canvas = document.getElementById('signature-pad');
@@ -105,3 +104,4 @@
 </script>
 
 @endsection
+

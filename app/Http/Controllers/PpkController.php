@@ -40,8 +40,9 @@ class PpkController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul' => 'nullable|string|max:255',
+            'judul' => 'nullable|string|max:1000',
             'jenisketidaksesuaian' => 'nullable|array',
+            'jenisketidaksesuaian.*' => 'in:SISTEM,AUDIT,PRODUK,PROSES', // Validasi untuk elemen di dalam array
             'pembuat' => 'required|string|max:255',
             'emailpembuat' => 'required|email|max:255',
             'divisipembuat' => 'required|string|max:255',
@@ -53,7 +54,7 @@ class PpkController extends Controller
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,xlsx,xls,doc,docx',
             'signature' => 'nullable|string',
             'signature_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'identifikasi' => 'nullable|string|max:255',
+            'identifikasi' => 'nullable|string|max:1000',
             'signaturepenerima' => 'nullable|string',
             'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ], [
@@ -65,12 +66,12 @@ class PpkController extends Controller
 
         $ccEmails = $request->cc_email ? implode(',', $request->cc_email) : null;
 
-        $filename = null;
-        if ($request->hasFile('evidence')) {
-            $file = $request->file('evidence');
-            $filename = 'FT_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('dokumen'), $filename);
-        }
+    if ($request->hasFile('evidence')) {
+        $file = $request->file('evidence');
+        $filename = 'TML' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('dokumen'), $filename);
+        $evidence = $filename; // Simpan nama file ke variable $evidence
+    }
 
         $signatureFileName = null;
         if ($request->signature) {
@@ -125,7 +126,7 @@ class PpkController extends Controller
                 'emailpenerima' => $request->emailpenerima,
                 'divisipenerima' => $request->divisipenerima,
                 'cc_email' => $ccEmails,
-                'evidence' => $filename,
+                'evidence' => $evidence,
                 'nomor_surat' => $nomorSurat,
                 'signature' => $signatureFileName,
             ]);
@@ -146,12 +147,11 @@ class PpkController extends Controller
         }
     }
 
-    // Store untuk form kedua
     public function storeFormPpkkedua(Request $request)
     {
         $request->validate([
-            'id_formppk' => 'required|exists:formppk,id', // Pastikan ID PPK valid
-            'identifikasi' => 'nullable|string|max:255',
+            'id_formppk' => 'required|exists:formppk,id',
+            'identifikasi' => 'nullable|string|max:1000',
             'signaturepenerima' => 'nullable|string',
             'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -178,14 +178,22 @@ class PpkController extends Controller
 
             return redirect()->route('ppk.index')->with('success', 'Form kedua berhasil disimpan.✅');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
     }
     public function exportSingle($id)
     {
-        // Mengambil data PPK beserta relasi 'pembuatUser' dan 'penerimaUser'
+
         $ppk = Ppk::with('pembuatUser', 'penerimaUser')->findOrFail($id);
-        return Excel::download(new PpkExport($ppk), 'ppk_' . $ppk->pembuatUser->name . '_' . $ppk->penerimaUser->name . '.xlsx');
+        $ppkdua = Ppkkedua::where('id_formppk', $id)->first(); // Ambil data Ppkkedua
+
+        // Membersihkan nomor_surat dari karakter yang tidak diizinkan
+        $cleanedNomorSurat = preg_replace('/[\/\\\:*?"<>|]/', '_', $ppk->nomor_surat);
+
+        // Menggunakan nomor surat yang sudah dibersihkan sebagai nama file
+        $fileName = '' . $cleanedNomorSurat . '.xlsx';
+
+        return Excel::download(new PpkExport($ppk, $ppkdua), $fileName);
     }
-    
+
 }

@@ -34,19 +34,19 @@
                     <label for="inputJenis" class="col-sm-2 col-form-label">Jenis Ketidaksesuaian</label>
                     <div class="col-sm-10">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Sistem">
+                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="SISTEM">
                             <label class="form-check-label">Sistem</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Proses">
+                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PROSES">
                             <label class="form-check-label">Proses</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Produk">
+                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PRODUK">
                             <label class="form-check-label">Produk</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="Audit">
+                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="AUDIT">
                             <label class="form-check-label">Audit</label>
                         </div>
                     </div>
