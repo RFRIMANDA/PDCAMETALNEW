@@ -103,7 +103,7 @@
         <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="keyword"><strong>Search:</strong></label>
             <div class="col-sm-8">
-                <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Cari Issue..." value="{{ request('keyword') }}">
+                <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search..." value="{{ request('keyword') }}">
             </div>
         </div>
 
@@ -203,7 +203,8 @@
                                 @elseif($status == 'CLOSE')
                                     bg-danger
                                 @endif">
-                                {{ $status }}
+                                {{ $status }}<br>
+                                {{ $data['nilai_actual'] }}%
                             </span><br>
                         @endforeach
                     </td>

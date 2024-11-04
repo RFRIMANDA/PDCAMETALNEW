@@ -369,10 +369,19 @@ public function biglist(Request $request)
         });
     }
 
+    // Mengubah filter keyword untuk mencakup nama_tindakan, resiko, dan peluang
     if ($keywordFilter) {
-        $query->where('issue', 'like', '%' . $keywordFilter . '%');
+        $query->where(function ($q) use ($keywordFilter) {
+            $q->where('issue', 'like', '%' . $keywordFilter . '%')
+              ->orWhereHas('tindakan', function ($q) use ($keywordFilter) {
+                  $q->where('nama_tindakan', 'like', '%' . $keywordFilter . '%');
+              })
+              ->orWhereHas('resikos', function ($q) use ($keywordFilter) {
+                  $q->where('nama_resiko', 'like', '%' . $keywordFilter . '%');
+              })
+              ->orWhere('peluang', 'like', '%' . $keywordFilter . '%');
+        });
     }
-
     if ($kategoriFilter) {
         $query->whereHas('resikos', function ($q) use ($kategoriFilter) {
             $q->where('kriteria', $kategoriFilter);
@@ -385,6 +394,12 @@ public function biglist(Request $request)
     $formattedData = [];
 
     foreach ($data as $riskregister) {
+
+        // Hitung nilai_actual
+        $totalNilaiAkhir = Realisasi::where('id_riskregister', $riskregister->id)->sum('nilai_akhir');
+        $jumlahEntry = Realisasi::where('id_riskregister', $riskregister->id)->count();
+        $nilai_actual = $jumlahEntry > 0 ? round($totalNilaiAkhir / $jumlahEntry, 2) : 0;
+
         $resikoData = $riskregister->resikos->map(function ($resiko) {
             return [
                 'nama_resiko' => $resiko->nama_resiko,
@@ -407,6 +422,8 @@ public function biglist(Request $request)
             'status' => $riskregister->resikos->pluck('status'),
             'scores' => $resikoData->pluck('score'),
             'highest_score' => $highestScore,
+            'nilai_actual' => $nilai_actual,
+            'persentase_nilai_actual' => $jumlahEntry > 0 ? round(($nilai_actual / 100) * 100, 2) : 0 // Ganti 100 dengan nilai maksimum yang relevan
         ];
     }
 
