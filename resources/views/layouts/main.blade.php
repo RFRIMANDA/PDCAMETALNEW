@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>TRANSFORMATION || PDCA MANAGEMENT SYSTEM</title>
+  <title>DCMS</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -51,7 +51,7 @@
   <main id="main" class="main">
 
     <div class="pagetitle" style="background-color: #ddfadd; padding: 10px; border-radius: 8px;">
-    <h1 style="font-weight: bold; font-size: 2rem; color: #395f97;">TRANSFORMATION PDCA MANAGEMENT SYSTEM</h1>
+    <h1 style="font-weight: bold; font-size: 2rem; color: #395f97;">DOCUMENT CONTROL MANAGEMENT SYSTEM</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>

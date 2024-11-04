@@ -22,16 +22,16 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th style="width: 10px; text-align: center;">No</th> <!-- Mengatur lebar kolom No dan meratakan teks ke tengah -->
-                    <th style="width: 300px;">Judul</th> <!-- Mengatur lebar kolom Judul -->
+                    <th style="width: 60px; text-align: center;">No</th> <!-- Mengatur lebar kolom No dan meratakan teks ke tengah -->
+                    {{-- <th style="width: 250px;">Judul</th> <!-- Mengatur lebar kolom Judul --> --}}
                     <th style="width: 60px; text-align: center;">Action</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
                 </tr>
             </thead>
             <tbody>
                 @foreach ($ppks as $ppk)
                     <tr>
-                        <td style="text-align: center;">{{ $loop->iteration }}</td> <!-- Meratakan teks ke tengah -->
-                        <td>{{ $ppk->judul }}</td>
+                        <td style="text-align: center;">{{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}</td> <!-- Meratakan teks ke tengah -->
+                        {{-- <td>{{ $ppk->judul }}</td> --}}
                         <td style="text-align: center;"> <!-- Meratakan teks ke tengah -->
                             <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
                                 <i class="bi bi-eye-fill"></i>

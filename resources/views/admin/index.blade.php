@@ -23,6 +23,7 @@
                   <option value="">--Semua Role--</option>
                   <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                   <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
+                  <option value="manajemen" {{ request('role') == 'manajemen' ? 'selected' : '' }}>Manajemen</option>
                 </select>
               </div>
               <div class="col-md-3">

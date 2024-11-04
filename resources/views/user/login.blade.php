@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Login || PDCA Transformation</title>
+  <title>Login || DCMS</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -98,7 +98,7 @@
           <div class="card mb-3">
             <div class="card-body">
               <div class="pt-4 pb-2">
-                <h5 class="card-title text-center pb-0 fs-4">Login to PDCA Transformation</h5>
+                <h5 class="card-title text-center pb-0 fs-4">Login to DCMS</h5>
                 <p class="text-center small">Enter your email & password to login</p>
               </div>
 
