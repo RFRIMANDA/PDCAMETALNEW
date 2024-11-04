@@ -28,7 +28,7 @@ class PpkExport implements FromCollection, WithStyles
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getColumnDimension('A')->setWidth(0.75); // Mengatur lebar kolom A menjadi 15
+        $sheet->getColumnDimension('A')->setWidth(1.86); // Mengatur lebar kolom A menjadi 15
         $sheet->getColumnDimension('B')->setWidth(0.80); // Mengatur lebar kolom B menjadi 25
         $sheet->getColumnDimension('C')->setWidth(4.00); // Mengatur lebar kolom C menjadi 30
         $sheet->getColumnDimension('D')->setWidth(12.43); // Mengatur lebar kolom C menjadi 30
@@ -63,7 +63,7 @@ $drawinglogo->setName('Logo');
 $drawinglogo->setDescription('Logo Perusahaan');
 $drawinglogo->setPath('admin/img/TMLPNG.png'); // Ganti dengan path ke gambar kamu
 $drawinglogo->setCoordinates('B2'); // Koordinat sel tempat gambar akan ditambahkan
-$drawinglogo->setHeight(50); // Atur tinggi gambar (dalam unit Excel)
+$drawinglogo->setHeight(100); // Atur tinggi gambar (dalam unit Excel)
 
 // Mengatur offset untuk memindahkan gambar sedikit ke kanan dan ke bawah
 $drawinglogo->setOffsetX(10); // Geser gambar ke kanan (dalam piksel)
@@ -78,7 +78,7 @@ $sheet->getStyle('B2')->getFont()->setBold(true)->setSize(14);
 $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Mengatur perataan horizontal ke tengah
 $sheet->getStyle('B2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER); // Mengatur perataan vertikal ke tengah
 // Mengatur tinggi baris untuk baris 2
-$sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris ke 30 unit
+$sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 unit
 
 
         // Kotak bingkai di sekitar B2:L30
@@ -124,10 +124,12 @@ $sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris ke 30 uni
 
         // Deskripsi Masalah
         $sheet->setCellValue('C13', $this->ppk->judul);
-        $sheet->getRowDimension(13)->setRowHeight(200);
         $sheet->mergeCells('C13:K13');
-        $sheet->getStyle('C13:K13')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('C13:K13')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('C13:K13')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getRowDimension(13)->setRowHeight(200);
+        $sheet->getStyle('C13:K13')->getAlignment()->setWrapText(true);
+
 
        // Evidence Section
         $sheet->setCellValue('C25', 'Evidence:')->getStyle('C25')->getFont()->setBold(true);
@@ -197,6 +199,7 @@ $sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris ke 30 uni
        $sheet->getStyle('D44:J44')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
        $sheet->getStyle('D44:J44')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
        $sheet->getRowDimension(44)->setRowHeight(200);// Mengatur tinggi baris untuk baris 44
+       $sheet->getStyle('D44:J44')->getAlignment()->setWrapText(true);
 
         $sheet->setCellValue('C57', '* Gunakan metodE 5WHYS untuk menentukan Root Cause; Fish Bone; Diagram alir,Penilaian situasi:');
         $sheet->setCellValue('C58', 'Kendali proses dan peningkatan.');

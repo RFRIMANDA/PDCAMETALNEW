@@ -14,7 +14,6 @@ class Tindakan extends Model
     protected $fillable = [
         'id_riskregister',
         'nama_tindakan',
-        'pihak',
         'targetpic',
         'peluang',
         'tgl_penyelesaian'

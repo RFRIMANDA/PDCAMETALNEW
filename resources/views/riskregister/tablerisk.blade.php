@@ -5,6 +5,16 @@
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $forms->first()->divisi->nama_divisi ?? '' }}</h5>
+        <!-- Search form -->
+        <form method="GET" action="{{ route('riskregister.tablerisk', $id) }}">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="keyword"><strong>Cari Issue:</strong></label>
+                <div class="col-sm-7">
+                    <input type="text" name="search" class="form-control" placeholder="Masukkan Issue" value="{{ request('search') }}">
+                </div>
+            </div>
+
+        </form>
         <!-- Small tables -->
         <table class="table table-striped">
             <thead>
@@ -95,8 +105,10 @@
                                             @elseif($resiko->status == 'CLOSE')
                                                 bg-danger
                                             @endif">
-                                            {{ $resiko->status }}
+                                            {{ $resiko->status }}<br>
+                                            {{ $form->nilai_actual }}%
                                         </span>
+
                                     @endforeach
                                 @else
                                     None

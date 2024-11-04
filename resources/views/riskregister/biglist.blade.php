@@ -75,6 +75,28 @@
             </div>
         </div>
 
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="kategori"><strong>Kriteria:</strong></label>
+            <div class="col-sm-4">
+                <select name="kriteria" id="kriteria" class="form-control">
+                    <option value="">--Semua Kategori--</option>
+                    <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
+                    <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
+                    <option value="Enviromental (lingkungan)" {{ request('kategori') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
+                    <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
+                    <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
+                    <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
+                    <option value="Kinerja" {{ request('kriteria') == 'Kinerja' ? 'selected' : '' }}>Kinerja</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="keyword"><strong>Search Issue:</strong></label>
+            <div class="col-sm-8">
+                <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Cari Issue..." value="{{ request('keyword') }}">
+            </div>
+        </div>
 
         <!-- Tombol Submit Filter -->
         <button type="submit" class="btn btn-primary">Filter</button>
@@ -89,9 +111,12 @@
             <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}" title="PDF" class="btn btn-danger">
                 <i class="bi bi-file-earmark-pdf"></i>
             </a>
+
     </form>
 
 <br>
+
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -176,7 +201,7 @@
 
                 <!-- Action Buttons -->
                 <td>
-                    @if(auth()->user()->role === 'admin')
+
                         <div class="btn-group" role="group">
                             <a href="{{ route('resiko.matriks', $data['id']) }}" title="Detail Risiko" class="btn btn-secondary btn-sm me-1">
                                 <i class="bx bx-edit"></i>
@@ -189,7 +214,7 @@
                                 </button>
                             </form>
                         </div>
-                    @endif
+
                 </td>
                 </tr>
             @endforeach

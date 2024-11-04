@@ -48,26 +48,29 @@ class RiskOpportunityExport implements FromCollection, WithHeadings, WithMapping
 
     public function map($row): array
     {
-        $pihak = is_array($row['pihak']) ? $row['pihak'] : [$row['pihak']];
+        // Ensure pihak is always an array
+        $pihak = is_array($row['pihak']) ? array_unique($row['pihak']) : [$row['pihak']];
         $tindak_lanjut = is_array($row['tindak_lanjut']) ? $row['tindak_lanjut'] : [$row['tindak_lanjut']];
         $targetpic = is_array($row['targetpic']) ? $row['targetpic'] : [$row['targetpic']];
-        $tgl_realisasi = is_array($row['tgl_realisasi']) ? $row['tgl_realisasi'] : [$row['tgl_realisasi']]; // Ambil tgl_realisasi yang baru
+        $tgl_realisasi = is_array($row['tgl_realisasi']) ? $row['tgl_realisasi'] : [$row['tgl_realisasi']];
 
+        // Prepare the mapped rows
         $mappedRows = [];
 
+        // Calculate the max number of rows for the details
         $maxRows = max(count($pihak), count($tindak_lanjut), count($targetpic), count($tgl_realisasi));
 
         for ($i = 0; $i < $maxRows; $i++) {
             $mappedRows[] = [
                 $i === 0 ? $this->counter++ : '',
                 $i === 0 ? $row['issue'] : '',
-                $pihak[$i] ?? '',
+                $i === 0 ? implode(', ', $pihak) : '', // Join unique 'pihak'
                 $i === 0 ? $row['risiko'] : '',
                 $i === 0 ? $row['peluang'] : '',
                 $i === 0 ? $row['tingkatan'] : '',
                 $tindak_lanjut[$i] ?? '',
                 $targetpic[$i] ?? '',
-                $tgl_realisasi[$i] ?? '', // Ganti dari target_penyelesaian ke tgl_realisasi
+                $tgl_realisasi[$i] ?? '',
                 $i === 0 ? $row['status'] : '',
                 $i === 0 ? $row['scores'] : '',
                 $i === 0 ? $row['before'] : '',
@@ -79,7 +82,6 @@ class RiskOpportunityExport implements FromCollection, WithHeadings, WithMapping
 
         return $mappedRows;
     }
-
 
 
     public function styles(Worksheet $sheet)
@@ -111,15 +113,12 @@ class RiskOpportunityExport implements FromCollection, WithHeadings, WithMapping
         $sheet->getColumnDimension('D')->setWidth(15); // Risiko
         $sheet->getColumnDimension('E')->setWidth(15); // Peluang
         $sheet->getColumnDimension('F')->setWidth(15); // Tingkatan
-        $sheet->getColumnDimension('G')->setWidth(20); // Target PIC
-        $sheet->getColumnDimension('H')->setWidth(15); // Status
-        $sheet->getColumnDimension('I')->setWidth(15); // Actual Risk
-        $sheet->getColumnDimension('J')->setWidth(30); // Tindakan
-        $sheet->getColumnDimension('K')->setWidth(15); // Before
-        $sheet->getColumnDimension('L')->setWidth(15); // After
+        $sheet->getColumnDimension('G')->setWidth(20); // Tindakan Lanjut
+        $sheet->getColumnDimension('H')->setWidth(15); // Target PIC
+        $sheet->getColumnDimension('I')->setWidth(15); // Tanggal Penyelesaian
+        $sheet->getColumnDimension('J')->setWidth(15); // Status
+        $sheet->getColumnDimension('K')->setWidth(30); // Actual Risk
+        $sheet->getColumnDimension('L')->setWidth(15); // Before
         $sheet->getColumnDimension('M')->setWidth(15); // After
-
     }
 }
-
-

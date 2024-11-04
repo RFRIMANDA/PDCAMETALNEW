@@ -27,17 +27,12 @@
                 <input class="form-control" type="password" name="new_password_confirmation" />
             </div>
             <div class="mb-3">
-<<<<<<< HEAD
                 <a class="btn btn-danger" href="/">
                     <i class="bx bx-arrow-back"></i>
                 </a>
                 <button class="btn btn-primary">Save
                     <i class="ri-save-3-fill"></i>
                 </button>
-=======
-                <button class="btn btn-primary">Update</button>
-                <a class="btn btn-danger" href="/">Back</a>
->>>>>>> 0ff7f6aa60ac7ac19834acb071e15c81b795b092
             </div>
         </form>
     </div>

@@ -33,13 +33,31 @@
             </div>
         </div>
 
+        <div class="row mb-3">
+            <label for="inex" class="col-sm-2 col-form-label"><strong>Ext/Int</strong></label>
+            <div class="col-sm-7">
+                <select name="inex" id="inex" class="form-control">
+                    <option value="I" {{ old('inex', $riskregister->inex) == 'I' ? 'selected' : '' }}>INTERNAL</option>
+                    <option value="E" {{ old('inex', $riskregister->inex) == 'E' ? 'selected' : '' }}>EXTERNAL</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Nama Risiko -->
 
-        <!-- Peluang -->
+       <!-- Peluang -->
         <div class="row mb-3">
             <label for="peluang" class="col-sm-2 col-form-label"><strong>Peluang</strong></label>
             <div class="col-sm-7">
                 <textarea name="peluang" id="peluang" class="form-control">{{ old('peluang', $riskregister->peluang) }}</textarea>
+            </div>
+        </div>
+
+        <!-- Pihak Berkepentingan -->
+        <div class="row mb-3">
+            <label for="pihak" class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan</strong></label>
+            <div class="col-sm-7">
+                <textarea name="pihak" id="pihak" class="form-control" required>{{ old('pihak', $riskregister->pihak) }}</textarea>
             </div>
         </div>
 
@@ -57,13 +75,6 @@
         <div id="inputContainer">
             @foreach($tindakanList as $tindakan)
             <div class="action-block" data-id="{{ $tindakan->id }}">
-
-                <div class="row mb-3">
-                    <label for="tindakan_{{ $tindakan->id }}" class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan:</strong></label>
-                    <div class="col-sm-7">
-                        <textarea name="pihak[{{ $tindakan->id }}]" id="pihak_{{ $tindakan->id }}" class="form-control" required>{{ old('pihak.' . $tindakan->id, $tindakan->pihak) }}</textarea>
-                    </div>
-                </div>
 
                 <!-- Tindakan -->
                 <div class="row mb-3">
@@ -110,48 +121,28 @@
 
 <script>
     document.getElementById('addMore').addEventListener('click', function() {
-        var newInputSection = `
-        <hr>
-        <div class="action-block">
-            <div class="row mb-3">
-                <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
-                <div class="col-sm-7">
-                    <textarea name="pihak[]" class="form-control" rows="3" placeholder="Masukkan Pihak Berkepentingan" required></textarea>
-                </div>
-            </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-2 col-form-label"><strong>Tindak Lanjut</strong></label>
-                <div class="col-sm-7">
-                    <textarea name="tindakan[]" class="form-control" rows="3" placeholder="Masukkan Tindakan Lanjut" required></textarea>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-2 col-form-label"><strong>Target PIC</strong></label>
-                <div class="col-sm-7">
-                    <textarea name="targetpic[]" class="form-control" placeholder="Masukkan Target PIC" rows="3" required></textarea>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-2 col-form-label"><strong>Target Tanggal Penyelesaian</strong></label>
-                <div class="col-sm-7">
-                    <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
-                </div>
-            </div>
-        </div>`;
-        document.getElementById('inputContainer').insertAdjacentHTML('beforeend', newInputSection);
-    });
+    var newInputSection = `
+    <hr>
 
-    // Event listener untuk memeriksa tanggal
-    document.querySelectorAll("input[type='date']").forEach(function(input) {
-        input.addEventListener('change', function() {
-            let targetPenyelesaian = new Date(document.querySelector("input[name='target_penyelesaian']").value);
-            let tglPenyelesaian = new Date(this.value);
-            if (tglPenyelesaian > targetPenyelesaian) {
-                alert("Tanggal penyelesaian tidak boleh lebih dari target penyelesaian!");
-                this.value = ''; // Menghapus nilai input jika tidak valid
-            }
-        });
+    <div class="row mb-3">
+        <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
+        <div class="col-sm-7">
+            <textarea placeholder="Masukkan Tindakan Lanjut" name="tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
+        <div class="col-sm-7">
+            <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
+        <div class="col-sm-7">
+            <textarea name="targetpic[]" class="form-control" placeholder="Masukkan Target PIC" rows="3" required></textarea>
+        </div>
+    </div>`;
+    document.getElementById('inputContainer').insertAdjacentHTML('beforeend', newInputSection);
     });
 </script>
 @endsection

@@ -15,6 +15,8 @@ class Riskregister extends Model
         'issue',
         'target_penyelesaian',
         'peluang',
+        'pihak',
+        'inex',
 
     ];
 

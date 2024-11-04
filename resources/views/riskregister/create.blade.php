@@ -28,6 +28,18 @@
     </div>
     <br>
 
+    <div class="row mb-3">
+        <label for="inex" class="col-sm-2 col-form-label"><strong>Int/Ext</strong></label>
+        <div class="col-sm-4">
+            <select name="inex" class="form-control" required>
+                <option value="">--Pilih Int/Ext--</option>
+                <option value="I">INTERNAL</option>
+                <option value="E">EXTERNAL</option>
+            </select>
+        </div>
+    </div>
+    <br>
+
     <!-- Default Accordion -->
     <div class="accordion" id="accordionExample">
         <!-- Bagian Risiko -->
@@ -97,6 +109,15 @@
   <br>
 
     <div class="row mb-3">
+        <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
+        <div class="col-sm-7">
+            <textarea placeholder="Masukkan Departemen" name="pihak" class="form-control" rows="3" required></textarea>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row mb-3">
         <label for="kriteria" class="col-sm-2 col-form-label"><strong>Kriteria</strong></label>
         <div class="col-sm-4">
             <select name="kriteria" class="form-control" required>
@@ -143,15 +164,10 @@
     </div>
 
     <hr>
+    <h5 class="card-title">Tindakan Lanjut </h5>
 
     <!-- Bagian untuk mengisi Tindakan, Pihak, Target, dan PIC -->
     <div id="inputContainer">
-        <div class="row mb-3">
-            <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
-            <div class="col-sm-7">
-                <textarea placeholder="Masukkan Departemen" name="pihak[]" class="form-control" rows="3" required></textarea>
-            </div>
-        </div>
 
         <div class="row mb-3">
             <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
@@ -476,16 +492,11 @@ function calculateTingkatan() {
 document.getElementById('addMore').addEventListener('click', function() {
     var newInputSection = `
     <hr>
-        <div class="row mb-3">
-            <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
-            <div class="col-sm-7">
-                <textarea name="pihak[]" class="form-control" placeholder="Masukkan Pihak Berkepentingan" rows="3" required></textarea>
-            </div>
-        </div>
+
     <div class="row mb-3">
         <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
         <div class="col-sm-7">
-            <textarea placeholder="Masukkan Departemen" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
+            <textarea placeholder="Masukkan Tindakan" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
         </div>
     </div>
     <div class="row mb-3">

@@ -63,10 +63,10 @@
         </div>
 
         <div class="row">
-            {{-- TANGGAL PENYELESAIAN --}}
+            {{-- TANGGAL REALISASI --}}
             <div class="col-md-3 col-sm-12 mb-3">
                 <label for="tgl_realisasi"><strong>Tanggal Penyelesaian</strong></label>
-                <input type="date" name="tgl_realisasi[]" class="form-control" required>
+                <input type="date" name="tgl_realisasi[]" class="form-control" >
             </div>
 
             {{-- PERSENTASE % --}}
@@ -113,7 +113,7 @@
                 <td>{{ $realisasi->nama_realisasi ?? '-' }}</td>
                 <td>{{ $realisasi->target ?? '-' }}</td>
                 <td>{{ $realisasi->desc ?? '-' }}</td>
-                <td>{{ \Carbon\Carbon::parse($realisasi->tgl_realisasi)->format('d-m-Y') ?? '-' }}</td>
+                <td>{{ $realisasi->tgl_realisasi ?? '-' }}</td>
                 <td>{{ $realisasi->presentase ?? '-' }}%</td>
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#basicModal{{ $realisasi->id }}">
@@ -142,7 +142,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="tgl_realisasi" class="form-label">Tanggal Penyelesaian</label>
-                                        <input type="date" name="tgl_realisasi" class="form-control" required value="{{ \Carbon\Carbon::parse($realisasi->tgl_realisasi)->format('Y-m-d') }}">
+                                        <input type="date" name="tgl_realisasi" class="form-control" required value="{{$realisasi->tgl_realisasi }}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="desc" class="form-label">Noted</label>
@@ -173,7 +173,7 @@
         @csrf
         @method('PUT')
 
-        <label for="nilai_akhir"><strong> Nilai Akhir Persentase: {{ number_format($realisasiList->first()->nilai_akhir ?? 0, 0) }}%</strong></label>
+        <label for="nilai_akhir"><strong> Persentase Tindakan Lanjut: {{ number_format($realisasiList->first()->nilai_akhir ?? 0, 0) }}%</strong></label>
 
         <div class="row">
             <div class="col-md-4">
