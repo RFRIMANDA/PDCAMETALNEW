@@ -319,118 +319,111 @@ class RiskController extends Controller
     return view('riskregister.tablerisk', compact('forms', 'data', 'id'));
 }
 
+public function biglist(Request $request)
+{
+    // Ambil parameter filter dari request
+    $tingkatanFilter = $request->input('tingkatan');
+    $statusFilter = $request->input('status');
+    $divisiFilter = $request->input('nama_divisi');
+    $yearFilter = $request->input('year');
+    $keywordFilter = $request->input('keyword');
+    $kategoriFilter = $request->input('kriteria');
+    $top10Filter = $request->input('top10'); // Tambahkan filter top 10
 
+    $user = Auth::user();
+    $allowedDivisi = json_decode($user->type, true);
 
-    public function biglist(Request $request)
-    {
-        // Ambil parameter filter dari request
-        $tingkatanFilter = $request->input('tingkatan');
-        $statusFilter = $request->input('status'); // Status filter sebagai string (bukan array)
-        $divisiFilter = $request->input('nama_divisi');
-        $yearFilter = $request->input('year'); // Tambahkan parameter filter tahun
-        $keywordFilter = $request->input('keyword'); // Ambil kata kunci pencarian
-        $kategoriFilter = $request->input('kriteria');
+    $query = Riskregister::with(['tindakan.realisasi', 'resikos', 'divisi']);
 
-        // Ambil user yang sedang login dan divisi yang diizinkan
-        $user = Auth::user();
-        $allowedDivisi = json_decode($user->type, true); // Decode type user ke array
-
-        // Ambil semua riskregister beserta relasi tindakan, realisasi, risiko, dan divisi
-        $query = Riskregister::with(['tindakan.realisasi', 'resikos', 'divisi']);
-
-        // Filter berdasarkan tingkatan jika ada
-        if ($tingkatanFilter) {
-            $query->whereHas('resikos', function ($q) use ($tingkatanFilter) {
-                $q->where('tingkatan', $tingkatanFilter);
-            });
-        }
-
-        // Filter status: Tangani filter untuk 'OPEN' dan 'ON PROGRES'
-        if ($statusFilter == 'open_on_progres') {
-            $query->whereHas('resikos', function ($q) {
-                $q->whereIn('status', ['OPEN', 'ON PROGRES']);
-            });
-        } elseif ($statusFilter) {
-            // Filter untuk status tunggal
-            $query->whereHas('resikos', function ($q) use ($statusFilter) {
-                $q->where('status', $statusFilter);
-            });
-        }
-
-        // Filter berdasarkan hak akses divisi user yang sedang login
-        if ($user->role == 'user' && !empty($allowedDivisi)) {
-            $query->whereHas('divisi', function ($q) use ($allowedDivisi) {
-                $q->whereIn('id', $allowedDivisi); // Filter hanya berdasarkan divisi yang diizinkan
-            });
-        }
-
-        // Filter tambahan berdasarkan nama divisi jika ada
-        if ($divisiFilter) {
-            $query->whereHas('divisi', function ($q) use ($divisiFilter) {
-                $q->where('nama_divisi', $divisiFilter);
-            });
-        }
-
-        // Filter berdasarkan tahun penyelesaian pada tabel Realisasi
-        if ($yearFilter) {
-            $query->whereHas('tindakan.realisasi', function ($q) use ($yearFilter) {
-                $q->whereYear('tgl_penyelesaian', $yearFilter);
-            });
-        }
-        //SEARCH ISSUE
-        if ($keywordFilter) {
-            $query->where('issue', 'like', '%' . $keywordFilter . '%');
-        }
-
-        //SEARCH KATEGORI
-        if ($kategoriFilter) {
-            $query->whereHas('resikos', function ($q) use ($kategoriFilter) {
-                $q->where('kriteria', $kategoriFilter);
-            });
-        }
-
-        // Ambil data yang sudah difilter
-        $data = $query->get();
-
-        // Format data yang akan dikembalikan ke view
-        $formattedData = [];
-
-        foreach ($data as $riskregister) {
-            $resikoData = $riskregister->resikos->map(function ($resiko) {
-                return [
-                    'nama_resiko' => $resiko->nama_resiko,
-                    'probability' => $resiko->probability,
-                    'severity' => $resiko->severity,
-                    'score' => $resiko->probability * $resiko->severity
-                ];
-            });
-
-            $highestScore = $resikoData->pluck('score')->max();
-
-            $formattedData[] = [
-                'id' => $riskregister->id,
-                'issue' => $riskregister->issue,
-                'pihak' => $riskregister->tindakan->pluck('divisi.nama_divisi'),
-                'tindak_lanjut' => $riskregister->tindakan->pluck('nama_tindakan'),
-                'risiko' => $resikoData->pluck('nama_resiko'),
-                'peluang' => $riskregister->peluang,
-                'tingkatan' => $riskregister->resikos->pluck('tingkatan'),
-                'status' => $riskregister->resikos->pluck('status'),
-                'scores' => $resikoData->pluck('score'),
-                'highest_score' => $highestScore,
-            ];
-        }
-
-        // Urutkan data berdasarkan skor tertinggi
-        $formattedData = collect($formattedData)->sortByDesc('highest_score')->values()->all();
-
-        // Ambil daftar divisi untuk filter di tampilan
-        $divisiList = Divisi::all();
-
-        // Tampilkan ke view dengan data yang sudah difilter
-        return view('riskregister.biglist', compact('formattedData', 'divisiList'));
+    if ($tingkatanFilter) {
+        $query->whereHas('resikos', function ($q) use ($tingkatanFilter) {
+            $q->where('tingkatan', $tingkatanFilter);
+        });
     }
 
+    if ($statusFilter == 'open_on_progres') {
+        $query->whereHas('resikos', function ($q) {
+            $q->whereIn('status', ['OPEN', 'ON PROGRES']);
+        });
+    } elseif ($statusFilter) {
+        $query->whereHas('resikos', function ($q) use ($statusFilter) {
+            $q->where('status', $statusFilter);
+        });
+    }
+
+    if ($user->role == 'user' && !empty($allowedDivisi)) {
+        $query->whereHas('divisi', function ($q) use ($allowedDivisi) {
+            $q->whereIn('id', $allowedDivisi);
+        });
+    }
+
+    if ($divisiFilter) {
+        $query->whereHas('divisi', function ($q) use ($divisiFilter) {
+            $q->where('nama_divisi', $divisiFilter);
+        });
+    }
+
+    if ($yearFilter) {
+        $query->whereHas('tindakan.realisasi', function ($q) use ($yearFilter) {
+            $q->whereYear('tgl_penyelesaian', $yearFilter);
+        });
+    }
+
+    if ($keywordFilter) {
+        $query->where('issue', 'like', '%' . $keywordFilter . '%');
+    }
+
+    if ($kategoriFilter) {
+        $query->whereHas('resikos', function ($q) use ($kategoriFilter) {
+            $q->where('kriteria', $kategoriFilter);
+        });
+    }
+
+    // Ambil data yang sudah difilter
+    $data = $query->get();
+
+    $formattedData = [];
+
+    foreach ($data as $riskregister) {
+        $resikoData = $riskregister->resikos->map(function ($resiko) {
+            return [
+                'nama_resiko' => $resiko->nama_resiko,
+                'probability' => $resiko->probability,
+                'severity' => $resiko->severity,
+                'score' => $resiko->probability * $resiko->severity
+            ];
+        });
+
+        $highestScore = $resikoData->pluck('score')->max();
+
+        $formattedData[] = [
+            'id' => $riskregister->id,
+            'issue' => $riskregister->issue,
+            'pihak' => $riskregister->tindakan->pluck('divisi.nama_divisi'),
+            'tindak_lanjut' => $riskregister->tindakan->pluck('nama_tindakan'),
+            'risiko' => $resikoData->pluck('nama_resiko'),
+            'peluang' => $riskregister->peluang,
+            'tingkatan' => $riskregister->resikos->pluck('tingkatan'),
+            'status' => $riskregister->resikos->pluck('status'),
+            'scores' => $resikoData->pluck('score'),
+            'highest_score' => $highestScore,
+        ];
+    }
+
+    // Urutkan data berdasarkan skor tertinggi
+    $formattedData = collect($formattedData)->sortByDesc('highest_score')->values();
+
+    // Filter untuk 10 skor tertinggi jika checkbox diaktifkan
+    if ($top10Filter) {
+        $formattedData = $formattedData->take(10);
+    }
+
+    // Ambil daftar divisi untuk filter di tampilan
+    $divisiList = Divisi::all();
+
+    // Tampilkan ke view dengan data yang sudah difilter
+    return view('riskregister.biglist', compact('formattedData', 'divisiList'));
+}
 
     public function exportFilteredExcel(Request $request, $id)
 {

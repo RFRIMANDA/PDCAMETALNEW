@@ -43,6 +43,22 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label" for="kategori"><strong>Kriteria:</strong></label>
+                        <div class="col-sm-8">
+                            <select name="kriteria" id="kriteria" class="form-control">
+                                <option value="">--Semua Kriteria--</option>
+                                <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
+                                <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
+                                <option value="Enviromental (lingkungan)" {{ request('kategori') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
+                                <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
+                                <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
+                                <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
+                                <option value="Kinerja" {{ request('kriteria') == 'Kinerja' ? 'selected' : '' }}>Kinerja</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Kolom Kanan -->
@@ -71,28 +87,21 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Tombol Filter Top 10 Skor Tertinggi -->
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label" for="top10"><strong>Top 10 Highest Risk:</strong></label>
+                        <div class="col-sm-8 d-flex align-items-center">
+                            <input type="checkbox" name="top10" id="top10" value="1" {{ request('top10') ? 'checked' : '' }}>
+                            <label for="top10" class="ms-2">Tampilkan hanya 10 tertinggi</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" for="kategori"><strong>Kriteria:</strong></label>
-            <div class="col-sm-4">
-                <select name="kriteria" id="kriteria" class="form-control">
-                    <option value="">--Semua Kategori--</option>
-                    <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
-                    <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
-                    <option value="Enviromental (lingkungan)" {{ request('kategori') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
-                    <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
-                    <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
-                    <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
-                    <option value="Kinerja" {{ request('kriteria') == 'Kinerja' ? 'selected' : '' }}>Kinerja</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" for="keyword"><strong>Search Issue:</strong></label>
+            <label class="col-sm-2 col-form-label" for="keyword"><strong>Search:</strong></label>
             <div class="col-sm-8">
                 <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Cari Issue..." value="{{ request('keyword') }}">
             </div>
@@ -100,7 +109,7 @@
 
         <!-- Tombol Submit Filter -->
         <button type="submit" class="btn btn-primary">Filter</button>
-        @if(auth()->user()->role === 'admin')
+        @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
             <!-- Tombol Export Excel -->
             <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
                 <i class="bi bi-file-earmark-excel"></i>

@@ -49,7 +49,7 @@
         </ul>
       </li><!-- End Components Nav -->
        <br>
-       @if(auth()->user()->role == 'admin')
+       @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-run"></i><span>Action</span><i class="bi bi-chevron-down ms-auto"></i>

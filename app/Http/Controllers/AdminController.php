@@ -42,7 +42,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_user' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:user,email',
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,user,manajemen',
             'type' => 'required|array', // Validasi untuk type
             'type.*' => 'string|exists:divisi,id',
             // 'password' validation removed as we set a default password
@@ -72,7 +72,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'nama_user' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:user,email,' . $id,
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,user,manajemen',
             'password' => 'nullable|string|min:8|confirmed', // Validasi password, jika ada
             'type' => 'required|array', // Validasi untuk type (divisi)
             'type.*' => 'integer|exists:divisi,id', // Validasi setiap ID divisi yang dipilih

@@ -31,6 +31,7 @@
                                 <option value="" disabled selected>--Pilih Role--</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                                <option value="manajemen" {{ old('role') == 'manajemen' ? 'selected' : '' }}>Manajemen</option>
                             </select>
                             </div>
                         </div>

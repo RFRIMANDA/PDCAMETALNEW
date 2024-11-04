@@ -26,7 +26,7 @@ Route::get('password', [UserController::class, 'password'])->name('password')->m
 Route::post('password', [UserController::class, 'password_action'])->name('password.action')->middleware('auth');
 Route::get('logout', [UserController::class, 'logout'])->name('logout');
 
-Route::middleware('admin')->group(function () {
+Route::middleware('admin','manajemen')->group(function () {
     // Admin kelola user
     Route::get('/kelolaakun', [AdminController::class, 'index'])->name('admin.kelolaakun');
     Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
