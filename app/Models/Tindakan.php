@@ -40,6 +40,11 @@ class Tindakan extends Model
     {
         return $this->hasMany(Realisasi::class, 'id_tindakan');
     }
+    // Tindakan.php
+public function user()
+{
+    return $this->belongsTo(User::class, 'targetpic', 'id'); // 'targetpic' adalah kolom yang menyimpan ID user
+}
 
 }
 

@@ -19,9 +19,7 @@
                         </th>
                         <th style="text-align: center; vertical-align: middle;">Table Departement</th>
                         <th style="text-align: center; vertical-align: middle;">Jumlah Data</th>
-                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'user')
-                            <th style="text-align: center; vertical-align: middle;">Create Risk & Opportunity Register</th>
-                        @endif
+
                     </tr>
                 </thead>
                 <tbody>
@@ -39,13 +37,7 @@
                                 <span class="badge bg-success">{{ $d->done_count }} Done</span>
                             @endif
                         </td>
-                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'user')
-                            <td style="text-align: center; vertical-align: middle;">
-                                <a href="{{ route('riskregister.create', $d->id) }}" class="btn btn-warning btn-sm" title="Create List Register">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                            </td>
-                        @endif
+
                     </tr>
                     @endforeach
                 </tbody>

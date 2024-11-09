@@ -109,6 +109,7 @@
 
         <!-- Tombol Submit Filter -->
         <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{{ route('riskregister.biglist') }}" class="btn btn-secondary">Reset</a>
         @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
             <!-- Tombol Export Excel -->
             <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
@@ -117,14 +118,12 @@
         @endif
 
             <!-- Tombol Export to PDF -->
-            <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}" title="PDF" class="btn btn-danger">
+            <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&keyword={{ request('keyword') }}&kriteria={{ request('kriteria')}}&top10={{ request('top10')}}" title="PDF" class="btn btn-danger">
                 <i class="bi bi-file-earmark-pdf"></i>
             </a>
-
     </form>
 
 <br>
-
 
     <table class="table table-striped">
         <thead>

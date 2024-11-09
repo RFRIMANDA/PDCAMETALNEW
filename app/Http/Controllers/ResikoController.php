@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Resiko;
 use App\Models\Realisasi;
 use App\Models\Divisi;
+use App\Models\Kriteria;
 use App\Models\Riskregister; // Pastikan untuk mengimpor model Riskregister
 use App\Models\Tindakan;
 use Illuminate\Http\Request;
@@ -88,7 +89,8 @@ class ResikoController extends Controller
     public function edit($id)
     {
         $resiko = Resiko::findOrFail($id); // Mengambil data resiko berdasarkan id
-        return view('resiko.edit', compact('resiko'));
+        $kriteria = Kriteria::all();
+        return view('resiko.edit', compact('resiko','kriteria'));
     }
 
     public function update(Request $request, $id)
@@ -148,174 +150,126 @@ class ResikoController extends Controller
             ->with('nilai_actual', $nilaiActual); // Mengirim nilai actual ke view
     }
 
-    // private function updateStatusResiko($resiko)
-    // {
-    //     // Ambil semua realisasi yang terkait dengan id_tindakan
-    //     $id_tindakan = $resiko->id_tindakan; // Anda perlu memastikan ini ada di model Resiko
-    //     $realisasiStatuses = Realisasi::where('id_tindakan', $id_tindakan)->pluck('status');
-
-    //     // Cek apakah ada yang ON PROGRES
-    //     if ($realisasiStatuses->contains('ON PROGRES')) {
-    //         $resiko->status = 'ON PROGRES';
-    //     } elseif ($realisasiStatuses->contains('CLOSE')) {
-    //         $resiko->status = 'CLOSE';
-    //     } else {
-    //         $resiko->status = 'OPEN'; // Atau status default lainnya
-    //     }
-
-    //     // Simpan status resiko
-    //     $resiko->save();
-    // }
 
     public function matriks($id)
-    {
-        // Ambil data yang sama untuk matriks pertama
-        $kategori = null;
-        $resiko_nama = Resiko::where('id', $id)->value('nama_resiko');
+{
+    // Fetch Riskregister data and related information
+    $resiko_nama = Resiko::where('id', $id)->value('nama_resiko');
 
-        // Matriks lama dan baru
-        $matriks = [
-            [1, 2, 3, 4, 5],
-            [2, 4, 6, 8, 10],
-            [3, 6, 9, 12, 15],
-            [4, 8, 12, 16, 20],
-            [5, 10, 15, 20, 25],
-        ];
+    // Define the matriks data
+    $matriks = [
+        [1, 2, 3, 4, 5],
+        [2, 4, 6, 8, 10],
+        [3, 6, 9, 12, 15],
+        [4, 8, 12, 16, 20],
+        [5, 10, 15, 20, 25],
+    ];
 
-        $matriksnew = [
-            [1, 2, 3, 4, 5],
-            [2, 4, 6, 8, 10],
-            [3, 6, 9, 12, 15],
-            [4, 8, 12, 16, 20],
-        ];
+    $colors = [
+        ['green', 'green', 'yellow', 'yellow', 'red'],
+        ['green', 'yellow', 'red', 'red', 'red'],
+        ['yellow', 'red', 'red', 'red', 'red'],
+        ['yellow', 'red', 'red', 'red', 'red'],
+        ['red', 'red', 'red', 'red', 'red'],
+    ];
 
-        // Warna matriks lama dan baru
-        $colors = [
-            ['green', 'green', 'yellow', 'yellow', 'red'],
-            ['green', 'yellow', 'red', 'red', 'red'],
-            ['yellow', 'red', 'red', 'red', 'red'],
-            ['yellow', 'red', 'red', 'red', 'red'],
-            ['red', 'red', 'red', 'red', 'red'],
-        ];
+    $same = Tindakan::where('id_riskregister', $id)->value('id_riskregister');
+    $form = Tindakan::findOrFail($id);
+    $riskregister = Riskregister::where('id', $form->id_riskregister)->first();
+    $samee = $riskregister->id_divisi;
 
-        $colorsnew = [
-            ['green', 'green', 'yellow', 'yellow', 'red'],
-            ['green', 'yellow', 'red', 'red', 'red'],
-            ['yellow', 'red', 'red', 'red', 'red'],
-            ['yellow', 'red', 'red', 'red', 'red'],
-        ];
+    $divisi = Divisi::where('id', $id)->value('nama_divisi');
+    $resiko = Resiko::where('id_riskregister', $id)->first();
 
-        $same = Tindakan::where('id_riskregister', $id)->value('id_riskregister');
-        $form = Tindakan::findOrFail($id);
-        $riskregister = Riskregister::where('id', $form->id_riskregister)->first();
-        $samee = $riskregister->id_divisi;
+    // Fetch the status from the Riskregister model
+    $status = $riskregister->status;
 
+    // Ensure that 'kategori' is set from 'resiko'
+    $kategori = $resiko ? $resiko->kriteria : null;
 
-        $divisi = Divisi::where('id', $id)->value('nama_divisi');
-        $resiko = Resiko::where('id_riskregister', $id)->first();
+    // Fetch kriteria data based on the filled 'kategori'
+    $kriteriaData = [];
+    if ($kategori) {
+        $kriteria = Kriteria::where('nama_kriteria', $kategori)->get();
 
-        $status = Resiko::where('id', $id)->value('status'); // Pastikan kolom 'status' ada di tabel Tindakan
+        foreach ($kriteria as $k) {
+            // Decode or parse desc_kriteria as array
+            $descArray = is_string($k->desc_kriteria) ? json_decode($k->desc_kriteria, true) : $k->desc_kriteria;
+            $descArray = is_array($descArray) ? $descArray : explode(',', $k->desc_kriteria);
 
-        // Hitung nilai_actual dari Realisasi
-        $totalNilaiAkhir = Realisasi::where('id_riskregister', $id)->sum('nilai_akhir');
-        $jumlahEntry = Realisasi::where('id_riskregister', $id)->count();
-        $actual = $jumlahEntry > 0 ? round($totalNilaiAkhir / $jumlahEntry, 2) : 0; // Hitung nilai_actual
-
-        if ($resiko) {
-            // Matriks pertama
-            $probability = $resiko->probability;
-            $severity = $resiko->severity;
-            $riskscore = $probability * $severity;
-            $tingkatan = $resiko->tingkatan;
-            $kategori = $resiko->kriteria;
-
-            // Pilih matriks dan warna berdasarkan kategori
-            if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational'])) {
-                // Matriks baru
-                $matriks_used = $matriksnew;
-                $colors_used = $colorsnew;
-            } else {
-                // Matriks lama
-                $matriks_used = $matriks;
-                $colors_used = $colors;
+            if (!empty($filteredDesc)) {
+                $kriteriaData[] = [
+                    'nama_kriteria' => $k->nama_kriteria,
+                    'desc_kriteria' => array_values($filteredDesc),
+                    'nilai_kriteria' => $k->nilai_kriteria,
+                ];
             }
-
-            // Matriks kedua
-            $probabilityrisk = $resiko->probabilityrisk;
-            $severityrisk = $resiko->severityrisk;
-            $riskscorerisk = $probabilityrisk * $severityrisk;
-
-            // Deskripsi severity berdasarkan kategori
-            $deskripsiSeverity = $this->getDeskripsiSeverity($kategori);
-        } else {
-            $probability = $severity = $riskscore = $tingkatan = 'N/A';
-            $probabilityrisk = $severityrisk = $riskscorerisk = 'N/A';
-            $deskripsiSeverity = [];
-        }
-
-        return view('resiko.matriks', compact('matriks_used', 'colors_used', 'divisi', 'probability', 'severity', 'riskscore', 'tingkatan', 'same', 'resiko_nama', 'deskripsiSeverity', 'kategori', 'probabilityrisk', 'severityrisk', 'riskscorerisk', 'status', 'samee', 'actual','matriks','colors'));
-    }
-
-    private function getDeskripsiSeverity($kategori)
-    {
-        if ($kategori == 'Unsur keuangan / Kerugian') {
-            return [
-                "Gangguan kedalam kecil. Tidak terlalu berpengaruh terhadap reputasi perusahaan.",
-                "Gangguan kedalam sedang dan mendapatkan perhatian dari management / corporate / regional.",
-                "Gangguan kedalam serius, mendapatkan perhatian dari masyarakat / LSM / media lokal, dapat merugikan bisnis, kemungkinan dapat mengakibatkan tuntutan hukum.",
-                "Gangguan sangat serius, berdampak kepada operasional perusahaan dan penjualan. Menarik perhatian media Nasional. Proses hukum hampir pasti.",
-                "Bencana. Terhentinya operasional perusahaan, mengakibatkan jatuhnya harga saham. Menarik perhatian media nasional & internasional. Proses hukum yang pasti, tuntutan hukum terhadap Direktur."
-            ];
-        } elseif ($kategori == 'Safety & Health') {
-            return [
-                "Hampir tidak ada risiko cedera, berdampak kecil pada K3, memerlukan P3K tetapi pekerja dapat bekerja. No lost time injury.",
-                "Cidera/sakit sedang, perlu perawatan medis. Pekerja dapat bekerja kembali tetapi terjadi penurunan performa.",
-                "Cidera/sakit yang memerlukan perawatan khusus sehingga mengakibatkan kehilangan waktu kerja.",
-                "Meninggal atau cacat fisik permanen karena pekerjaan.",
-                "Meninggal lebih dari satu orang atau cedera cacat permanen lebih satu orang akibat dari pekerjaan."
-            ];
-        } elseif ($kategori == 'Enviromental (lingkungan)') {
-            return [
-                "Dampak polusi tertahan disekitar atau polusi kecil atau dampak tidak berarti, memerlukan perbaikan/pekerjaan perbaikan kecil dan dapat dipulihkan dengan cepat (< 1 Minggu).",
-                "Polusi dengan dampak pada tempat kerja tetapi tidak ada komplain dari pihak luar, memerlukan pekerjaan perbaikan sedang dan dapat dipulihkan dalam waktu 7 hari - 3 bulan.",
-                "Polusi berarti atau berpengaruh keluar atau mengakibatkan komplain, memerlukan pekerjaan perbaikan sedang dan dapat dipulihkan dalam waktu 3 - 6 bulan.",
-                "Polusi berarti, berpengaruh keluar dan mengakibatkan komplain, memerlukan pekerjaan perbaikan besar dan dapat dipulihkan dalam waktu 6 bulan - 1 tahun.",
-                "Polusi besar-besaran baik kedalam maupun keluar, ada tuntutan dari pihak luar serta membutuhkan pekerjaan perbaikan besar dan dapat dipulihkan lebih dari 1 tahun."
-            ];
-        } elseif ($kategori == 'Reputasi') {
-            return [
-                "Kejadian / Incident negatif, hanya diketahui internal organisasi tidak ada dampak kepada stakehoder.",
-                "Kejadian / Incident negatif, mulai diketahui / berdampak kepada`stakeholders.",
-                "Pemberitaan negatif, yang menurukan kepercayaan Stakeholders.",
-                "Kemunduran/hilang kepercayaan Stakeholders.",
-            ];
-        } elseif ($kategori == 'Financial') {
-            return [
-                "Kerugian / biaya yang harus dikeluarkan ≤ Rp. 1.000.000,-.",
-                "Kerugian / biaya yang harus dikeluarkan Rp.1.000.000 >x≥ Rp. 19.000.000,-.",
-                "Kerugian / biaya yang harus dikeluarkan Rp.19.000.000 >x≥ Rp. 70.000.000,-.",
-                "Kerugian / biaya yang harus dikeluarkan x>Rp. 70.000.000,-.",
-            ];
-
-        } elseif ($kategori == 'Operational') {
-            return [
-                "Menimbulkan gangguan kecil pada fungsi sistem terhadap proses bisnis namun tidak signifikan.",
-                "Menimbulkan gangguan 25 - 50 % fungsi operasional atau hanya berdampak pada 1 unit bisnis.",
-                "Menimbulkan gangguan 50 - 75 % fungsi operasional atau berdampak pada 2 unit bisnis terkait.",
-                "Menimbulkan kegagalan > 75 % proses operasional atau berdampak pada sebagian besar unit bisnis .",
-            ];
-        } elseif ($kategori == 'Kinerja') {
-            return [
-                "Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) ≤ 1 jam.",
-                "Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) 1< x≤ 3 jam.",
-                "Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) 3< x≤ 5 jam.",
-                "Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) >5 Jam (Uraian kerja tidak efektif dan efisien)"
-            ];
-        } else {
-            return [];
         }
     }
 
+    $totalNilaiAkhir = Realisasi::where('id_riskregister', $id)->sum('nilai_akhir');
+    $jumlahEntry = Realisasi::where('id_riskregister', $id)->count();
+    $actual = $jumlahEntry > 0 ? round($totalNilaiAkhir / $jumlahEntry, 2) : 0;
 
+    // Default values in case there are no risk data
+    $probability = $severity = $riskscore = $tingkatan = 'N/A';
+    $probabilityrisk = $severityrisk = $riskscorerisk = 'N/A';
+    $deskripsiSeverity = [];
+
+    if ($resiko) {
+        $probability = $resiko->probability;
+        $severity = $resiko->severity;
+        $riskscore = $probability * $severity;
+        $tingkatan = $resiko->tingkatan;
+
+        if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational', 'Unsur Keuangan / Kerugian', 'Safety & Health', 'Enviromental (lingkungan)'])) {
+            $matriks_used = $matriks;
+            $colors_used = $colors;
+        } else {
+            $matriks_used = $matriks;
+            $colors_used = $colors;
+        }
+
+        $probabilityrisk = $resiko->probabilityrisk;
+        $severityrisk = $resiko->severityrisk;
+        $riskscorerisk = $probabilityrisk * $severityrisk;
+        $deskripsiSeverity = $this->getDeskripsiSeverity($kategori);
+
+    }
+    // Fetch kriteria data based on the selected 'kategori' in your model
+if ($kategori) {
+    $kriteriaData = Kriteria::where('nama_kriteria', $kategori)->get();
+} else {
+    $kriteriaData = Kriteria::all(); // If no kategori is selected, fetch all kriteria
 }
 
+
+    // dd($data);
+
+    // Pass all variables to the view
+    return view('resiko.matriks', compact(
+        'matriks_used', 'colors_used', 'divisi', 'probability', 'severity', 'riskscore',
+        'tingkatan', 'same', 'resiko_nama', 'deskripsiSeverity', 'kategori', 'probabilityrisk',
+        'severityrisk', 'riskscorerisk', 'status', 'samee', 'actual', 'matriks', 'colors',
+        'kriteriaData', 'kriteria','kriteria'
+    ));
+
+}
+    private function getDeskripsiSeverity($kategori)
+    {
+        // Fetch the kriteria data based on 'nama_kriteria' matching the category (kategori)
+        $deskripsiSeverity = Kriteria::where('nama_kriteria', $kategori)
+                                      ->orderBy('nilai_kriteria')
+                                      ->pluck('desc_kriteria', 'nilai_kriteria'); // Getting 'desc_kriteria' and 'nilai_kriteria' as key-value pairs
+
+        // Map descriptions based on the nilai_kriteria
+        $mappedDeskripsi = [];
+        foreach ($deskripsiSeverity as $nilai => $desc) {
+            // Assuming desc_kriteria is a comma-separated string, we split it into an array
+            $mappedDeskripsi[$nilai] = explode(',', $desc);
+        }
+
+        // Return the mapped descriptions
+        return $mappedDeskripsi;
+    }
+}

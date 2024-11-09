@@ -6,6 +6,7 @@ use App\Models\Resiko;
 use App\Models\Realisasi;
 use App\Models\Riskregister;
 use App\Models\Tindakan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -19,19 +20,25 @@ class RealisasiController extends Controller
         // Ambil data realisasi yang terkait dengan id_tindakan
         $realisasiList = Realisasi::where('id_tindakan', $id)->get();
         $tindak = Tindakan::where('id', $id)->value('nama_tindakan');
-        $pic = Tindakan::where('id',$id)->value('targetpic');
-        $deadline = Carbon::parse(Tindakan::where('id', $id)->value('tgl_penyelesaian'))->format('d-m-Y');
+
+        // Ambil targetpic (user_id) dan nama_user
+        $targetpicId = $form->targetpic;
+        $pic = User::where('id', $targetpicId)->value('nama_user'); // Mengambil nama_user berdasarkan user_id dari targetpic
+
+        // Format deadline
+        $deadline = Carbon::parse($form->tgl_penyelesaian)->format('d-m-Y');
 
         // Ambil id_divisi dari tabel Riskregister berdasarkan id_tindakan
         $riskregister = Riskregister::where('id', $form->id_riskregister)->first();
         $divisi = $riskregister->id_divisi;
 
-        // Ambil data tambahan yang mungkin diperlukan
-        $data = Riskregister::where('id', $riskregister->id)->get();
+        // Ambil semua user yang berada dalam divisi yang sama
+        $usersInDivisi = User::where('divisi', $divisi)->get();
 
         // Return view dengan data yang relevan
-        return view('realisasi.index', compact('form', 'realisasiList', 'data', 'divisi', 'id','tindak','pic','deadline'));
+        return view('realisasi.index', compact('form', 'realisasiList', 'usersInDivisi', 'divisi', 'id', 'tindak', 'pic', 'deadline'));
     }
+
 
     public function edit($id)
     {
@@ -215,4 +222,44 @@ class RealisasiController extends Controller
         $details = Realisasi::where('id_tindakan', $id)->get(['nama_realisasi', 'tgl_penyelesaian']);
         return response()->json($details);
     }
+
+    public function destroy($id)
+{
+    // Temukan realisasi berdasarkan ID
+    $realisasi = Realisasi::findOrFail($id);
+
+    // Ambil id_tindakan sebelum menghapus
+    $id_tindakan = $realisasi->id_tindakan;
+
+    // Hapus realisasi
+    $realisasi->delete();
+
+    // Update nilai_akhir dan nilai_actual setelah penghapusan
+    $realisasiList = Realisasi::where('id_tindakan', $id_tindakan)->get();
+    $totalPresentase = $realisasiList->sum('presentase');
+    $jumlahActivity = $realisasiList->count();
+
+    $nilaiAkhir = $jumlahActivity > 0 ? round($totalPresentase / $jumlahActivity, 2) : 0;
+
+    // Simpan nilai akhir di tabel realisasi untuk id_tindakan
+    Realisasi::where('id_tindakan', $id_tindakan)
+        ->update(['nilai_akhir' => $nilaiAkhir]);
+
+    // Hitung nilai_actual keseluruhan untuk id_riskregister yang sama
+    $id_riskregister = $realisasi->id_riskregister;
+    $nilaiActual = Realisasi::where('id_riskregister', $id_riskregister)->sum('nilai_akhir');
+    $jumlahTindakan = Realisasi::where('id_riskregister', $id_riskregister)->count('id_tindakan');
+
+    // Menghitung rata-rata nilai_actual
+    $rataNilaiActual = $jumlahTindakan > 0 ? round($nilaiActual / $jumlahTindakan, 2) : 0;
+
+    // Update nilai_actual di tabel realisasi untuk id_riskregister yang sama
+    Realisasi::where('id_riskregister', $id_riskregister)
+        ->update(['nilai_actual' => $rataNilaiActual]);
+
+    return redirect()->route('realisasi.index', ['id' => $id_tindakan])
+        ->with('success', 'Activity berhasil dihapus!.✅');
 }
+
+}
+

@@ -20,7 +20,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10px; /* Ensure table font size is consistent */
+            font-size: 8px; /* Ensure table font size is consistent */
             page-break-inside: auto; /* Allow page break within the table */
         }
         table, th, td {
@@ -69,7 +69,11 @@
             width: 80px; /* Width for Risiko column */
         }
         .col-target-pic {
-            width: 100px; /* Width for Target PIC column */
+            width: 60px; /* Width for Target PIC column */
+        }
+        .col-pihak {
+            width: 150px; /* Width for Tindakan Lanjut column */
+            text-align: left; /* Align text to the left */
         }
     </style>
 </head>
@@ -81,7 +85,7 @@
                 <th>No</th>
                 <th>Issue</th>
                 <th class="col-int-ext">Int/Ext</th>
-                <th>Pihak Yang Berkepentingan</th>
+                <th class="col-pihak">Pihak Yang Berkepentingan</th>
                 <th class="col-risiko">Risiko</th>
                 <th class="align-bottom">Peluang</th> <!-- Align Peluang to bottom -->
                 <th>Tingkatan</th>
@@ -121,8 +125,8 @@
                     @endforeach
                 </td>
                 <td class="align-top">
-                    @foreach ($data['tgl_realisasi'] as $index => $tgl_realisasi)
-                        {{ $index + 1 }}. {{ $tgl_realisasi }}<br>
+                    @foreach ($data['tgl_penyelesaian'] as $index => $tgl_penyelesaian)
+                        {{ $index + 1 }}. {{ $tgl_penyelesaian }}<br>
                         @if (!$loop->last)
                             <hr class="separator">
                         @endif

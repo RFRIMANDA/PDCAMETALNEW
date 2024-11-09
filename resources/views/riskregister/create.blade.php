@@ -29,10 +29,10 @@
     <br>
 
     <div class="row mb-3">
-        <label for="inex" class="col-sm-2 col-form-label"><strong>Int/Ext</strong></label>
+        <label for="inex" class="col-sm-2 col-form-label"><strong>I/E</strong></label>
         <div class="col-sm-4">
             <select name="inex" class="form-control" required>
-                <option value="">--Pilih Int/Ext--</option>
+                <option value="">--Silahkan Pilih--</option>
                 <option value="I">INTERNAL</option>
                 <option value="E">EXTERNAL</option>
             </select>
@@ -105,61 +105,164 @@
         });
     </script>
 
-
   <br>
-
-    <div class="row mb-3">
-        <label for="inputPihak" class="col-sm-2 col-form-label"><strong>Pihak yang Berkepentingan</strong></label>
-        <div class="col-sm-7">
-            <textarea placeholder="Masukkan Departemen" name="pihak" class="form-control" rows="3" required></textarea>
+  <div class="row mb-3">
+    <label class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan:</strong></label>
+    <div class="col-sm-10">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownDivisiAkses" data-bs-toggle="dropdown" aria-expanded="false">
+                Pilih Pihak Berkepentingan
+            </button>
+            <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownDivisiAkses">
+                <li>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="select-all">
+                        <label class="form-check-label" for="select-all">Pilih Semua</label>
+                    </div>
+                </li>
+                @foreach ($divisi as $d)
+                    <li>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="pihak[]" value="{{ $d->nama_divisi }}" id="divisi{{ $d->id }}"
+                                @if(is_array(old('pihak', $selectedDivisi ?? [])) && in_array($d->nama_divisi, old('pihak', $selectedDivisi ?? []))) checked @endif>
+                            <label class="form-check-label" for="divisi{{ $d->id }}">
+                                {{ $d->nama_divisi }}
+                            </label>
+                        </div>
+                    </li>
+                @endforeach
+                <li>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="otherCheckbox">
+                        <label class="form-check-label" for="otherCheckbox">Other</label>
+                    </div>
+                    <div class="mt-2" id="otherInputContainer" style="display: none;">
+                        <input type="text" class="form-control" name="pihak_other" id="pihakOther" placeholder="Masukkan Pihak Berkepentingan Lainnya">
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
+</div>
+
+<script>
+    // Toggle the input field for 'Other' when checkbox is checked
+    document.getElementById('otherCheckbox').addEventListener('change', function() {
+        const otherInputContainer = document.getElementById('otherInputContainer');
+        if (this.checked) {
+            otherInputContainer.style.display = 'block'; // Show the input field
+        } else {
+            otherInputContainer.style.display = 'none'; // Hide the input field
+        }
+    });
+</script>
+
+
+
+<!-- JavaScript to handle the 'select all' functionality -->
+<script>
+    // Handle "Select All" checkbox functionality
+    document.getElementById('select-all').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked; // Set all checkboxes to match 'Select All' status
+        });
+    });
+</script>
 
     <br>
-
-    <div class="row mb-3">
-        <label for="kriteria" class="col-sm-2 col-form-label"><strong>Kriteria</strong></label>
-        <div class="col-sm-4">
-            <select name="kriteria" class="form-control" required>
-                <option value="">--Pilih Kriteria--</option>
-                <option value="Unsur keuangan / Kerugian">Unsur Keuangan / Kerugian</option>
-                <option value="Safety & Health">Safety & Health</option>
-                <option value="Enviromental (lingkungan)">Enviromental (lingkungan)</option>
-                <option value="Reputasi">Reputasi</option>
-                <option value="Financial">Financial</option>
-                <option value="Operational">Operational</option>
-                <option value="Kinerja">Kinerja</option>
-            </select>
-        </div>
+<!-- Kriteria Dropdown -->
+<div class="row mb-3">
+    <label for="kriteria" class="col-sm-2 col-form-label"><strong>Kriteria</strong></label>
+    <div class="col-sm-4">
+        <select name="kriteria" class="form-control" id="kriteriaSelect" required onchange="updateSeverityDropdown()">
+            <option value="">--Pilih Kriteria--</option>
+            @foreach($kriteria as $k)
+                <option value="{{ $k->nama_kriteria }}">{{ $k->nama_kriteria }}</option>
+            @endforeach
+        </select>
     </div>
+</div>
 
-    <!-- Probability -->
-    <div class="row mb-3">
-        <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak (1-5)</strong></label>
-        <div class="col-sm-4 d-flex align-items-center">
-            <input type="number" class="form-control" placeholder="Masukkan Nilai Probability" name="probability" id="probability" min="1" max="5" oninput="calculateTingkatan()" required>
-        </div>
-        <div class="col-sm-5">
-            <p class="form-text"><strong>1. Sangat jarang terjadi | 2. Jarang terjadi | 3. Dapat Terjadi | 4. Sering terjadi | 5. Selalu terjadi</strong></p>
-        </div>
+<!-- Severity Dropdown -->
+<div class="row mb-3">
+    <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
+    <div class="col-sm-4">
+        <select class="form-select" name="severity" id="severity" required>
+            <option value="">--Pilih Severity--</option>
+            <!-- Opsi severity akan diisi secara dinamis di sini -->
+        </select>
     </div>
+</div>
 
-    <!-- Severity -->
-    <div class="row mb-3">
-        <label for="severity" class="col-sm-2 col-form-label"><strong>Severity / Keparahan (Check Tool Box)</strong></label>
-        <div class="col-sm-4 d-flex align-items-center">
-            <input type="number" class="form-control" placeholder="Masukkan Nilai Severity" name="severity" id="severity" min="1" max="5" oninput="calculateTingkatan()" required>
-            <button type="button" class="btn btn-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#fullscreenModal">
-                <i class="bx bxs-bar-chart-square"></i>
-            </button>
-        </div>
+<style>
+    /* CSS untuk memaksimalkan ruang dan menampilkan deskripsi di bawah nilai */
+#severity option {
+    white-space: normal;  /* Memungkinkan teks untuk membungkus ke baris baru */
+    word-wrap: break-word; /* Membungkus kata jika panjangnya melebihi lebar dropdown */
+}
+
+</style>
+
+
+<script>
+// Simulasi data kriteria (ambil ini dari database menggunakan Laravel)
+const kriteriaData = @json($kriteria);
+
+// Function untuk mengupdate dropdown severity berdasarkan kriteria yang dipilih
+function updateSeverityDropdown() {
+    const selectedKriteria = document.getElementById('kriteriaSelect').value;
+    const severitySelect = document.getElementById('severity');
+    severitySelect.innerHTML = '<option value="">--Pilih Severity--</option>';  // Clear previous options
+
+    if (selectedKriteria) {
+        // Filter kriteria berdasarkan nama yang dipilih
+        const filteredKriteria = kriteriaData.filter(k => k.nama_kriteria === selectedKriteria);
+
+        filteredKriteria.forEach(kriteria => {
+            // Memisahkan nilai_kriteria dan desc_kriteria menjadi array
+            const nilaiKriteriaString = kriteria.nilai_kriteria.replace(/[\[\]"]+/g, ''); // Menghapus [ ] dan tanda kutip ganda
+            const descKriteriaString = kriteria.desc_kriteria.replace(/[\[\]"]+/g, ''); // Menghapus [ ] dan tanda kutip ganda
+
+            const nilaiKriteriaArray = nilaiKriteriaString.split(','); // Memisahkan dengan koma
+            const descKriteriaArray = descKriteriaString.split(','); // Memisahkan dengan koma
+
+            // Loop melalui setiap pasangan nilai dan deskripsi kriteria
+            for (let i = 0; i < nilaiKriteriaArray.length; i++) {
+                const option = document.createElement('option');
+                option.value = nilaiKriteriaArray[i];
+                // Menambahkan deskripsi di bawah nilai
+                option.textContent = `${nilaiKriteriaArray[i]}\n${descKriteriaArray[i]}`;
+                severitySelect.appendChild(option);
+            }
+        });
+    }
+}
+
+// Memastikan dropdown severity diupdate saat kriteria dipilih
+document.getElementById('kriteriaSelect').addEventListener('change', updateSeverityDropdown);
+
+</script>
+
+ <!-- Probability -->
+ <div class="row mb-3">
+    <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak</strong></label>
+    <div class="col-sm-4">
+        <select class="form-select" name="probability" id="probability" required onchange="calculateTingkatan()">
+            <option value="">--Silahkan Pilih Probability--</option>
+            <option value="1" {{ old('probability') == 1 ? 'selected' : '' }}>1. Sangat jarang terjadi</option>
+            <option value="2" {{ old('probability') == 2 ? 'selected' : '' }}>2. Jarang terjadi</option>
+            <option value="3" {{ old('probability') == 3 ? 'selected' : '' }}>3. Dapat Terjadi</option>
+            <option value="4" {{ old('probability') == 4 ? 'selected' : '' }}>4. Sering terjadi</option>
+            <option value="5" {{ old('probability') == 5 ? 'selected' : '' }}>5. Selalu terjadi</option>
+        </select>
     </div>
-
+</div>
 
     <div class="row mb-3">
         <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
         <div class="col-sm-4">
-            <input type="text" placeholder="Nilai Otomatis"class="form-control" name="tingkatan" id="tingkatan" required>
+            <input type="text" placeholder="Nilai Otomatis"class="form-control" readonly name="tingkatan" id="tingkatan" required>
         </div>
     </div>
 
@@ -168,34 +271,38 @@
 
     <!-- Bagian untuk mengisi Tindakan, Pihak, Target, dan PIC -->
     <div id="inputContainer">
-
-        <div class="row mb-3">
-            <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
-            <div class="col-sm-7">
-                <textarea name="nama_tindakan[]" placeholder="Masukkan Tindakan Lanjut" class="form-control" rows="3" required></textarea>
+        <!-- Input sections yang bisa ditambahkan oleh user -->
+        <div class="dynamic-inputs">
+            <div class="row mb-3">
+                <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
+                <div class="col-sm-7">
+                    <textarea placeholder="Masukkan Tindakan" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
+                <div class="col-sm-7">
+                    <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
+                <div class="col-sm-7">
+                    <select name="targetpic[]" class="form-select" required>
+                        <option value="">Pilih PIC</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+                        @endforeach
+                        <!-- Dropdown options -->
+                    </select>
+                </div>
             </div>
         </div>
 
-        <div class="row mb-3">
-            <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
-            <div class="col-sm-7">
-                <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
-            </div>
+        <!-- Tombol Add More berada di bawah input -->
+        <div>
+            <button type="button" class="btn btn-secondary" id="addMore">Add More</button>
         </div>
-
-        <div class="row mb-3">
-            <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
-            <div class="col-sm-7">
-                <textarea name="targetpic[]" placeholder="Masukkan Nama PIC" class="form-control" rows="3" required></textarea>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Tombol Add More -->
-    <div>
-        <button type="button" class="btn btn-secondary" id="addMore">Add More</button>
-    </div>
 
     <hr>
 
@@ -207,7 +314,7 @@
     </div>
 
     <div class="row mb-3">
-        <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Penyelesaian</strong></label>
+        <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Besar Penyelesaian Issue</strong></label>
         <div class="col-sm-7">
             <input type="date" name="target_penyelesaian" class="form-control" required>
         </div>
@@ -240,232 +347,16 @@
                 <h3 class="modal-title" id="fullscreenModalLabel">Severity / Keparahan</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <h6><strong>Unsur Keuangan / Kerugian</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai.</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Gangguan kedalam kecil. Tidak terlalu berpengaruh terhadap reputasi perusahaan.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Gangguan kedalam sedang dan mendapatkan perhatian dari manajemen / corporate / regional.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Gangguan kedalam serius, mendapatkan perhatian dari masyarakat / LSM / media lokal, dapat merugikan bisnis, kemungkinan dapat mengakibatkan tuntutan hukum.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Gangguan sangat serius, berdampak kepada operasional perusahaan dan penjualan. Menarik perhatian media nasional. Proses hukum hampir pasti.</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Bencana. Terhentinya operasional perusahaan, mengakibatkan jatuhnya harga saham. Menarik perhatian media nasional & internasional. Proses hukum yang pasti, tuntutan hukum terhadap Direktur.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-
-                <h6><strong>Safety & Health</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Hampir tidak ada risiko cedera, berdampak kecil pada K3, memerlukan P3K tetapi pekerja dapat bekerja. No lost time injury.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Cidera/sakit sedang, perlu perawatan medis. Pekerja dapat bekerja kembali tetapi terjadi penurunan performa.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Cidera/sakit yang memerlukan perawatan khusus sehingga mengakibatkan kehilangan waktu kerja.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Meninggal atau cacat fisik permanen karena pekerjaan.</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Meninggal lebih dari satu orang atau cedera cacat permanen lebih satu orang akibat dari pekerjaan.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-
-                <h6><strong>Enviromental (Lingkungan)</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Dampak polusi tertahan disekitar atau polusi kecil atau dampak tidak berarti, memerlukan perbaikan/pekerjaan perbaikan kecil dan dapat dipulihkan dengan cepat (&lt; 1 Minggu).</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Polusi dengan dampak pada tempat kerja tetapi tidak ada komplain dari pihak luar, memerlukan pekerjaan perbaikan sedang dan dapat dipulihkan dalam waktu 7 hari - 3 bulan.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Polusi berarti atau berpengaruh keluar atau mengakibatkan komplain, memerlukan pekerjaan perbaikan sedang dan dapat dipulihkan dalam waktu 3 - 6 bulan.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Polusi berarti, berpengaruh keluar dan mengakibatkan komplain, memerlukan pekerjaan perbaikan besar dan dapat dipulihkan dalam waktu 6 bulan - 1 tahun.</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Polusi besar-besaran baik kedalam maupun keluar, ada tuntutan dari pihak luar serta membutuhkan pekerjaan perbaikan besar dan dapat dipulihkan lebih dari 1 tahun.</td>
-                        </tr>
-                        <hr>
-                    </tbody>
-                </table>
-                <!-- Reputasi -->
-                <h6><strong>Reputasi</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Kejadian / Incident negatif, hanya diketahui internal organisasi tidak ada dampak kepada stakehoder.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Kejadian / Incident negatif, mulai diketahui / berdampak kepada stakeholders.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Pemberitaan negatif, yang menurunkan kepercayaan Stakeholders.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Kemunduran/hilang kepercayaan Stakeholders.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-
-                <!-- Financial -->
-                <h6><strong>Financial</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Kerugian / biaya yang harus dikeluarkan ≤ Rp. 1.000.000,-.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Kerugian / biaya yang harus dikeluarkan Rp.1.000.000 >x≥ Rp. 19.000.000,-.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Kerugian / biaya yang harus dikeluarkan Rp.19.000.000 >x≥ Rp. 70.000.000,-.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Kerugian / biaya yang harus dikeluarkan x>Rp. 70.000.000,-.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-
-                <!-- Operational -->
-                <h6><strong>Operational</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Menimbulkan gangguan kecil pada fungsi sistem terhadap proses bisnis namun tidak signifikan.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Menimbulkan gangguan 25 - 50 % fungsi operasional atau hanya berdampak pada 1 unit bisnis.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Menimbulkan gangguan 50 - 75 % fungsi operasional atau berdampak pada 2 unit bisnis terkait.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Menimbulkan kegagalan > 75 % proses operasional atau berdampak pada sebagian besar unit bisnis.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-
-                <!-- Kinerja -->
-                <h6><strong>Kinerja</strong></h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nilai</th>
-                            <th>Dampak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) ≤ 1 jam.</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) 1< x≤ 3 jam.</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) 3< x≤ 5 jam.</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Menimbulkan penundaan aktivitas (proses tidak dapat dijalankan) >5 Jam (Uraian kerja tidak efektif dan efisien).</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Dynamic content will be injected here based on selected kriteria -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-<!-- End Full Screen Modal -->
+
 
 <!-- Script untuk menambah input "Add More" -->
 <script>
@@ -490,29 +381,37 @@ function calculateTingkatan() {
 }
 
 document.getElementById('addMore').addEventListener('click', function() {
+    // Membuat elemen input baru
     var newInputSection = `
-    <hr>
-
-    <div class="row mb-3">
-        <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
-        <div class="col-sm-7">
-            <textarea placeholder="Masukkan Tindakan" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
+        <hr>
+        <div class="row mb-3">
+            <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
+            <div class="col-sm-7">
+                <textarea placeholder="Masukkan Tindakan" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
+            </div>
         </div>
-    </div>
-    <div class="row mb-3">
-        <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
-        <div class="col-sm-7">
-            <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+        <div class="row mb-3">
+            <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
+            <div class="col-sm-7">
+                <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+            </div>
         </div>
-    </div>
-    <div class="row mb-3">
-        <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
-        <div class="col-sm-7">
-            <textarea name="targetpic[]" class="form-control" placeholder="Masukkan Target PIC" rows="3" required></textarea>
-        </div>
-    </div>`;
-    document.getElementById('inputContainer').insertAdjacentHTML('beforeend', newInputSection);
+        <div class="row mb-3">
+            <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
+            <div class="col-sm-7">
+                <select name="targetpic[]" class="form-select" required>
+                    <option value="">Pilih PIC</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>`;
+    // Menambahkan input baru setelah input yang ada
+    var dynamicContainer = document.querySelector('.dynamic-inputs');
+    dynamicContainer.insertAdjacentHTML('beforeend', newInputSection);
 });
+
 </script>
 
 @endsection

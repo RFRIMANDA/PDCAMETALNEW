@@ -61,15 +61,6 @@
                 </div>
             </div>
 
-            <!-- Target -->
-            {{-- <div class="card mb-2">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 font-weight-bold"><strong>Target PIC:</strong></div>
-                        <div class="col-md-9">{{ $resiko->target }}</div>
-                    </div>
-                </div>
-            </div> --}}
 
             <!-- Risk -->
             <div class="card mb-2">

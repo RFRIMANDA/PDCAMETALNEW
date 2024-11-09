@@ -15,23 +15,30 @@
           <!-- Filter Form -->
           <form method="GET" action="{{ route('admin.kelolaakun') }}" class="mb-4">
             <div class="row">
-              <div class="col-md-4">
-                <input type="text" name="nama_user" class="form-control" placeholder="Cari berdasarkan nama" value="{{ request('nama_user') }}">
-              </div>
-              <div class="col-md-3">
-                <select name="role" class="form-control">
-                  <option value="">--Semua Role--</option>
-                  <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                  <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
-                  <option value="manajemen" {{ request('role') == 'manajemen' ? 'selected' : '' }}>Manajemen</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <button type="submit" class="btn btn-primary">Cari</button>
-                <a href="{{ route('admin.kelolaakun') }}" class="btn btn-secondary">Reset</a>
-              </div>
-            </div>
-          </form>
+                <div class="col-md-4">
+                    <input type="text" name="nama_user" class="form-control" placeholder="Cari berdasarkan Nama" value="{{ request('nama_user') }}">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="divisi" class="form-control" placeholder="Cari berdasarkan Divisi" value="{{ request('divisi') }}">
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <select name="role" class="form-control">
+                            <option value="">--Semua Role--</option>
+                            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="staff" {{ request('role') == 'staff' ? 'selected' : '' }}>Staff</option>
+                            <option value="manajemen" {{ request('role') == 'manajemen' ? 'selected' : '' }}>Manajemen</option>
+                            <option value="manager" {{ request('role') == 'manager' ? 'selected' : '' }}>Manager</option>
+                            <option value="supervisor" {{ request('role') == 'supervisor' ? 'selected' : '' }}>Supervisor</option>
+                        </select>
+
+                    </div>
+                </div>
+            </div><br>
+            <button type="submit" class="btn btn-primary">Cari</button> <!-- Added 'ms-2' for margin -->
+            <a href="{{ route('admin.kelolaakun') }}" class="btn btn-secondary">Reset</a>
+        </form>
+
           <!-- End Filter Form -->
 
           <!-- Tampilkan pesan sukses jika ada -->
@@ -54,6 +61,7 @@
                 <th scope="col" style="width: 80px;">No</th>
                 <th scope="col">Nama</th>
                 <th scope="col">Email</th>
+                <th scope="col">Divisi</th>
                 <th scope="col" style="width: 80px;">Role</th>
                 <th scope="col" style="width: 150px;">Action</th>
               </tr>
@@ -64,6 +72,7 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $user->nama_user }}</td>
                 <td>{{ $user->email }}</td>
+                <td>{{ $user->divisi}}</td>
                 <td>{{ $user->role }}</td>
                 <td>
                   <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-primary" title="Edit">

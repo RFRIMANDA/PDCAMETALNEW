@@ -10,7 +10,7 @@ class CheckAdmin
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && in_array(Auth::user()->role, ['admin', 'manajemen'])) {
+        if (Auth::check() && in_array(Auth::user()->role, ['admin', 'manajemen','manager','supervisor'])) {
             return $next($request);
         }
         return redirect('login')->withErrors(['message' => 'Unauthorized']);

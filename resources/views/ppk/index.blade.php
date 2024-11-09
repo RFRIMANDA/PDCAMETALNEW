@@ -192,6 +192,8 @@
         </div>
     </div>
     <!-- End Modal -->
+
+
 @endforeach
 </div>
 
@@ -210,4 +212,62 @@
     margin-left: 10px; /* Memberikan jarak antara ikon dan konten aktivitas */
 }
 </style>
+
+<section class="section dashboard">
+    <div class="activity d-flex justify-content-center flex-wrap">
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">TRACK RECORD <span>| History</span></h5>
+                    <div class="activity">
+
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">
+                                <a href="{{ route('ppk.create') }}" class="btn btn-primary">Tahap 1</a>
+                            </div>
+                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                            <div class="activity-content">
+                                Pengisian form pertama Judul, Jenis Ketidaksesuaian dan Identifikasi, Evaluasi Proses Peningkatan Kinerja
+                            </div>
+                        </div><!-- End activity item-->
+                        <br>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">
+                                <a class="btn btn-primary">Tahap 2</a>
+                            </div>
+                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                            <div class="activity-content">
+                                Pengisian form kedua Penanggulangan dan Pencegahan oleh Inisiator dan Penerima Proses Peningkatan Kinerja Diterima
+                            </div>
+                        </div>
+                        <!-- End activity item -->
+                        <br>
+
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">
+                                <a class="btn btn-warning">Prosses</a>
+                            </div>
+                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                            <div class="activity-content">
+                                Proses Verifikasi Tindakan Penanggulangan dan Pencegahan 1 (satu) bulan dari Tanggal Verifikasi oleh Auditor
+                            </div>
+                        </div><!-- End activity item-->
+                        <br>
+                        <div class="activity-item d-flex">
+                            <div class="activite-label">
+                                <div class="activite-label">
+                                    <a class="btn btn-warning">Tahap 3</a>
+                                </div>
+                            </div>
+                            <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
+                            <div class="activity-content">
+                                Verifikasi Tindakan Penanggulangan dan Pencegahan 1 (satu) bulan dari Tanggal Verifikasi oleh Auditor
+                            </div>
+                          </div><!-- End activity item-->
+                    </div>
+                </div>
+            </div><!-- End Recent Activity -->
+        </div><!-- End Right side columns -->
+    </div>
+</section>
 @endsection

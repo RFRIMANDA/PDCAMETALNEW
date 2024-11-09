@@ -60,7 +60,10 @@
                         <i class="bi bi-circle"></i><span>Kelola Departemen</span>
                     </a>
                     <a href="/kelolaakun">
-                        <i class="bi bi-circle"></i><span>Kelola User</span>
+                        <i class="bi bi-circle"></i><span>Kelola Akun</span>
+                    </a>
+                    <a href="/kriteria">
+                        <i class="bi bi-circle"></i><span>Kelola Kriteria</span>
                     </a>
                 </li>
             </li>

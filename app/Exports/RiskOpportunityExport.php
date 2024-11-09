@@ -52,13 +52,13 @@ class RiskOpportunityExport implements FromCollection, WithHeadings, WithMapping
         $pihak = is_array($row['pihak']) ? array_unique($row['pihak']) : [$row['pihak']];
         $tindak_lanjut = is_array($row['tindak_lanjut']) ? $row['tindak_lanjut'] : [$row['tindak_lanjut']];
         $targetpic = is_array($row['targetpic']) ? $row['targetpic'] : [$row['targetpic']];
-        $tgl_realisasi = is_array($row['tgl_realisasi']) ? $row['tgl_realisasi'] : [$row['tgl_realisasi']];
+        $tgl_penyelesaian = is_array($row['tgl_penyelesaian']) ? $row['tgl_penyelesaian'] : [$row['tgl_penyelesaian']];
 
         // Prepare the mapped rows
         $mappedRows = [];
 
         // Calculate the max number of rows for the details
-        $maxRows = max(count($pihak), count($tindak_lanjut), count($targetpic), count($tgl_realisasi));
+        $maxRows = max(count($pihak), count($tindak_lanjut), count($targetpic), count($tgl_penyelesaian));
 
         for ($i = 0; $i < $maxRows; $i++) {
             $mappedRows[] = [
@@ -70,7 +70,7 @@ class RiskOpportunityExport implements FromCollection, WithHeadings, WithMapping
                 $i === 0 ? $row['tingkatan'] : '',
                 $tindak_lanjut[$i] ?? '',
                 $targetpic[$i] ?? '',
-                $tgl_realisasi[$i] ?? '',
+                $tgl_penyelesaian[$i] ?? '',
                 $i === 0 ? $row['status'] : '',
                 $i === 0 ? $row['scores'] : '',
                 $i === 0 ? $row['before'] : '',
