@@ -488,9 +488,10 @@ if ($top10Filter) {
 // Get list of divisions for filtering in the view
 $divisiList = Divisi::all();
 
+$defaultDivisiId = $divisiList->first()->id ?? null;
+
 // Pass data to the view
-return view('riskregister.biglist', compact('formattedData', 'divisiList'));
-}
+return view('riskregister.biglist', compact('formattedData', 'divisiList','defaultDivisiId'));}
 
     public function exportFilteredPDF(Request $request, $id)
     {

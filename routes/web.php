@@ -8,14 +8,6 @@ use App\Http\Controllers\ResikoController;
 use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\PpkController;
 use App\Http\Controllers\KriteriaController;
-use App\Http\Controllers\ExportController;
-use App\Exports\RiskOpportunityPdfExport;
-use App\Exports\PpkExport;
-use App\Exports\RiskOpportunityExport;
-use App\Models\Kriteria;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Ppk;
-use App\Models\Realisasi;
 use Illuminate\Support\Facades\Route;
 
 // Dasboard HomeController
@@ -56,7 +48,7 @@ Route::delete('/kriteria/{id}', [KriteriaController::class, 'destroy'])->name('a
 });
 
 // Risk
-Route::middleware(['checkrole:manager,manajemen,supervisor'])->group(function () {
+Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(function () {
     Route::get('/bigrisk', [RiskController::class, 'biglist'])->name('riskregister.biglist');
 });
 Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(function () {

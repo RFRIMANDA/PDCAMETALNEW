@@ -174,7 +174,7 @@ class ResikoController extends Controller
     ];
 
     $same = Tindakan::where('id_riskregister', $id)->value('id_riskregister');
-    $form = Tindakan::findOrFail($id);
+    $form = Resiko::findOrFail($id);
     $riskregister = Riskregister::where('id', $form->id_riskregister)->first();
     $samee = $riskregister->id_divisi;
 

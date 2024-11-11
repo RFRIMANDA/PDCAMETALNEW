@@ -47,8 +47,8 @@
                         <th scope="col">No</th>
                         <th scope="col">Issue (Int:Ex)</th>
                         <th scope="col">Resiko</th>
-                        <th scope="col">Tindakan Lanjut</th>
                         <th scope="col">Peluang</th>
+                        <th scope="col">Tindakan Lanjut</th>
                         <th scope="col">Target Penyelesaian</th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
@@ -85,6 +85,8 @@
                                     @endif
                                 </td>
 
+                                <td>{{ $form->peluang ?? '-' }}</td>
+
                                 <!-- Kolom pihak berkepentingan dan tindakan lanjut -->
                                 <td>
                                     @if(isset($data[$form->id]))
@@ -117,7 +119,6 @@
                                     @endif
                                 </td>
 
-                                <td>{{ $form->peluang ?? '-' }}</td>
 
                                 <td>{{ $form->target_penyelesaian}}</td>
 

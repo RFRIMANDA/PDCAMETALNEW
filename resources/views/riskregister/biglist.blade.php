@@ -13,29 +13,31 @@
 
     <!-- Form Filter -->
     <form method="GET" action="{{ route('riskregister.biglist') }}">
-
         <div class="container">
             <div class="row mb-3">
-                <!-- Kolom Kiri -->
-                <div class="col-md-6">
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="nama_divisi"><strong>Departemen:</strong></label>
-                        <div class="col-sm-8">
-                            <select name="nama_divisi" id="nama_divisi" class="form-control">
-                                <option value="">--Semua Departemen--</option>
-                                @foreach ($divisiList as $divisi)
-                                    <option value="{{ $divisi->nama_divisi }}" {{ request('nama_divisi') == $divisi->nama_divisi ? 'selected' : '' }}>
-                                        {{ $divisi->nama_divisi }}
-                                    </option>
-                                @endforeach
-                            </select>
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manajemen')
+                    <div class="col-md-6">
+                        <div class="mb-3 row">
+                            <label class="col-sm-4 col-form-label"><strong>Departemen:</strong></label>
+                            <div class="col-sm-8">
+                                <select name="nama_divisi" class="form-control">
+                                    <option value="">--Semua Departemen--</option>
+                                    @foreach ($divisiList as $divisi)
+                                        <option value="{{ $divisi->nama_divisi }}" {{ request('nama_divisi') == $divisi->nama_divisi ? 'selected' : '' }}>
+                                            {{ $divisi->nama_divisi }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
+                @endif
 
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="year"><strong>Tahun Penyelesaian:</strong></label>
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label"><strong>Tahun Penyelesaian:</strong></label>
                         <div class="col-sm-8">
-                            <select name="year" id="year" class="form-control">
+                            <select name="year" class="form-control">
                                 <option value="">--Semua Tahun--</option>
                                 @for($year = date('Y'); $year >= 2000; $year--)
                                     <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -43,15 +45,19 @@
                             </select>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="kategori"><strong>Kriteria:</strong></label>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label"><strong>Kriteria:</strong></label>
                         <div class="col-sm-8">
-                            <select name="kriteria" id="kriteria" class="form-control">
+                            <select name="kriteria" class="form-control">
                                 <option value="">--Semua Kriteria--</option>
                                 <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
                                 <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
-                                <option value="Enviromental (lingkungan)" {{ request('kategori') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
+                                <option value="Enviromental (lingkungan)" {{ request('kriteria') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
                                 <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
                                 <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
                                 <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
@@ -61,12 +67,11 @@
                     </div>
                 </div>
 
-                <!-- Kolom Kanan -->
                 <div class="col-md-6">
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="tingkatan"><strong>Tingkatan:</strong></label>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label"><strong>Tingkatan:</strong></label>
                         <div class="col-sm-8">
-                            <select name="tingkatan" id="tingkatan" class="form-control">
+                            <select name="tingkatan" class="form-control">
                                 <option value="">--Semua Tingkatan--</option>
                                 <option value="LOW" {{ request('tingkatan') == 'LOW' ? 'selected' : '' }}>LOW</option>
                                 <option value="MEDIUM" {{ request('tingkatan') == 'MEDIUM' ? 'selected' : '' }}>MEDIUM</option>
@@ -74,11 +79,15 @@
                             </select>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="status"><strong>Status:</strong></label>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label"><strong>Status:</strong></label>
                         <div class="col-sm-8">
-                            <select name="status" id="status" class="form-control">
+                            <select name="status" class="form-control">
                                 <option value="">--Semua Status--</option>
                                 <option value="OPEN" {{ request('status') == 'OPEN' ? 'selected' : '' }}>OPEN</option>
                                 <option value="ON PROGRES" {{ request('status') == 'ON PROGRES' ? 'selected' : '' }}>ON PROGRESS</option>
@@ -87,42 +96,43 @@
                             </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Tombol Filter Top 10 Skor Tertinggi -->
-                    <div class="row mb-3">
-                        <label class="col-sm-4 col-form-label" for="top10"><strong>Top 10 Highest Risk:</strong></label>
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label"><strong>Top 10 Highest Risk:</strong></label>
                         <div class="col-sm-8 d-flex align-items-center">
-                            <input type="checkbox" name="top10" id="top10" value="1" {{ request('top10') ? 'checked' : '' }}>
-                            <label for="top10" class="ms-2">Tampilkan hanya 10 tertinggi</label>
+                            <input type="checkbox" name="top10" value="1" {{ request('top10') ? 'checked' : '' }}>
+                            <label class="ms-2">Tampilkan hanya 10 tertinggi</label>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" for="keyword"><strong>Search:</strong></label>
-            <div class="col-sm-8">
-                <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search..." value="{{ request('keyword') }}">
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"><strong>Search:</strong></label>
+                <div class="col-sm-8">
+                    <input type="text" name="keyword" class="form-control" placeholder="Search..." value="{{ request('keyword') }}">
+                </div>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ route('riskregister.biglist') }}" class="btn btn-secondary">Reset</a>
+
+                @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
+                    <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisiList->first()->id ?? '', 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
+                        <i class="bi bi-file-earmark-excel"></i>
+                    </a>
+                @endif
+
+                <a href="{{ route('riskregister.export-pdf', ['id' => $divisiList->first()->id ?? '']) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&keyword={{ request('keyword') }}&kriteria={{ request('kriteria')}}&top10={{ request('top10') }}" title="PDF" class="btn btn-danger">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </a>
             </div>
         </div>
-
-        <!-- Tombol Submit Filter -->
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('riskregister.biglist') }}" class="btn btn-secondary">Reset</a>
-        @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
-            <!-- Tombol Export Excel -->
-            <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisi->id, 'export' => 'excel'])) }}" title="Excel" class="btn btn-success">
-                <i class="bi bi-file-earmark-excel"></i>
-            </a>
-        @endif
-
-            <!-- Tombol Export to PDF -->
-            <a href="{{ route('riskregister.export-pdf', ['id' => $divisi->id]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&keyword={{ request('keyword') }}&kriteria={{ request('kriteria')}}&top10={{ request('top10')}}" title="PDF" class="btn btn-danger">
-                <i class="bi bi-file-earmark-pdf"></i>
-            </a>
     </form>
-
 <br>
 
     <table class="table table-striped">
@@ -130,9 +140,9 @@
             <tr>
                 <th>No</th>
                 <th>Issue</th>
-                <th>Tindakan Lanjut</th>
                 <th>Risiko</th>
                 <th>Peluang</th>
+                <th>Tindakan Lanjut</th>
                 <th>Tingkatan</th>
                 <th>Skor</th>
                 <th>Status</th>
@@ -144,6 +154,14 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $data['issue'] }}</td>
+
+                    <td>
+                        @foreach ($data['risiko'] as $risiko)
+                            {{ $risiko }}<br>
+                        @endforeach
+                    </td>
+
+                    <td>{{ $data['peluang'] }}</td>
 
                     <!-- Gabungkan Pihak Berkepentingan dan Tindakan Lanjut -->
                     <td>
@@ -160,13 +178,6 @@
                         </ul>
                     </td>
 
-                    <td>
-                        @foreach ($data['risiko'] as $risiko)
-                            {{ $risiko }}<br>
-                        @endforeach
-                    </td>
-
-                    <td>{{ $data['peluang'] }}</td>
 
                     <td>
                         @foreach ($data['tingkatan'] as $tingkatan)

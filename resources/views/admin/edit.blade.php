@@ -50,7 +50,7 @@
                         <option value="" disabled selected>--Pilih Divisi--</option>
                         @foreach ($divisi as $d)
                             <option value="{{ $d->id }}"
-                                    {{ old('divisi', $user->divisi_id) == $d->id ? 'selected' : '' }}>
+                                    {{ old('divisi', $user->divisi) == $d->id ? 'selected' : '' }}>
                                 {{ $d->nama_divisi }}
                             </option>
                         @endforeach
@@ -88,6 +88,40 @@
                     </div>
                 </div>
             </div>
+            <hr>
+
+            <div class="row mb-3">
+                <label for="password" class="col-sm-2 col-form-label"><strong>Password Baru:</strong></label>
+                <div class="col-sm-10 input-group">
+                    <input type="password" name="password" class="form-control" id="password" placeholder="(Kosongkan jika tidak ingin mengubah)">
+                    <span class="input-group-text" onclick="togglePasswordVisibility('password', this)">
+                        <i class="ri-eye-line"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="password_confirmation" class="col-sm-2 col-form-label"><strong>Konfirmasi Password:</strong></label>
+                <div class="col-sm-10 input-group">
+                    <input type="password" name="password_confirmation" class="form-control" id="password_confirmation" placeholder="(Kosongkan jika tidak ingin mengubah)">
+                    <span class="input-group-text" onclick="togglePasswordVisibility('password_confirmation', this)">
+                        <i class="ri-eye-line"></i>
+                    </span>
+                </div>
+            </div>
+
+            <script>
+                function togglePasswordVisibility(inputId, toggleIcon) {
+                    var input = document.getElementById(inputId);
+                    if (input.type === "password") {
+                        input.type = "text";
+                        toggleIcon.innerHTML = '<i class="ri-eye-off-line"></i>';
+                    } else {
+                        input.type = "password";
+                        toggleIcon.innerHTML = '<i class="ri-eye-line"></i>';
+                    }
+                }
+            </script>
 
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="javascript:history.back()" class="btn btn-danger">Cancel</a>
