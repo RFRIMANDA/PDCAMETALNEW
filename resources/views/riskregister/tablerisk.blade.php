@@ -2,6 +2,25 @@
 
     @section('content')
 
+    <!-- Check for success message -->
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <!-- Check for error message -->
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong>
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $forms->first()->divisi->nama_divisi ?? '' }}</h5>

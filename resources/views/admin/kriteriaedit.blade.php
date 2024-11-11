@@ -14,12 +14,12 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                            <label for="nama_kriteria" class="form-label"><strong>Nama Kriteria</strong></label>
                             <input type="text" class="form-control" id="nama_kriteria" name="nama_kriteria" value="{{ $kriteria->nama_kriteria }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="desc_kriteria" class="form-label">Deskripsi Kriteria</label>
+                            <label for="desc_kriteria" class="form-label"><strong>Deskripsi Kriteria</strong></label>
                             <div id="desc_kriteria">
                                 @php
                                     $descArray = json_decode($kriteria->desc_kriteria, true);
@@ -28,15 +28,17 @@
 
                                 @foreach ($descArray as $index => $desc)
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" name="desc_kriteria[]" value="{{ $desc }}" placeholder="Deskripsi Kriteria" required>
-                                        <input type="text" class="form-control" name="nilai_kriteria[]" value="{{ $nilaiArray[$index] }}" placeholder="Nilai Kriteria" required>
+                                        <textarea class="form-control" name="desc_kriteria[]" placeholder="Deskripsi Kriteria" required rows="3">{{ $desc }}</textarea>
+                                        <input type="text" class="form-control col-2" name="nilai_kriteria[]" value="{{ $nilaiArray[$index] }}" placeholder="Nilai Kriteria" required>
                                     </div>
                                 @endforeach
                             </div>
-                            <button type="button" class="btn btn-sm btn-success" onclick="addDescription()">Tambah Deskripsi</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="addDescription()">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Perbarui</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </form>
 
                 </div>
@@ -49,7 +51,7 @@
     function addDescription() {
         var div = document.createElement('div');
         div.classList.add('input-group', 'mb-2');
-        div.innerHTML = '<input type="text" class="form-control" name="desc_kriteria[]" placeholder="Deskripsi Kriteria" required><input type="text" class="form-control" name="nilai_kriteria[]" placeholder="Nilai Kriteria" required>';
+        div.innerHTML = '<textarea class="form-control" name="desc_kriteria[]" placeholder="Deskripsi Kriteria" required rows="3"></textarea><input type="text" class="form-control col-2" name="nilai_kriteria[]" placeholder="Nilai Kriteria" required>';
         document.getElementById('desc_kriteria').appendChild(div);
     }
 </script>

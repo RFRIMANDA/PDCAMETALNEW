@@ -66,13 +66,14 @@ class RiskController extends Controller
 {
     try {
         // Validasi input
+        // dd($request->all());
         $validated = $request->validate([
             'id_divisi' => 'required|exists:divisi,id',
             'issue' => 'required|string',
             'inex' => 'nullable|in:I,E',
             'nama_resiko' => 'nullable|required_without:peluang|string',
             'peluang' => 'nullable|required_without:nama_resiko|string',
-            'kriteria' => 'nullable|in:Unsur keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',
+            'kriteria' => 'nullable|in:Unsur Keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',
             'probability' => 'required|integer|min:1|max:5',
             'severity' => 'required|integer|min:1|max:5',
             'nama_tindakan' => 'required|array',
@@ -145,7 +146,7 @@ class RiskController extends Controller
         }
 
         return redirect()->route('riskregister.tablerisk', ['id' => $riskregister->id_divisi])
-            ->with('success', 'Data berhasil disimpan!');
+            ->with('success', 'Data berhasil disimpan!.✅');
     } catch (\Exception $e) {
         return back()->withErrors(['error' => 'Data gagal disimpan: ' . $e->getMessage()]);
     }
@@ -281,7 +282,7 @@ public function update(Request $request, $id)
         $resiko->save();
 
         return redirect()->route('riskregister.tablerisk', ['id' => $validated['id_divisi']])
-            ->with('success', 'Data berhasil diperbarui!');
+            ->with('success', 'Data berhasil diperbarui!.✅');
     }
 
     private function calculateTingkatan($probability, $severity)
