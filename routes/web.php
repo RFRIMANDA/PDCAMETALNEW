@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // Dasboard HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/riskregister/filter', [HomeController::class, 'getFilteredData'])->name('riskregister.filter');
 
 // login regist
 Route::post('/register-act', [UserController::class, 'register_action'])->name('register.action');

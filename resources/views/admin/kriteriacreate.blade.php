@@ -32,7 +32,10 @@
                             </div>
                         </div>
 
-                        <button type="button" onclick="addDescField()">Tambah Deskripsi</button>
+                        <button class="btn btn-sm btn-success" onclick="addDescField()">
+                        <i class="fas fa-plus"></i>
+                        </button><br>
+                        <br>
 
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>

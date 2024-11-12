@@ -117,7 +117,6 @@
                         <h5>Status Departemen</h5>
                         <canvas id="statusPieChart"></canvas>
                         <!-- Button to open status modal -->
-                        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#statusModal">View Data</button>
                     </div>
                 </div>
             </div>
@@ -129,7 +128,6 @@
                         <h5>Tingkatan Departemen</h5>
                         <canvas id="tingkatanPieChart"></canvas>
                         <!-- Button to open tingkatan modal -->
-                        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#tingkatanModal">View Data</button>
                     </div>
                 </div>
             </div>
@@ -137,45 +135,59 @@
     </div>
 
     <!-- Status Modal -->
-    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="statusModalLabel">Status Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Table with status details -->
-                    <table class="table table-striped">
-                        <thead>
+    <!-- Status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">Status Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Table with status details -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($statusDetails as $status => $details)
                             <tr>
-                                <th>No</th>
-                                <th>Status</th>
-                                <th>Details</th>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $status }}</td>
+                                <td>
+                                    <table class="table table-bordered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Resiko</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($details as $index => $resiko)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $resiko->nama_resiko }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($statusDetails as $status => $details)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $status }}</td>
-                                    <td>
-                                        @foreach($details as $index => $resiko)
-                                            {{ $index + 1 }}. {{ $resiko->nama_resiko }}<br>
-                                        @endforeach
-                                    </td>
-                                </tr>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- Tingkatan Modal -->
     <div class="modal fade" id="tingkatanModal" tabindex="-1" aria-labelledby="tingkatanModalLabel" aria-hidden="true">
@@ -201,11 +213,22 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $tingkatan }}</td>
                                     <td>
-                                        <ul>
-                                            @foreach($details as $resiko)
-                                                <li>{{ $resiko->nama_resiko }}</li>
-                                            @endforeach
-                                        </ul>
+                                        <table class="table table-bordered mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Resiko</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($details as $index => $resiko)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $resiko->nama_resiko }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
                             @endforeach
@@ -219,6 +242,7 @@
         </div>
     </div>
 
+
 </section>
 
 <!-- Include Chart.js -->
@@ -226,34 +250,102 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    // Status Pie Chart
-    new Chart(document.getElementById('statusPieChart'), {
-        type: 'pie',
-        data: {
-            labels: @json($statusCounts->keys()),
-            datasets: [{
-                data: @json($statusCounts->values()),
-                backgroundColor: ['#FF6347', '#FFD700', '#32CD32', '#8A2BE2'] // You can adjust colors here for status
-            }]
-        }
-    });
-         // Tingkatan Pie Chart (Updated colors for Low, Medium, High)
-    new Chart(document.getElementById('tingkatanPieChart'), {
-        type: 'pie',
-        data: {
-            labels: @json($tingkatanCounts->keys()),
-            datasets: [{
-                data: @json($tingkatanCounts->values()),
-                backgroundColor: [
-                    '#32CD32', // Green for Low
-                    '#FF6347', // Yellow for Medium
-                    '#FFD700'  // Red for High
-                ]
-            }]
-        }
-    });
+        // Pass the PHP variables to JavaScript as JSON
+        const statusDetails = @json($statusDetails);
+        const tingkatanDetails = @json($tingkatanDetails);
 
-});
+        // Status Pie Chart
+        const statusPieChart = new Chart(document.getElementById('statusPieChart'), {
+            type: 'pie',
+            data: {
+                labels: @json($statusCounts->keys()),
+                datasets: [{
+                    data: @json($statusCounts->values()),
+                    backgroundColor: ['#FFD700', '#32CD32', '#FF6347']
+                }]
+            },
+            options: {
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const segmentIndex = elements[0].index;
+                        const selectedStatus = statusPieChart.data.labels[segmentIndex];
+
+                        // Filter data by selected status
+                        fetchFilteredData('status', selectedStatus);
+                    }
+                }
+            }
+        });
+
+        // Tingkatan Pie Chart
+        const tingkatanPieChart = new Chart(document.getElementById('tingkatanPieChart'), {
+            type: 'pie',
+            data: {
+                labels: @json($tingkatanCounts->keys()),
+                datasets: [{
+                    data: @json($tingkatanCounts->values()),
+                    backgroundColor: ['#FF6347', '#FFD700', '#32CD32']
+                }]
+            },
+            options: {
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const segmentIndex = elements[0].index;
+                        const selectedTingkatan = tingkatanPieChart.data.labels[segmentIndex];
+
+                        // Filter data by selected tingkatan
+                        fetchFilteredData('tingkatan', selectedTingkatan);
+                    }
+                }
+            }
+        });
+
+        // Function to fetch filtered data
+        function fetchFilteredData(filterType, filterValue) {
+            let filteredData = [];
+
+            // Check which chart was clicked and filter the data accordingly
+            if (filterType === 'status') {
+                filteredData = statusDetails[filterValue] || [];
+            } else if (filterType === 'tingkatan') {
+                filteredData = tingkatanDetails[filterValue] || [];
+            }
+
+            displayDataInModal(filteredData, filterType, filterValue);
+        }
+
+        // Function to display data in modal
+        function displayDataInModal(data, filterType, filterValue) {
+            const modalId = filterType === 'status' ? '#statusModal' : '#tingkatanModal';
+            const modalTitle = filterType === 'status' ? 'Status Data' : 'Tingkatan Data';
+
+            const modalBody = document.querySelector(`${modalId} .modal-body`);
+            modalBody.innerHTML = `
+                <h5>${modalTitle} - ${filterValue}</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Resiko</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map((resiko, index) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${resiko.nama_resiko}</td>
+                                <td>${resiko.detail || '-'}</td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Show the modal
+            $(modalId).modal('show');
+        }
+    });
 </script>
+
 @endsection
 
