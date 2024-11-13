@@ -9,7 +9,7 @@ class Ppkkedua extends Model
 {
     use HasFactory;
 
-    protected $table = 'formppkkedua';
+    protected $table = 'formppk2';
 
     protected $fillable = [
         'id_formppk',

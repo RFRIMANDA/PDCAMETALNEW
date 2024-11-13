@@ -494,139 +494,131 @@ $defaultDivisiId = $divisiList->first()->id ?? null;
 // Pass data to the view
 return view('riskregister.biglist', compact('formattedData', 'divisiList','defaultDivisiId'));}
 
-    public function exportFilteredPDF(Request $request, $id)
-    {
-        // Ambil parameter filter dari request
-        $tingkatanFilter = $request->query('tingkatan'); // Tangkap dari query string
-        $statusFilter = $request->query('status');
-        $divisiFilter = $request->query('nama_divisi');
-        $yearFilter = $request->query('year');
-        $kategoriFilter = $request->query('kriteria');
-        $keywordFilter = $request->input('keyword');
-        $top10Filter = $request->input('top10'); // Tambahkan filter top 10
+public function exportFilteredPDF(Request $request)
+{
+    // Retrieve filter parameters from the request
+    $tingkatanFilter = $request->query('tingkatan');
+    $statusFilter = $request->query('status');
+    $divisiFilter = $request->query('nama_divisi');
+    $yearFilter = $request->query('year');
+    $kategoriFilter = $request->query('kriteria');
+    $keywordFilter = $request->input('keyword');
+    $top10Filter = $request->input('top10');
 
-        // Ambil user yang sedang login dan allowed divisi
-        $user = Auth::user();
-        $allowedDivisi = json_decode($user->type, true);
+    // Get the logged-in user and their allowed divisions
+    $user = Auth::user();
+    $allowedDivisi = json_decode($user->type, true);
 
-        // Ambil data riskregister yang sudah difilter
-        $query = Riskregister::with(['tindakan.realisasi', 'resikos']);
+    // Initialize the query
+    $query = Riskregister::with(['tindakan.realisasi', 'resikos']);
 
-        // Terapkan filter tingkatan
-        if ($tingkatanFilter) {
-            $query->whereHas('resikos', function ($q) use ($tingkatanFilter) {
-                $q->where('tingkatan', $tingkatanFilter);
-            });
-        }
+    // Apply division filter based on user type
+    if (!empty($allowedDivisi)) {
+        $query->whereHas('divisi', function ($q) use ($allowedDivisi) {
+            $q->whereIn('id', $allowedDivisi);
+        });
+    }
 
-        // Filter status: Tangani filter untuk 'OPEN & ON PROGRES'
-        if ($statusFilter == 'open_on_progres') {
-            $query->whereHas('resikos', function ($q) {
-                $q->whereIn('status', ['OPEN', 'ON PROGRES']);
-            });
-        } elseif ($statusFilter) {
-            $query->whereHas('resikos', function ($q) use ($statusFilter) {
-                $q->where('status', $statusFilter);
-            });
-        }
+    // Apply additional filters
+    if ($tingkatanFilter) {
+        $query->whereHas('resikos', function ($q) use ($tingkatanFilter) {
+            $q->where('tingkatan', $tingkatanFilter);
+        });
+    }
 
-        // Filter berdasarkan divisi sesuai dengan hak akses user
-        if ($user->role == 'user' && !empty($allowedDivisi)) {
-            $query->whereHas('divisi', function ($q) use ($allowedDivisi) {
-                $q->whereIn('id', $allowedDivisi);
-            });
-        }
+    if ($statusFilter == 'open_on_progres') {
+        $query->whereHas('resikos', function ($q) {
+            $q->whereIn('status', ['OPEN', 'ON PROGRES']);
+        });
+    } elseif ($statusFilter) {
+        $query->whereHas('resikos', function ($q) use ($statusFilter) {
+            $q->where('status', $statusFilter);
+        });
+    }
 
-        // Filter tambahan berdasarkan divisi jika ada
-        if ($divisiFilter) {
-            $query->whereHas('divisi', function ($q) use ($divisiFilter) {
-                $q->where('nama_divisi', $divisiFilter);
-            });
-        }
+    if ($divisiFilter) {
+        $query->whereHas('divisi', function ($q) use ($divisiFilter) {
+            $q->where('nama_divisi', $divisiFilter);
+        });
+    }
 
-        // Filter tahun penyelesaian langsung dari Riskregister
-        if ($yearFilter) {
-            $query->whereYear('target_penyelesaian', $yearFilter);
-        }
+    if ($yearFilter) {
+        $query->whereYear('target_penyelesaian', $yearFilter);
+    }
 
-        if ($keywordFilter) {
-            $query->where(function ($q) use ($keywordFilter) {
-                $q->where('issue', 'like', '%' . $keywordFilter . '%')
-                ->orWhereHas('tindakan', function ($q) use ($keywordFilter) {
-                    $q->where('nama_tindakan', 'like', '%' . $keywordFilter . '%');
-                })
-                ->orWhereHas('resikos', function ($q) use ($keywordFilter) {
-                    $q->where('nama_resiko', 'like', '%' . $keywordFilter . '%');
-                })
-                ->orWhere('peluang', 'like', '%' . $keywordFilter . '%');
-            });
-        }
-        if ($kategoriFilter) {
-            $query->whereHas('resikos', function ($q) use ($kategoriFilter) {
-                $q->where('kriteria', $kategoriFilter); // Ensure the column name matches your database schema
-            });
-        }
-        // Filter top 10
-        if ($top10Filter) {
-            $query->take(10);
-        }
+    if ($keywordFilter) {
+        $query->where(function ($q) use ($keywordFilter) {
+            $q->where('issue', 'like', '%' . $keywordFilter . '%')
+              ->orWhereHas('tindakan', function ($q) use ($keywordFilter) {
+                  $q->where('nama_tindakan', 'like', '%' . $keywordFilter . '%');
+              })
+              ->orWhereHas('resikos', function ($q) use ($keywordFilter) {
+                  $q->where('nama_resiko', 'like', '%' . $keywordFilter . '%');
+              })
+              ->orWhere('peluang', 'like', '%' . $keywordFilter . '%');
+        });
+    }
 
-            // Ambil data yang sudah difilter
-            $riskregisters = $query->get();
+    if ($kategoriFilter) {
+        $query->whereHas('resikos', function ($q) use ($kategoriFilter) {
+            $q->where('kriteria', $kategoriFilter);
+        });
+    }
 
-            // Siapkan data untuk ditampilkan pada PDF
-            $formattedData = [];
-            foreach ($riskregisters as $riskregister) {
-                foreach ($riskregister->resikos as $resiko) {
-                    $tindakanData = [];
-                    foreach ($riskregister->tindakan as $tindakan) {
-                        // Dapatkan tgl_realisasi terakhir dari relasi realisasi berdasarkan id_tindakan
-                        $tglRealisasiTerakhir = $tindakan->tgl_penyelesaian;
+    if ($top10Filter) {
+        $query->take(10);
+    }
 
-                        $targetpicName = $tindakan->user ? $tindakan->user->nama_user : 'Tidak ada targetpic';
+    // Retrieve the filtered data
+    $riskregisters = $query->get();
 
+    // Format the data for PDF export
+    $formattedData = [];
+    foreach ($riskregisters as $riskregister) {
+        foreach ($riskregister->resikos as $resiko) {
+            $tindakanData = [];
+            foreach ($riskregister->tindakan as $tindakan) {
+                $tglRealisasiTerakhir = $tindakan->tgl_penyelesaian;
+                $targetpicName = $tindakan->user ? $tindakan->user->nama_user : 'Tidak ada targetpic';
 
-                        $tindakanData[] = [
-                            'pihak' => $tindakan->pihak,
-                            'nama_tindakan' => $tindakan->nama_tindakan,
-                            'targetpic' => $targetpicName, // Menampilkan nama user atau 'Tidak ada targetpic'
-                            'tgl_penyelesaian' => $tglRealisasiTerakhir,
-                        ];
-                    }
-
-                    // Urutkan tindakan berdasarkan nama pihak
-                    usort($tindakanData, function ($a, $b) {
-                        return strcmp($a['pihak'], $b['pihak']);
-                    });
-
-                    $formattedData[] = [
-                        'issue' => $riskregister->issue,
-                        'inex' => $riskregister->inex,
-                        'pihak' => $riskregister->pihak,
-                        'risiko' => $resiko->nama_resiko,
-                        'peluang' => $riskregister->peluang,
-                        'tingkatan' => $resiko->tingkatan,
-                        'tindak_lanjut' => array_column($tindakanData, 'nama_tindakan'),
-                        'targetpic' => array_column($tindakanData, 'targetpic'),
-                        'tgl_penyelesaian' => array_column($tindakanData, 'tgl_penyelesaian'),
-                        'status' => $resiko->status,
-                        'risk' => $resiko->risk,
-                        'before' => $resiko->before,
-                        'after' => $resiko->after,
-                    ];
-                }
+                $tindakanData[] = [
+                    'pihak' => $tindakan->pihak,
+                    'nama_tindakan' => $tindakan->nama_tindakan,
+                    'targetpic' => $targetpicName,
+                    'tgl_penyelesaian' => $tglRealisasiTerakhir,
+                ];
             }
-            // dd($formattedData);
 
-            // Render data ke view
-            $pdf = PDF::loadView('pdf.risk_opportunity_export', compact('formattedData'));
+            // Sort tindakan data by pihak
+            usort($tindakanData, function ($a, $b) {
+                return strcmp($a['pihak'], $b['pihak']);
+            });
 
-            // Set orientasi PDF menjadi landscape
-            $pdf->setPaper('A4', 'landscape');
-
-            // Download file PDF
-            return $pdf->download('risk_opportunity_export.pdf');
+            $formattedData[] = [
+                'issue' => $riskregister->issue,
+                'inex' => $riskregister->inex,
+                'pihak' => $riskregister->pihak,
+                'risiko' => $resiko->nama_resiko,
+                'peluang' => $riskregister->peluang,
+                'tingkatan' => $resiko->tingkatan,
+                'tindak_lanjut' => array_column($tindakanData, 'nama_tindakan'),
+                'targetpic' => array_column($tindakanData, 'targetpic'),
+                'tgl_penyelesaian' => array_column($tindakanData, 'tgl_penyelesaian'),
+                'status' => $resiko->status,
+                'risk' => $resiko->risk,
+                'before' => $resiko->before,
+                'after' => $resiko->after,
+            ];
         }
+    }
+
+    // Generate PDF
+    $pdf = PDF::loadView('pdf.risk_opportunity_export', compact('formattedData'))
+              ->setPaper('A4', 'landscape');
+
+    return $pdf->download('risk_opportunity_export.pdf');
+}
+
 
     public function exportFilteredExcel(Request $request, $id)
 {

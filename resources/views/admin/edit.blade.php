@@ -50,7 +50,7 @@
                         <option value="" disabled selected>--Pilih Divisi--</option>
                         @foreach ($divisi as $d)
                             <option value="{{ $d->id }}"
-                                    {{ old('divisi', $user->divisi) == $d->id ? 'selected' : '' }}>
+                                {{ old('divisi', $user->divisi) == $d->nama_divisi ? 'selected' : '' }}>
                                 {{ $d->nama_divisi }}
                             </option>
                         @endforeach

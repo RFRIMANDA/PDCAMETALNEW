@@ -15,7 +15,7 @@
     <form method="GET" action="{{ route('riskregister.biglist') }}">
         <div class="container">
             <div class="row mb-3">
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manajemen')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manajemen'|| auth()->user()->role === 'manager')
                     <div class="col-md-6">
                         <div class="mb-3 row">
                             <label class="col-sm-4 col-form-label"><strong>Departemen:</strong></label>

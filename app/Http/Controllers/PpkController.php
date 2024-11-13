@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ppk;
 use App\Models\Ppkkedua;
+use App\Models\Ppkketiga;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PpkExport;
@@ -18,7 +19,7 @@ class PpkController extends Controller
 
         $ppks = Ppk::where('pembuat', $userId)
                     ->orWhere('penerima', $userId)
-                    ->with(['formppkkedua', 'pembuatUser', 'penerimaUser']) // Tambahkan relasi pengguna
+                    ->with(['formppk2','formppk3', 'pembuatUser', 'penerimaUser'])
                     ->get();
 
         return view('ppk.index', compact('ppks'));
@@ -26,15 +27,23 @@ class PpkController extends Controller
 
     public function create()
     {
-        $data = User::all(); // Ambil data user untuk dropdown
+        $data = User::all();
         return view('ppk.create', compact('data'));
     }
 
     public function create2($id)
     {
-        $data = User::all(); // Ambil data user untuk dropdown
-        $ppk = Ppk::findOrFail($id); // Ambil data PPK berdasarkan ID
-        return view('ppk.formppkkedua', ['id' => $id],compact('data', 'ppk'));
+        $data = User::all();
+        $ppk = Ppk::findOrFail($id);
+        return view('ppk.create2', ['id' => $id], compact('data', 'ppk'));
+    }
+
+    public function create3($id)
+    {
+        $data = User::all();
+        $ppk = Ppk::findOrFail($id);
+        $users = User::all();
+        return view('ppk.create3', ['id' => $id], compact('data', 'ppk','users'));
     }
 
     public function store(Request $request)
@@ -42,7 +51,7 @@ class PpkController extends Controller
         $request->validate([
             'judul' => 'nullable|string|max:1000',
             'jenisketidaksesuaian' => 'nullable|array',
-            'jenisketidaksesuaian.*' => 'in:SISTEM,AUDIT,PRODUK,PROSES', // Validasi untuk elemen di dalam array
+            'jenisketidaksesuaian.*' => 'in:SISTEM,AUDIT,PRODUK,PROSES',
             'pembuat' => 'required|string|max:255',
             'emailpembuat' => 'required|email|max:255',
             'divisipembuat' => 'required|string|max:255',
@@ -57,50 +66,17 @@ class PpkController extends Controller
             'identifikasi' => 'nullable|string|max:1000',
             'signaturepenerima' => 'nullable|string',
             'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-        ], [
-            'signature.required_without' => 'Tanda tangan diperlukan, baik dari canvas atau file.',
-            'signature_file.required_without' => 'Tanda tangan diperlukan, baik dari canvas atau file.',
-            'signaturepenerima.required_without' => 'Tanda tangan diperlukan, baik dari canvas atau file.',
-            'signaturepenerima_file.required_without' => 'Tanda tangan diperlukan, baik dari canvas atau file.',
         ]);
 
         $ccEmails = $request->cc_email ? implode(',', $request->cc_email) : null;
+        $evidence = $this->handleFileUpload($request, 'evidence', 'dokumen', 'TML');
 
-    if ($request->hasFile('evidence')) {
-        $file = $request->file('evidence');
-        $filename = 'TML' . uniqid() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('dokumen'), $filename);
-        $evidence = $filename; // Simpan nama file ke variable $evidence
-    }
-
-        $signatureFileName = null;
-        if ($request->signature) {
-            $signaturePath = public_path('admin/img');
-            $signatureData = $request->signature;
-            list(, $signatureData) = explode(',', $signatureData);
-            $signatureFileName = 'signature_' . uniqid() . '.png';
-            file_put_contents($signaturePath . '/' . $signatureFileName, base64_decode($signatureData));
-        } elseif ($request->hasFile('signature_file')) {
-            $file = $request->file('signature_file');
-            $signatureFileName = 'signature_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('admin/img'), $signatureFileName);
-        }
-
-        // Menyimpan tanda tangan penerima (signaturepenerima)
-        $signaturePenerimaFileName = null;
-        if ($request->signaturepenerima) {
-            $signaturePenerimaPath = public_path('admin/img');
-            $signaturePenerimaData = $request->signaturepenerima;
-            list(, $signaturePenerimaData) = explode(',', $signaturePenerimaData);
-            $signaturePenerimaFileName = 'signature_penerima_' . uniqid() . '.png';
-            file_put_contents($signaturePenerimaPath . '/' . $signaturePenerimaFileName, base64_decode($signaturePenerimaData));
-        } elseif ($request->hasFile('signaturepenerima_file')) {
-            $file = $request->file('signaturepenerima_file');
-            $signaturePenerimaFileName = 'signature_penerima_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('admin/img'), $signaturePenerimaFileName);
-        }
+        $signatureFileName = $this->handleSignature($request, 'signature', 'signature_file');
+        $signaturePenerimaFileName = $this->handleSignature($request, 'signaturepenerima', 'signaturepenerima_file', 'signature_penerima_');
 
         try {
+            DB::beginTransaction();
+
             $lastPpk = Ppk::latest()->first();
             $sequence = $lastPpk ? intval(substr($lastPpk->nomor_surat, 0, 3)) + 1 : 1;
             $nomor = str_pad($sequence, 3, '0', STR_PAD_LEFT);
@@ -110,12 +86,8 @@ class PpkController extends Controller
 
             $user = User::find($request->penerima);
             $divisi = $request->divisipenerima ?? $user->divisi;
-
             $nomorSurat = "$nomor/MFG/$divisi/$bulan/$tahun-$semester";
 
-            DB::beginTransaction();
-
-            // Simpan data PPK
             $buatppk = Ppk::create([
                 'judul' => $request->judul,
                 'jenisketidaksesuaian' => is_array($request->jenisketidaksesuaian) ? implode(',', $request->jenisketidaksesuaian) : null,
@@ -131,15 +103,10 @@ class PpkController extends Controller
                 'signature' => $signatureFileName,
             ]);
 
-            // Membuat entri untuk PPK kedua secara otomatis
-            Ppkkedua::create([
-                'id_formppk' => $buatppk->id, // Mengaitkan ID PPK ke PPK kedua
-                'identifikasi' => null, // Ini akan diisi oleh penerima
-                'signaturepenerima' => null,
-            ]);
+            Ppkkedua::create(['id_formppk' => $buatppk->id]);
+            Ppkketiga::create(['id_formppk' => $buatppk->id]);
 
             DB::commit();
-
             return redirect()->route('ppk.index')->with('success', 'Data PPK berhasil disimpan.✅');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -147,7 +114,35 @@ class PpkController extends Controller
         }
     }
 
-    public function storeFormPpkkedua(Request $request)
+    private function handleFileUpload($request, $inputName, $path, $prefix)
+    {
+        if ($request->hasFile($inputName)) {
+            $file = $request->file($inputName);
+            $filename = $prefix . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path($path), $filename);
+            return $filename;
+        }
+        return null;
+    }
+
+    private function handleSignature($request, $signatureField, $fileField, $prefix = 'signature_')
+    {
+        $signaturePath = public_path('admin/img');
+        if ($request->$signatureField) {
+            list(, $signatureData) = explode(',', $request->$signatureField);
+            $signatureFileName = $prefix . uniqid() . '.png';
+            file_put_contents($signaturePath . '/' . $signatureFileName, base64_decode($signatureData));
+            return $signatureFileName;
+        } elseif ($request->hasFile($fileField)) {
+            $file = $request->file($fileField);
+            $signatureFileName = $prefix . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($signaturePath, $signatureFileName);
+            return $signatureFileName;
+        }
+        return null;
+    }
+
+    public function store2(Request $request)
     {
         $request->validate([
             'id_formppk' => 'required|exists:formppk,id',
@@ -156,21 +151,9 @@ class PpkController extends Controller
             'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $signaturePenerimaFileName = null;
-        if ($request->signaturepenerima) {
-            $signaturePenerimaPath = public_path('admin/img');
-            $signaturePenerimaData = $request->signaturepenerima;
-            list(, $signaturePenerimaData) = explode(',', $signaturePenerimaData);
-            $signaturePenerimaFileName = 'signature_penerima_' . uniqid() . '.png';
-            file_put_contents($signaturePenerimaPath . '/' . $signaturePenerimaFileName, base64_decode($signaturePenerimaData));
-        } elseif ($request->hasFile('signaturepenerima_file')) {
-            $file = $request->file('signaturepenerima_file');
-            $signaturePenerimaFileName = 'signature_penerima_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('admin/img'), $signaturePenerimaFileName);
-        }
+        $signaturePenerimaFileName = $this->handleSignature($request, 'signaturepenerima', 'signaturepenerima_file', 'signature_penerima_');
 
         try {
-            // Mengupdate data PPK kedua
             Ppkkedua::where('id_formppk', $request->id_formppk)->update([
                 'identifikasi' => $request->identifikasi,
                 'signaturepenerima' => $signaturePenerimaFileName,
@@ -181,19 +164,43 @@ class PpkController extends Controller
             return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
     }
-    public function exportSingle($id)
+
+    public function store3(Request $request)
     {
+        // dd($request->all());
+        $request->validate([
+            'id_formppk' => 'required|exists:formppk,id',
+            'penanggulangan' => 'nullable|string|max:1000',
+            'pencegahan' => 'nullable|string|max:1000',
+            'target_tgl' => 'nullable|date',
+            'pic1' => 'nullable|string',
+            'pic2' => 'nullable|string',
+        ]);
 
-        $ppk = Ppk::with('pembuatUser', 'penerimaUser')->findOrFail($id);
-        $ppkdua = Ppkkedua::where('id_formppk', $id)->first(); // Ambil data Ppkkedua
+        try {
+            Ppkketiga::where('id_formppk', $request->id_formppk)->update([
+                'penanggulangan' => $request->penanggulangan,
+                'pencegahan' => $request->pencegahan,
+                'target_tgl' => $request->target_tgl,
+                'pic1' => $request->pic1,
+                'pic2' => $request->pic2,
+            ]);
 
-        // Membersihkan nomor_surat dari karakter yang tidak diizinkan
-        $cleanedNomorSurat = preg_replace('/[\/\\\:*?"<>|]/', '_', $ppk->nomor_surat);
-
-        // Menggunakan nomor surat yang sudah dibersihkan sebagai nama file
-        $fileName = '' . $cleanedNomorSurat . '.xlsx';
-
-        return Excel::download(new PpkExport($ppk, $ppkdua), $fileName);
+            return redirect()->route('ppk.index')->with('success', 'Form ketiga berhasil disimpan.✅');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+        }
     }
 
+    public function exportSingle($id)
+    {
+        $ppk = Ppk::with('pembuatUser', 'penerimaUser')->findOrFail($id);
+        $ppkdua = Ppkkedua::where('id_formppk', $id)->first();
+        $ppktiga = Ppkketiga::where('id_formppk', $id)->first();
+
+        $cleanedNomorSurat = preg_replace('/[\/\\\:*?"<>|]/', '_', $ppk->nomor_surat);
+        $fileName = '' . $cleanedNomorSurat . '.xlsx';
+
+        return Excel::download(new PpkExport($ppk, $ppkdua, $ppktiga), $fileName);
+    }
 }

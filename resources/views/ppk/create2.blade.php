@@ -13,7 +13,7 @@
             <h5 class="card-title">PROSES PENINGKATAN KINERJA</h5>
 
             <!-- General Form Elements -->
-            <form method="POST" action="{{ route('ppk.storeformppkkedua') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('ppk.store2') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id_formppk" value="{{ $id }}">
 

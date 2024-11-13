@@ -37,9 +37,22 @@ class Ppk extends Model
         return $this->belongsTo(User::class, 'penerima', 'id');
     }
 
-    public function formppkkedua()
+    public function formppk2()
     {
         return $this->hasOne(Ppkkedua::class, 'id_formppk', 'id');
     }
+
+    public function formppk3()
+{
+    return $this->hasOne(Ppkketiga::class, 'id_formppk');
+}
+public function divisi1()
+{
+    return $this->belongsTo(Divisi::class, 'divisipembuat');
+}
+public function divisi2()
+{
+    return $this->belongsTo(Divisi::class, 'divisipenerima');
+}
 
 }

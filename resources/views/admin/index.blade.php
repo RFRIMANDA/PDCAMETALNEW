@@ -18,9 +18,18 @@
                 <div class="col-md-4">
                     <input type="text" name="nama_user" class="form-control" placeholder="Cari berdasarkan Nama" value="{{ request('nama_user') }}">
                 </div>
+
                 <div class="col-md-4">
-                    <input type="text" name="divisi" class="form-control" placeholder="Cari berdasarkan Divisi" value="{{ request('divisi') }}">
+                    <select name="divisi" class="form-control" >
+                        <option value="" disabled selected>Pilih Divisi</option>
+                        @foreach ($divisi as $d)
+                            <option value="{{ $d->id }}" {{ request('divisi') == $d->id ? 'selected' : '' }}>
+                                {{ $d->nama_divisi }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
+
                 <div class="col-md-3">
                     <div class="input-group">
                         <select name="role" class="form-control">

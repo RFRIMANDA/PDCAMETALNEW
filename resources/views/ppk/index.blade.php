@@ -36,7 +36,10 @@
                             <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
-                            <a href="{{ route('ppk.formppkkedua', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
+                            <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-info btn-sm" title="Form PPK Ketiga">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                             <a href="{{ route('ppk.export', $ppk->id) }}" class="btn btn-success btn-sm" title="Export to Excel">
@@ -119,12 +122,9 @@
                             <td>
                                 @if ($ppk->signature)
                                     @php
-                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
                                         $signatureExtension = pathinfo($ppk->signature, PATHINFO_EXTENSION);
                                     @endphp
-
                                     @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
-                                        <!-- Preview tanda tangan -->
                                         <img src="{{ asset('admin/img/' . $ppk->signature) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
                                     @endif
                                 @else
@@ -137,16 +137,11 @@
                             <td>
                                 @if ($ppk->evidence)
                                     @php
-                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
                                         $extension = pathinfo($ppk->evidence, PATHINFO_EXTENSION);
                                     @endphp
-
                                     @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png']))
-                                        <!-- Preview gambar -->
                                         <img src="{{ asset('dokumen/' . $ppk->evidence) }}" alt="Evidence Image" style="max-width: 200px; display: block; margin-bottom: 10px;">
                                     @endif
-
-                                    <!-- Link download -->
                                     <a href="{{ asset('dokumen/' . $ppk->evidence) }}" target="_blank" class="btn btn-primary">
                                         <i class="ri-download-line"></i>Download
                                     </a>
@@ -161,27 +156,47 @@
                         </tr>
                         <tr>
                             <th>Identifikasi</th>
-                            <td>{{ $ppk->formppkkedua->identifikasi ?? 'Tidak ada identifikasi oleh Penerima' }}</td>
+                            <td>{{ $ppk->formppk2->identifikasi ?? 'Tidak ada identifikasi oleh Penerima' }}</td>
                         </tr>
                         <tr>
                             <th>Tanda Tangan Penerima</th>
                             <td>
-                                @if ($ppk->formppkkedua && $ppk->formppkkedua->signaturepenerima)
+                                @if ($ppk->formppk2 && $ppk->formppk2->signaturepenerima)
                                     @php
-                                        // Mendapatkan ekstensi file untuk mengecek apakah file adalah gambar
-                                        $signatureExtension = pathinfo($ppk->formppkkedua->signaturepenerima, PATHINFO_EXTENSION);
+                                        $signatureExtension = pathinfo($ppk->formppk2->signaturepenerima, PATHINFO_EXTENSION);
                                     @endphp
-
                                     @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
-                                        <img src="{{ asset('admin/img/' . $ppk->formppkkedua->signaturepenerima) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                    @else
-                                        Tidak ada tanda tangan
+                                        <img src="{{ asset('admin/img/' . $ppk->formppk2->signaturepenerima) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
                                     @endif
                                 @else
                                     Tidak ada tanda tangan
                                 @endif
                             </td>
                         </tr>
+
+                        <!-- Hasil dari Form PPK Ketiga -->
+                        @if($ppk->formppk3)
+                            <tr>
+                                <th>Penanggulangan</th>
+                                <td>{{ $ppk->formppk3->penanggulangan ?? 'Tidak ada penanggulangan' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Pencegahan</th>
+                                <td>{{ $ppk->formppk3->pencegahan ?? 'Tidak ada pencegahan' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tanggal Usulan</th>
+                                <td>{{ $ppk->formppk3->target_tgl ? date('d-m-Y', strtotime($ppk->formppk3->target_tgl)) : 'Tidak ada tanggal usulan' }}</td>
+                            </tr>
+                            <tr>
+                                <th>PIC Penanggulangan</th>
+                                <td>{{ $ppk->formppk3->pic1User ? $ppk->formppk3->pic1User->nama_user : 'Tidak ada PIC' }}</td>
+                            </tr>
+                            <tr>
+                                <th>PIC Pencegahan</th>
+                                <td>{{ $ppk->formppk3->pic2User ? $ppk->formppk3->pic2User->nama_user : 'Tidak ada PIC' }}</td>
+                            </tr>
+                        @endif
                     </table>
 
                     <div class="modal-footer">
@@ -191,10 +206,8 @@
             </div>
         </div>
     </div>
-    <!-- End Modal -->
-
-
 @endforeach
+
 </div>
 
 <style>

@@ -89,16 +89,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/realisasi/{id}/detail', [RealisasiController::class, 'getDetail'])->name('realisasi.detail');
 });
 
-Route::middleware('manager','manajemen')->group(function () {
+// Route::middleware('manager','manajemen')->group(function () {
 // --PPK--//
 Route::get('/ppk', [PpkController::class, 'index'])->name('ppk.index');
 Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
 Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
 Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
 Route::put('/ppk/{id}', [PpkController::class, 'update'])->name('ppk.update');
-Route::get('/formidentifikasi/{id}', [PpkController::class, 'create2'])->name('ppk.formppkkedua');
-Route::post('/ppk/store-formppkkedua', [PpkController::class, 'storeFormPpkkedua'])->name('ppk.storeformppkkedua');
+Route::get('/formidentifikasi/{id}', [PpkController::class, 'create2'])->name('ppk.create2');
+Route::post('/ppk/store-2', [PpkController::class, 'store2'])->name('ppk.store2');
+Route::get('/formusulan/{id}', [PpkController::class, 'create3'])->name('ppk.create3');
+Route::post('/ppk/store-3', [PpkController::class, 'store3'])->name('ppk.store3');
 Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');
-});
+// });
 
 

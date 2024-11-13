@@ -12,6 +12,7 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $query = User::query();
+        $divisi = Divisi::all();
 
         // Filter berdasarkan nama_user
         if ($request->filled('nama_user')) {
@@ -31,7 +32,7 @@ class AdminController extends Controller
         // Ambil semua data user setelah difilter
         $users = $query->get();
 
-        return view('admin.index', compact('users'));
+        return view('admin.index', compact('users','divisi'));
     }
 
     public function create()
@@ -43,28 +44,32 @@ class AdminController extends Controller
 
     public function store(Request $request)
 {
-    // Validate the incoming request
+    // Validasi permintaan
     $request->validate([
         'nama_user' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:user,email',
         'role' => 'required|in:admin,staff,manajemen,manager,supervisor',
-        'type' => 'required|array', // Validate 'type' as an array of divisi IDs
-        'type.*' => 'string|exists:divisi,id', // Ensure each ID in 'type' exists in divisi
-        'divisi' => 'required|string', // Assuming divisi is a string, change if it's a relation
+        'type' => 'required|array', // Validasi 'type' sebagai array dari id divisi
+        'type.*' => 'string|exists:divisi,id', // Pastikan setiap ID di 'type' ada di divisi
+        'divisi' => 'required|string', // divisi diharuskan berupa string
     ]);
+
+    // Ambil nama divisi berdasarkan ID yang dipilih
+    $divisiNama = Divisi::find($request->divisi)->nama_divisi;
 
     // Create the user
     User::create([
         'nama_user' => $request->nama_user,
         'email' => $request->email,
         'role' => $request->role,
-        'divisi' => $request->divisi,
-        'password' => Hash::make('password123'), // Default password
-        'type' => json_encode($request->type), // Store selected divisi IDs as JSON
+        'divisi' => $divisiNama,  // Simpan nama divisi, bukan ID
+        'password' => Hash::make('password123'), // Password default
+        'type' => json_encode($request->type), // Simpan ID divisi yang dipilih dalam format JSON
     ]);
 
     return redirect()->route('admin.kelolaakun')->with('success', 'User berhasil ditambahkan!  ✅');
 }
+
 
     public function edit($id)
     {
@@ -75,41 +80,40 @@ class AdminController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'nama_user' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:user,email,' . $id,
-            'role' => 'required|in:admin,staff,manajemen,manager,supervisor',
-            'divisi' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:8|confirmed', // Validasi password, jika ada
-            'type' => 'required|array', // Validasi untuk type (divisi)
-            'type.*' => 'integer|exists:divisi,id', // Validasi setiap ID divisi yang dipilih
-        ]);
+{
+    $validated = $request->validate([
+        'nama_user' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:user,email,' . $id,
+        'role' => 'required|in:admin,staff,manajemen,manager,supervisor',
+        'divisi' => 'nullable|string|max:255', // Menyimpan nama divisi
+        'password' => 'nullable|string|min:8|confirmed', // Validasi password, jika ada
+        'type' => 'required|array', // Validasi untuk type (divisi)
+        'type.*' => 'integer|exists:divisi,id', // Validasi setiap ID divisi yang dipilih
+    ]);
 
-        $user = User::findOrFail($id);
+    $user = User::findOrFail($id);
 
-        $userData = [
-            'nama_user' => $validated['nama_user'],
-            'email' => $validated['email'],
-            'divisi' => $validated['divisi'],
-            'role' => $validated['role'],
-            'type' => $validated['type'],
-            // 'type' => $validated['type'],
-        ];
+    // Ambil nama divisi berdasarkan ID divisi yang dipilih
+    $divisiNama = Divisi::find($validated['divisi'])->nama_divisi ?? null; // Mencari nama divisi berdasarkan id yang dipilih
 
-        // Jika password diinputkan, tambahkan ke data yang akan diupdate
-        if ($request->filled('password')) {
-            $userData['password'] = Hash::make($validated['password']);
-        }
+    $userData = [
+        'nama_user' => $validated['nama_user'],
+        'email' => $validated['email'],
+        'divisi' => $divisiNama, // Simpan nama divisi, bukan ID
+        'role' => $validated['role'],
+        'type' => json_encode($validated['type']), // Simpan ID divisi sebagai JSON
+    ];
 
-        // Update data user
-        $user->update($userData);
-
-        // Simpan atau update divisi yang dipilih
-        // $user->divisi()->sync($validated['type']); // Menyimpan relasi many-to-many, jika ada
-
-        return redirect()->route('admin.kelolaakun')->with('success', 'Data berhasil diperbarui! ✅');
+    // Jika password diinputkan, tambahkan ke data yang akan diupdate
+    if ($request->filled('password')) {
+        $userData['password'] = Hash::make($validated['password']);
     }
+
+    // Update data user
+    $user->update($userData);
+
+    return redirect()->route('admin.kelolaakun')->with('success', 'Data berhasil diperbarui! ✅');
+}
 
 
     public function destroy($id)
