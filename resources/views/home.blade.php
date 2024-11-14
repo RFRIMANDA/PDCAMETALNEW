@@ -140,7 +140,6 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="statusModalLabel">Status Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -163,7 +162,7 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Nama Resiko</th>
+                                                <th>Issue</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -171,6 +170,7 @@
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $resiko->nama_resiko }}</td>
+                                                    <td>{{ $resiko->user }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -194,7 +194,6 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tingkatanModalLabel">Tingkatan Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -217,7 +216,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Nama Resiko</th>
+                                                    <th>Issue</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -225,6 +224,8 @@
                                                     <tr>
                                                         <td>{{ $index + 1 }}</td>
                                                         <td>{{ $resiko->nama_resiko }}</td>
+                                                        <td>{{ $resiko->user }}</td>
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -261,7 +262,7 @@
                 labels: @json($statusCounts->keys()),
                 datasets: [{
                     data: @json($statusCounts->values()),
-                    backgroundColor: ['#FFD700', '#32CD32', '#FF6347']
+                    backgroundColor: ['#FFD700','#FF6347' , '#32CD32']
                 }]
             },
             options: {
@@ -326,8 +327,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Resiko</th>
-                            <th>Details</th>
+                            <th>Issue</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -335,7 +335,6 @@
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${resiko.nama_resiko}</td>
-                                <td>${resiko.detail || '-'}</td>
                             </tr>`).join('')}
                     </tbody>
                 </table>

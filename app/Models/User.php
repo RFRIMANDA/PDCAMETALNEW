@@ -25,9 +25,9 @@ class User extends Authenticatable
     // Define the relationship with Divisi
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'divisi', 'id');
+        return $this->belongsTo(Divisi::class, 'divisi', 'id','nama_divisi');
     }
 
-    
+
 }
 

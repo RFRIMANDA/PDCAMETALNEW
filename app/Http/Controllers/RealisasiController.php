@@ -33,7 +33,7 @@ class RealisasiController extends Controller
         $divisi = $riskregister->id_divisi;
 
         // Ambil semua user yang berada dalam divisi yang sama
-        $usersInDivisi = User::where('divisi', $divisi)->get();
+        $usersInDivisi = User::all();
 
         // Return view dengan data yang relevan
         return view('realisasi.index', compact('form', 'realisasiList', 'usersInDivisi', 'divisi', 'id', 'tindak', 'pic', 'deadline'));

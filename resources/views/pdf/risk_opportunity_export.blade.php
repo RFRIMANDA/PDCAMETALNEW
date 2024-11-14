@@ -75,6 +75,10 @@
             width: 150px; /* Width for Tindakan Lanjut column */
             text-align: left; /* Align text to the left */
         }
+        .col-pihakk {
+            width: 150px; /* Width for Tindakan Lanjut column */
+            text-align: center; /* Align text to the left */
+        }
     </style>
 </head>
 <body>
@@ -85,11 +89,11 @@
                 <th>No</th>
                 <th>Issue</th>
                 <th class="col-int-ext">Int/Ext</th>
-                <th class="col-pihak">Pihak Yang Berkepentingan</th>
+                <th class="col-pihakk">Pihak Yang Berkepentingan</th>
                 <th class="col-risiko">Risiko</th>
-                <th class="align-bottom">Peluang</th> <!-- Align Peluang to bottom -->
+                <th class="col-risiko">Peluang</th> <!-- Align Peluang to bottom -->
                 <th>Tingkatan</th>
-                <th class="col-tindakan">Tindakan Lanjut</th>
+                <th class="col-risiko">Tindakan Lanjut</th>
                 <th class="col-target-pic">Target<br>PIC</th>
                 <th>Tanggal Penyelesaian</th>
                 <th>Status</th>

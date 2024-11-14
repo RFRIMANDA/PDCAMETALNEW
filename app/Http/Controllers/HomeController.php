@@ -24,10 +24,17 @@ class HomeController extends Controller
         });
     }
 
-    // Fetch the related 'resikos' entries (assuming 'resikos' is a relationship in Riskregister)
-    $resikos = $query->with('resikos')->get()->flatMap(function ($riskregister) {
-        return $riskregister->resikos;
+    $resikos = $query->with(['resikos', 'tindakan.user'])->get()->flatMap(function ($riskregister) {
+        return $riskregister->resikos->map(function ($resiko) use ($riskregister) {
+            $resiko->nama_resiko = $riskregister->issue;
+
+            // Ambil nama_user dari relasi targetpicUser di model Tindakan
+            $resiko->user = $resiko->tindakan->user->nama_user ?? 'N/A'; // Pastikan ada pengecekan null
+
+            return $resiko;
+        });
     });
+
 
     // Aggregate counts for the pie charts based on status and tingkatan
     $statusCounts = $resikos->groupBy('status')->map->count();

@@ -49,18 +49,21 @@ class RiskController extends Controller
         return view('riskregister.index', compact('divisi'));
     }
 
-    public function create($id)
-    {
-        $enchan = $id;
-        $divisi = Divisi::all();
-        $kriteria = Kriteria::all();
+   public function create($id)
+{
+    $enchan = $id;
+    $divisi = Divisi::all();
+    $kriteria = Kriteria::all();
 
-        // Fetch users based on the divisi ID (if you want to filter based on divisi)
-        $users = User::where('divisi', $id)->get();
+    // Ambil nama divisi berdasarkan id yang diberikan
+    $divisiData = Divisi::findOrFail($id);
+    $nama_divisi = $divisiData->nama_divisi;
 
-        return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users'));
-    }
+    // Filter users berdasarkan nama divisi yang sesuai
+    $users = User::where('divisi', $nama_divisi)->get();
 
+    return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users'));
+}
 
     public function store(Request $request)
 {
@@ -359,7 +362,12 @@ public function update(Request $request, $id)
     }
 
     // Get users from the same divisi for the targetpic dropdown
-    $users = User::where('divisi', $id)->get();
+    // $users = User::where('divisi', $id)->get();
+    $divisiData = Divisi::findOrFail($id);
+    $nama_divisi = $divisiData->nama_divisi;
+
+    // Filter users berdasarkan nama divisi yang sesuai
+    $users = User::where('divisi', $nama_divisi)->get();
 
     // Tampilkan view dengan data riskregister, tindakan terkait, serta status
     return view('riskregister.tablerisk', compact('forms', 'data', 'id', 'users'));

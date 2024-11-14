@@ -293,7 +293,6 @@ document.getElementById('kriteriaSelect').addEventListener('change', updateSever
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
                         @endforeach
-                        <!-- Dropdown options -->
                     </select>
                 </div>
             </div>

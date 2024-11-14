@@ -97,12 +97,13 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
         // Informasi detail
         $sheet->setCellValue('C3', 'KEPADA')->getStyle('C3')->getFont()->setBold(true);
         $sheet->getRowDimension(3)->setRowHeight(26); // Mengatur tinggi baris ke 30 unit
-        $sheet->setCellValue('E3', $this->ppk->penerimaUser->nama_user);
+        $sheet->setCellValue('C5', 'Penerima')->getStyle('C5')->getFont()->setBold(true);
+        $sheet->setCellValue('E5', $this->ppk->penerimaUser->nama_user);
         $sheet->setCellValue('H3', 'PPK NO.')->getStyle('H3')->getFont()->setBold(true);
         $sheet->setCellValue('I3', $this->ppk->nomor_surat);
 
-        $sheet->setCellValue('C5', 'Departemen:')->getStyle('C5')->getFont()->setBold(true);
-        $sheet->setCellValue('E5', $this->ppk->divisipenerima);
+        $sheet->setCellValue('C7', 'Departemen:')->getStyle('C7')->getFont()->setBold(true);
+        $sheet->setCellValue('E7', $this->ppk->divisipenerima);
         $sheet->setCellValue('H5', 'Pembuat / Inisiator:')->getStyle('H5')->getFont()->setBold(true);
         $sheet->setCellValue('J5', $this->ppk->pembuatUser->nama_user);
         $sheet->setCellValue('H7', 'Departemen:')->getStyle('H7')->getFont()->setBold(true);
@@ -236,46 +237,43 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
         $sheet->setCellValue('C69', 'melakukan tindakan Penanggulangan/Pencegahan tersebut dan kapan akan diselesaikan.')->getStyle('C69')->getFont()->setBold(true);
 
         // Set the content for the headers from C71 to K71
-$sheet->setCellValue('C71', 'Header 1')->getStyle('C71')->getFont()->setBold(true);
-$sheet->setCellValue('D71', 'Header 2')->getStyle('D71')->getFont()->setBold(true);
-$sheet->setCellValue('E71', 'Header 3')->getStyle('E71')->getFont()->setBold(true);
-$sheet->setCellValue('F71', 'Header 4')->getStyle('F71')->getFont()->setBold(true);
-$sheet->setCellValue('G71', 'Header 5')->getStyle('G71')->getFont()->setBold(true);
-$sheet->setCellValue('H71', 'Header 6')->getStyle('H71')->getFont()->setBold(true);
-$sheet->setCellValue('I71', 'Header 7')->getStyle('I71')->getFont()->setBold(true);
-$sheet->setCellValue('J71', 'Header 8')->getStyle('J71')->getFont()->setBold(true);
-$sheet->setCellValue('K71', 'Header 9')->getStyle('K71')->getFont()->setBold(true);
+$sheet->setCellValue('C71', '')->getStyle('C71')->getFont()->setBold(true);
+$sheet->setCellValue('D71', 'Tindakan')->getStyle('D71')->getFont()->setBold(true);
+$sheet->setCellValue('E71', 'Target Tanggal')->getStyle('E71')->getFont()->setBold(true);
+$sheet->setCellValue('F71', 'PIC')->getStyle('F71')->getFont()->setBold(true);
 
 // Apply borders to the header row
-$sheet->getStyle('C71:K71')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+$sheet->getStyle('C71:F71')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-// Set the content for the next row from C72 to K72
-$sheet->setCellValue('C72', 'Value 1')->getStyle('C72')->getFont()->setBold(true);
-$sheet->setCellValue('D72', 'Value 2')->getStyle('D72')->getFont()->setBold(true);
-$sheet->setCellValue('E72', 'Value 3')->getStyle('E72')->getFont()->setBold(true);
-$sheet->setCellValue('F72', 'Value 4')->getStyle('F72')->getFont()->setBold(true);
-$sheet->setCellValue('G72', 'Value 5')->getStyle('G72')->getFont()->setBold(true);
-$sheet->setCellValue('H72', 'Value 6')->getStyle('H72')->getFont()->setBold(true);
-$sheet->setCellValue('I72', 'Value 7')->getStyle('I72')->getFont()->setBold(true);
-$sheet->setCellValue('J72', 'Value 8')->getStyle('J72')->getFont()->setBold(true);
-$sheet->setCellValue('K72', 'Value 9')->getStyle('K72')->getFont()->setBold(true);
+// Set the content for the next row from C72 to F72
+$sheet->setCellValue('C72', 'Penanggulangan')->getStyle('C72')->getFont()->setBold(true);
+$sheet->setCellValue('D72', $this->ppktiga->penanggulangan);
+$sheet->setCellValue('E72', $this->ppktiga->target_tgl);
+// Fetch and display nama_user for pic1, or display 'Tidak ada PIC' if not available
+$sheet->setCellValue('F72', $this->ppktiga->pic1User ? $this->ppktiga->pic1User->nama_user : 'Tidak ada PIC');
 
 // Apply borders to the second row
-$sheet->getStyle('C72:K72')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+$sheet->getStyle('C72:F72')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-// Set the content for the next row from C73 to K73
-$sheet->setCellValue('C73', 'Detail 1')->getStyle('C73')->getFont()->setBold(true);
-$sheet->setCellValue('D73', 'Detail 2')->getStyle('D73')->getFont()->setBold(true);
-$sheet->setCellValue('E73', 'Detail 3')->getStyle('E73')->getFont()->setBold(true);
-$sheet->setCellValue('F73', 'Detail 4')->getStyle('F73')->getFont()->setBold(true);
-$sheet->setCellValue('G73', 'Detail 5')->getStyle('G73')->getFont()->setBold(true);
-$sheet->setCellValue('H73', 'Detail 6')->getStyle('H73')->getFont()->setBold(true);
-$sheet->setCellValue('I73', 'Detail 7')->getStyle('I73')->getFont()->setBold(true);
-$sheet->setCellValue('J73', 'Detail 8')->getStyle('J73')->getFont()->setBold(true);
-$sheet->setCellValue('K73', 'Detail 9')->getStyle('K73')->getFont()->setBold(true);
+// Set the content for the next row from C73 to F73
+$sheet->setCellValue('C73', 'Pencegahan')->getStyle('C73')->getFont()->setBold(true);
+$sheet->setCellValue('D73', $this->ppktiga->pencegahan);
+$sheet->setCellValue('E73', $this->ppktiga->target_tgl);
+// Fetch and display nama_user for pic2, or display 'Tidak ada PIC' if not available
+$sheet->setCellValue('F73', $this->ppktiga->pic2User ? $this->ppktiga->pic2User->nama_user : 'Tidak ada PIC');
 
 // Apply borders to the third row
-$sheet->getStyle('C73:K73')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+$sheet->getStyle('C73:F73')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+$sheet->setCellValue('C79', '* Bila tidak cukup, dapat  menggunakan lampiran sesuai dengan format diatas');
+$sheet->setCellValue('C81', 'Tanggal');
+$sheet->setCellValue('D81',  $this->ppk->created_at->format('d/m/Y'));
+
+$sheet->setCellValue('I81', 'Tanda Tangan');
+$drawingPenerima->setPath(public_path('admin/img/' . $this->ppkdua->signaturepenerima));
+$drawingPenerima->setHeight(50);
+$drawingPenerima->setCoordinates('J81'); // Posisi tanda tangan penerima
+$sheet->setCellValue('J84', $this->ppk->penerimaUser->nama_user);
 
     }
 
