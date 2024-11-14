@@ -152,6 +152,13 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
             $sheet->setCellValue('D25', 'No Evidence Available'); // Pesan jika evidence tidak ditemukan
         }
 
+        // Tanda Tangan Section
+        $sheet->setCellValue('I27', 'Tanda Tangan:');
+        $sheet->setCellValue('I29', 'Inisiator/Auditor:');
+        $sheet->setCellValue('I31', 'Tanda Tangan: __________');
+        $sheet->setCellValue('I32', 'Proses Owner/Auditee:');
+        $sheet->setCellValue('I29', $this->ppk->pembuatUser->nama_user)->getStyle('I29')->getFont()->setBold(true);
+
         if ($this->ppk->signature && file_exists(public_path('admin/img/' . $this->ppk->signature))) {
             $drawing = new Drawing();
             $drawing->setName('Tanda Tangan Inisiator');
@@ -165,33 +172,26 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
             $sheet->setCellValue('J25', 'No Available');
         }
 
-        // Tanda Tangan Section
-        $sheet->setCellValue('I27', 'Tanda Tangan:');
-        $sheet->setCellValue('I29', 'Inisiator/Auditor:');
-        $sheet->setCellValue('I31', 'Tanda Tangan: __________');
-        $sheet->setCellValue('I32', 'Proses Owner/Auditee:');
-        $sheet->setCellValue('I29', $this->ppk->pembuatUser->nama_user)->getStyle('I27')->getFont()->setBold(true);
+         // Tanda Tangan Section
+         $sheet->setCellValue('I27', 'Tanda Tangan:');
+         $sheet->setCellValue('I28', 'Inisiator/Auditor:');
+         $sheet->setCellValue('I31', 'Tanda Tangan:');
+         $sheet->setCellValue('I32', 'Proses Owner/Auditee:');
+         $sheet->setCellValue('I33', $this->ppk->penerimaUser->nama_user)->getStyle('I33')->getFont()->setBold(true);
 
-    // Signature Penerima dari Ppkkedua
-    if ($this->ppkdua && $this->ppkdua->signaturepenerima && file_exists(public_path('admin/img/' . $this->ppkdua->signaturepenerima))) {
-        $drawingPenerima = new Drawing();
-        $drawingPenerima->setName('Tanda Tangan Penerima');
-        $drawingPenerima->setDescription('Tanda Tangan Penerima');
-        $drawingPenerima->setPath(public_path('admin/img/' . $this->ppkdua->signaturepenerima));
-        $drawingPenerima->setHeight(50);
-        $drawingPenerima->setCoordinates('J31'); // Posisi tanda tangan penerima
-        $drawingPenerima->setOffsetX(20); // Angka ini bisa disesuaikan, semakin besar semakin ke kanan
-        $drawingPenerima->setWorksheet($sheet);
-    } else {
-        $sheet->setCellValue('J31', 'No Available');
-    }
-
-        // Tanda Tangan Section
-        $sheet->setCellValue('I27', 'Tanda Tangan:');
-        $sheet->setCellValue('I28', 'Inisiator/Auditor:');
-        $sheet->setCellValue('I31', 'Tanda Tangan:');
-        $sheet->setCellValue('I32', 'Proses Owner/Auditee:');
-        $sheet->setCellValue('I33', $this->ppk->penerimaUser->nama_user)->getStyle('I33')->getFont()->setBold(true);
+         if ($this->ppkdua && $this->ppkdua->signaturepenerima && file_exists(public_path('admin/img/' . $this->ppkdua->signaturepenerima))) {
+            $drawingPenerima = new Drawing();
+            $drawingPenerima->setName('Tanda Tangan Auditor');
+            $drawingPenerima->setDescription('Tanda Tangan Auditor');
+            $drawingPenerima->setPath(public_path('admin/img/' . $this->ppkdua->signaturepenerima));
+            $drawingPenerima->setHeight(50);
+            $drawingPenerima->setCoordinates('J32'); // Posisi tanda tangan penerima
+            $drawingPenerima->setOffsetX(20);
+            $drawingPenerima->setWorksheet($sheet); // Attach drawing to worksheet
+        } else {
+            // Jika file tidak ditemukan, tampilkan "Tidak Ada Tanda Tangan"
+            $sheet->setCellValue('J32', 'Tidak Ada Tanda Tangan');
+        }
 
         // Menyesuaikan lebar kolom agar sesuai
         foreach (range('B', 'L') as $columnID) {
@@ -237,43 +237,98 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
         $sheet->setCellValue('C69', 'melakukan tindakan Penanggulangan/Pencegahan tersebut dan kapan akan diselesaikan.')->getStyle('C69')->getFont()->setBold(true);
 
         // Set the content for the headers from C71 to K71
-$sheet->setCellValue('C71', '')->getStyle('C71')->getFont()->setBold(true);
-$sheet->setCellValue('D71', 'Tindakan')->getStyle('D71')->getFont()->setBold(true);
-$sheet->setCellValue('E71', 'Target Tanggal')->getStyle('E71')->getFont()->setBold(true);
-$sheet->setCellValue('F71', 'PIC')->getStyle('F71')->getFont()->setBold(true);
+// Set the width for columns C to K (or adjust accordingly)
+$sheet->getColumnDimension('C')->setWidth(20);  // Set custom width for column C
+$sheet->getColumnDimension('D')->setWidth(20);  // Set custom width for column D
+$sheet->getColumnDimension('E')->setWidth(20);  // Set custom width for column E
+$sheet->getColumnDimension('F')->setWidth(20);  // Set custom width for column F
+$sheet->getColumnDimension('G')->setWidth(20);  // Set custom width for column G
+$sheet->getColumnDimension('H')->setWidth(20);  // Set custom width for column H
+$sheet->getColumnDimension('I')->setWidth(20);  // Set custom width for column I
+$sheet->getColumnDimension('J')->setWidth(20);  // Set custom width for column J
+$sheet->getColumnDimension('K')->setWidth(20);  // Set custom width for column K
 
-// Apply borders to the header row
-$sheet->getStyle('C71:F71')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+// Set the height for the rows (C71 to F73)
+$sheet->getRowDimension(71)->setRowHeight(25);  // Set custom height for row 71
+$sheet->getRowDimension(72)->setRowHeight(65);  // Set custom height for row 72
+$sheet->getRowDimension(73)->setRowHeight(65);  // Set custom height for row 73
 
-// Set the content for the next row from C72 to F72
+// Apply borders to the header row from C71 to K71
+$sheet->getStyle('C71:K71')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+// Merge cells C72 and D72
+$sheet->mergeCells('C71:D71');
+$sheet->mergeCells('C72:D72');
+$sheet->mergeCells('C73:D73');
+// Merge cells E72 to I72
+$sheet->mergeCells('E71:I71');
+$sheet->mergeCells('E72:I72');
+$sheet->mergeCells('E73:I73');
+
+$sheet->setCellValue('E71', 'Tindakan')->getStyle('E71')->getFont()->setBold(true);
+$sheet->getStyle('E71')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$sheet->getStyle('E71')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+$sheet->setCellValue('J71', 'Target Tanggal')->getStyle('J71')->getFont()->setBold(true);
+$sheet->getStyle('J71')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$sheet->getStyle('J71')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+$sheet->setCellValue('K71', 'PIC')->getStyle('K71')->getFont()->setBold(true);
+$sheet->getStyle('K71')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$sheet->getStyle('K71')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
+
+// Set the content for the merged cells
 $sheet->setCellValue('C72', 'Penanggulangan')->getStyle('C72')->getFont()->setBold(true);
-$sheet->setCellValue('D72', $this->ppktiga->penanggulangan);
-$sheet->setCellValue('E72', $this->ppktiga->target_tgl);
+$sheet->getStyle('C72')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$sheet->setCellValue('E72', $this->ppktiga->penanggulangan);
+$sheet->getStyle('C72:K72')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
+$sheet->getStyle('C72:K72')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
+$sheet->getStyle('C72:K72')->getAlignment()->setWrapText(true);
+$sheet->setCellValue('J72', \Carbon\Carbon::parse($this->ppktiga->target_tgl)->format('d/m/Y'));
 // Fetch and display nama_user for pic1, or display 'Tidak ada PIC' if not available
-$sheet->setCellValue('F72', $this->ppktiga->pic1User ? $this->ppktiga->pic1User->nama_user : 'Tidak ada PIC');
+$sheet->setCellValue('K72', $this->ppktiga->pic1User ? $this->ppktiga->pic1User->nama_user : 'Tidak ada PIC');
+$sheet->getStyle('K72')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
+$sheet->getStyle('K72')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
+$sheet->getStyle('K72')->getAlignment()->setWrapText(true);
 
-// Apply borders to the second row
-$sheet->getStyle('C72:F72')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+// Apply borders to the second row from C72 to K72
+$sheet->getStyle('C72:K72')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-// Set the content for the next row from C73 to F73
+// Set the content for the next row from C73 to K73
 $sheet->setCellValue('C73', 'Pencegahan')->getStyle('C73')->getFont()->setBold(true);
-$sheet->setCellValue('D73', $this->ppktiga->pencegahan);
-$sheet->setCellValue('E73', $this->ppktiga->target_tgl);
+// $sheet->getStyle('C73')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$sheet->setCellValue('E73', $this->ppktiga->pencegahan);
+$sheet->getStyle('C73:K73')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
+$sheet->getStyle('C73:K73')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
+$sheet->getStyle('C73:K73')->getAlignment()->setWrapText(true);
+$sheet->setCellValue('J73', \Carbon\Carbon::parse($this->ppktiga->target_tgl)->format('d/m/Y'));
 // Fetch and display nama_user for pic2, or display 'Tidak ada PIC' if not available
-$sheet->setCellValue('F73', $this->ppktiga->pic2User ? $this->ppktiga->pic2User->nama_user : 'Tidak ada PIC');
+$sheet->setCellValue('K73', $this->ppktiga->pic2User ? $this->ppktiga->pic2User->nama_user : 'Tidak ada PIC');
 
-// Apply borders to the third row
-$sheet->getStyle('C73:F73')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+// Apply borders to the third row from C73 to K73
+$sheet->getStyle('C73:K73')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-$sheet->setCellValue('C79', '* Bila tidak cukup, dapat  menggunakan lampiran sesuai dengan format diatas');
-$sheet->setCellValue('C81', 'Tanggal');
-$sheet->setCellValue('D81',  $this->ppk->created_at->format('d/m/Y'));
 
-$sheet->setCellValue('I81', 'Tanda Tangan');
-$drawingPenerima->setPath(public_path('admin/img/' . $this->ppkdua->signaturepenerima));
-$drawingPenerima->setHeight(50);
-$drawingPenerima->setCoordinates('J81'); // Posisi tanda tangan penerima
-$sheet->setCellValue('J84', $this->ppk->penerimaUser->nama_user);
+$sheet->setCellValue('C75', '* Bila tidak cukup, dapat  menggunakan lampiran sesuai dengan format diatas');
+$sheet->setCellValue('C79', 'Tanggal');
+$sheet->setCellValue('D79',  $this->ppk->created_at->format('d/m/Y'));
+
+if ($this->ppkdua && $this->ppkdua->signaturepenerima && file_exists(public_path('admin/img/' . $this->ppkdua->signaturepenerima))) {
+    $drawingPenerimaJ79 = new Drawing();
+    $drawingPenerimaJ79->setName('Tanda Tangan Auditor J79');
+    $drawingPenerimaJ79->setDescription('Tanda Tangan Auditor J79');
+    $drawingPenerimaJ79->setPath(public_path('admin/img/' . $this->ppkdua->signaturepenerima));
+    $drawingPenerimaJ79->setHeight(50);
+    $drawingPenerimaJ79->setCoordinates('J79'); // Posisi tanda tangan penerima kedua di J79
+    $drawingPenerimaJ79->setWorksheet($sheet); // Attach drawing to worksheet
+} else {
+    // Jika file tidak ditemukan, tampilkan "Tidak Ada Tanda Tangan" di J79
+    $sheet->setCellValue('J79', 'Tidak Ada Tanda Tangan');
+}
+// Posisi tanda tangan penerima
+$sheet->setCellValue('J82', $this->ppk->penerimaUser->nama_user);
 
     }
 
