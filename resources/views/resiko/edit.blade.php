@@ -186,22 +186,6 @@
             </div>
         </div>
 
-        {{-- Before --}}
-        <div class="row mb-3">
-            <label for="after" class="col-sm-2 col-form-label"><strong>Before</strong></label>
-            <div class="col-sm-10">
-                <textarea name="before" class="form-control" rows="3">{{ old('before', $resiko->before) }}</textarea>
-            </div>
-        </div>
-
-        <!-- After -->
-        <div class="row mb-3">
-            <label for="after" class="col-sm-2 col-form-label"><strong>After</strong></label>
-            <div class="col-sm-10">
-                <textarea name="after" placeholder="Deskripsikan Kondisi Setelah Ditindak Lanjuti" class="form-control" rows="3">{{ old('after', $resiko->after) }}</textarea>
-            </div>
-        </div>
-
         <!-- Status hanya muncul jika user memiliki role 'admin' -->
         @if(auth()->user()->role == 'admin')
 
@@ -220,7 +204,11 @@
         @endif
 
         <!-- Submit Button -->
-        <a href="javascript:history.back()" class="btn btn-danger " title="Kembali">
+        {{-- <a href="javascript:history.back()" class="btn btn-danger " title="Kembali">
+            <i class="ri-arrow-go-back-line"></i>
+        </a> --}}
+
+        <a class="btn btn-danger" href="{{ route('riskregister.tablerisk', ['id' => $three]) }}" title="Back">
             <i class="ri-arrow-go-back-line"></i>
         </a>
 

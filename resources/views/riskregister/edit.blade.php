@@ -25,46 +25,43 @@
         <!-- Divisi -->
         <input type="hidden" name="id_divisi" value="{{ $riskregister->id_divisi }}">
 
-        <!-- Issue -->
-        <div class="row mb-3">
-            <label for="issue" class="col-sm-2 col-form-label"><strong>Issue</strong></label>
-            <div class="col-sm-7">
+         <!-- Risk Register Fields -->
+         <div class="card p-3 my-3">
+            <h4 class="card-title mb-3">Edit Risk & Opportunity Register</h4>
+
+            <!-- Issue -->
+            <div class="mb-3">
+                <label for="issue" class="form-label"><strong>Issue</strong></label>
                 <textarea name="issue" id="issue" class="form-control">{{ old('issue', $riskregister->issue) }}</textarea>
             </div>
-        </div>
 
-        <div class="row mb-3">
-            <label for="inex" class="col-sm-2 col-form-label"><strong>Ext/Int</strong></label>
-            <div class="col-sm-7">
-                <select name="inex" id="inex" class="form-control">
-                    <option value="I" {{ old('inex', $riskregister->inex) == 'I' ? 'selected' : '' }}>INTERNAL</option>
-                    <option value="E" {{ old('inex', $riskregister->inex) == 'E' ? 'selected' : '' }}>EXTERNAL</option>
+            <!-- Ext/Int -->
+            <div class="mb-3">
+                <label for="inex" class="form-label"><strong>Internal/External</strong></label>
+                <select name="inex" id="inex" class="form-select">
+                    <option value="I" {{ old('inex', $riskregister->inex) == 'I' ? 'selected' : '' }}>Internal</option>
+                    <option value="E" {{ old('inex', $riskregister->inex) == 'E' ? 'selected' : '' }}>External</option>
                 </select>
             </div>
-        </div>
 
-        <!-- Nama Risiko -->
-
-       <!-- Peluang -->
-        <div class="row mb-3">
-            <label for="peluang" class="col-sm-2 col-form-label"><strong>Peluang</strong></label>
-            <div class="col-sm-7">
+            <!-- Opportunity -->
+            <div class="mb-3">
+                <label for="peluang" class="form-label"><strong>Peluang</strong></label>
                 <textarea name="peluang" id="peluang" class="form-control">{{ old('peluang', $riskregister->peluang) }}</textarea>
             </div>
-        </div>
 
-        <div class="row mb-3">
-            <label for="pihak" class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan</strong></label>
-            <div class="col-sm-7">
+            <!-- Interested Parties -->
+            <div class="mb-3">
+                <label for="pihak" class="form-label"><strong>Pihak Yang Berkepentingan</strong></label>
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownPihak" data-bs-toggle="dropdown" aria-expanded="false">
-                        Pilih Pihak Berkepentingan
+                        --Pilih Pihak Yang Berkepentingan--
                     </button>
                     <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownPihak">
                         <li>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="select-all-pihak">
-                                <label class="form-check-label" for="select-all-pihak">Pilih Semua</label>
+                                <label class="form-check-label" for="select-all-pihak">Select All</label>
                             </div>
                         </li>
                         @foreach ($divisi as $d)
@@ -72,9 +69,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="pihak[]" value="{{ $d->id }}" id="divisi{{ $d->id }}"
                                     @if(in_array($d->nama_divisi, old('pihak', $selectedDivisi))) checked @endif>
-                                    <label class="form-check-label" for="divisi{{ $d->id }}">
-                                        {{ $d->nama_divisi }}
-                                    </label>
+                                    <label class="form-check-label" for="divisi{{ $d->id }}">{{ $d->nama_divisi }}</label>
                                 </div>
                             </li>
                         @endforeach
@@ -84,13 +79,12 @@
                                 <label class="form-check-label" for="otherCheckbox">Other</label>
                             </div>
                             <div class="mt-2" id="otherInputContainer" style="display: none;">
-                                <input type="text" class="form-control" name="pihak_other" id="pihakOther" placeholder="Masukkan Pihak Berkepentingan Lainnya">
+                                <input type="text" class="form-control" name="pihak_other" id="pihakOther" placeholder="Enter Other Interested Parties">
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
-        </div>
         <script>
             // Toggle the input field for 'Other' when checkbox is checked
             document.getElementById('otherCheckbox').addEventListener('change', function() {
@@ -122,6 +116,32 @@
             <label for="target_penyelesaian" class="col-sm-2 col-form-label"><strong>Target Penyelesaian</strong></label>
             <div class="col-sm-7">
                 <input type="date" name="target_penyelesaian" id="target_penyelesaian" class="form-control" value="{{ old('target_penyelesaian', $riskregister->target_penyelesaian) }}">
+            </div>
+        </div>
+
+         <!-- Risk Edit Section -->
+         <div class="card p-3 my-3">
+            <h4 class="card-title">Edit Resiko</h4>
+
+            <div id="riskInputContainer">
+                @foreach($resikoList as $resiko)
+                <div class="risk-card border p-3 my-2">
+                    <div class="mb-3">
+                        <label for="nama_resiko_{{ $resiko->id }}" class="form-label"><strong>Resiko</strong></label>
+                        <textarea name="nama_resiko[{{ $resiko->id }}]" id="nama_resiko_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->nama_resiko) }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="before_{{ $resiko->id }}" class="form-label"><strong>Before</strong></label>
+                        <textarea name="before[{{ $resiko->id }}]" id="before_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->before) }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="after_{{ $resiko->id }}" class="form-label"><strong>After</strong></label>
+                        <textarea placeholder="Masukkan setelah mitigasi atau tindakan lanjut dilakukan" name="after[{{ $resiko->id }}]" id="after_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->after) }}</textarea>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
 

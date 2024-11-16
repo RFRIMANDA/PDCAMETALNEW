@@ -23,7 +23,7 @@
             </div>
           </form>
 
-          <table class="table table-striped">
+          <table class="table table-striped" style="font-size: 15px;">
             <thead>
               <tr>
                 <th scope="col" style="width: 80px;">No</th>

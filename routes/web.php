@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RiskController;
@@ -10,7 +11,11 @@ use App\Http\Controllers\PpkController;
 use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
 
-// Dasboard HomeController
+
+//Dashboard PIECHART
+Route::get('/Dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+// Home HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/riskregister/filter', [HomeController::class, 'getFilteredData'])->name('riskregister.filter');
 
@@ -76,6 +81,7 @@ Route::middleware('manager','manajemen','supervisor')->group(function () {
     Route::get('/resiko/{id}/edit', [ResikoController::class, 'edit'])->name('resiko.edit');
     Route::post('/resiko/{id}/update', [ResikoController::class, 'update'])->name('resiko.update');
     Route::get('/resiko/matriks/{id}', [ResikoController::class, 'matriks'])->name('resiko.matriks');
+    Route::get('/resiko/matriks2/{id}', [ResikoController::class, 'matriks2'])->name('resiko.matriks2');
     Route::get('/matriks-risiko/{id}', [ResikoController::class, 'show'])->name('matriks-risiko.show');
 });
 

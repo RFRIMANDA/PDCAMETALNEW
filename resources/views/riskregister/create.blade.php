@@ -308,7 +308,7 @@ document.getElementById('kriteriaSelect').addEventListener('change', updateSever
     <div class="row mb-3">
         <label for="inputIssue" class="col-sm-2 col-form-label"  "><strong>Before</strong></label>
         <div class="col-sm-7">
-            <textarea name="before" placeholder="Masukkan Deskripsi Saat Ini" class="form-control" rows="3" ></textarea>
+            <textarea name="before" placeholder="Masukkan Deskripsi Saat Ini atau sebelum tindakan lanjut (mitigasi) dilakukan" class="form-control" rows="3" ></textarea>
         </div>
     </div>
 

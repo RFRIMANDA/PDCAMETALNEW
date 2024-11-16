@@ -20,9 +20,9 @@
             <a href="/riskregister">
               <i class="bi bi-circle"></i><span>Create Risk & Opportunity Register</span>
             </a>
-            {{-- <a href="/bigrisk">
-              <i class="bi bi-circle"></i><span>All Risk & Opportunity Register</span>
-            </a> --}}
+            <a href="/bigrisk">
+              <i class="bi bi-circle"></i><span>Report</span>
+            </a>
           </li>
 
           <li>

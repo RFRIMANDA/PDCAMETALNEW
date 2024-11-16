@@ -74,7 +74,7 @@
                 <!-- Risk & Opportunity Card -->
                 <div class="col-xxl-4 col-md-6 mb-4">
                     <div class="card info-card sales-card">
-                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('riskregister.biglist') }}'">
+                        <button class="card-body btn btn-light animate-card" style="border: none; padding: 0; text-align: left;" onclick="window.location.href='{{ route('dashboard.index') }}'">
                             <div class="d-flex align-items-center">
                                 <div class="card-icon">
                                     <i class="bi bi-file-text-fill"></i>
@@ -107,144 +107,7 @@
             </div><!-- End Card Container -->
 
 
-            <section class="section dashboard">
-    <div class="container">
-        <div class="row">
-            <!-- Status Pie Chart -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>Status Departemen</h5>
-                        <canvas id="statusPieChart"></canvas>
-                        <!-- Button to open status modal -->
-                    </div>
-                </div>
-            </div>
 
-            <!-- Tingkatan Pie Chart -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>Tingkatan Departemen</h5>
-                        <canvas id="tingkatanPieChart"></canvas>
-                        <!-- Button to open tingkatan modal -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Status Modal -->
-    <!-- Status Modal -->
-<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Table with status details -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Status</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($statusDetails as $status => $details)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $status }}</td>
-                                <td>
-                                    <table class="table table-bordered mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Issue</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($details as $index => $resiko)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $resiko->nama_resiko }}</td>
-                                                    <td>{{ $resiko->user }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    <!-- Tingkatan Modal -->
-    <div class="modal fade" id="tingkatanModal" tabindex="-1" aria-labelledby="tingkatanModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Table with tingkatan details -->
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tingkatan</th>
-                                <th>Details</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($tingkatanDetails as $tingkatan => $details)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $tingkatan }}</td>
-                                    <td>
-                                        <table class="table table-bordered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Issue</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($details as $index => $resiko)
-                                                    <tr>
-                                                        <td>{{ $index + 1 }}</td>
-                                                        <td>{{ $resiko->nama_resiko }}</td>
-                                                        <td>{{ $resiko->user }}</td>
-
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-</section>
 
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

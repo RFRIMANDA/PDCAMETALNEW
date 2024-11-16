@@ -72,7 +72,6 @@ class PpkController extends Controller
         $evidence = $this->handleFileUpload($request, 'evidence', 'dokumen', 'TML');
 
         $signatureFileName = $this->handleSignature($request, 'signature', 'signature_file');
-        $signaturePenerimaFileName = $this->handleSignature($request, 'signaturepenerima', 'signaturepenerima_file', 'signature_penerima_');
 
         try {
             DB::beginTransaction();
