@@ -21,6 +21,14 @@
     </div>
     @endif
 
+    <style>
+        .badge.bg-purple {
+    background-color: #ADD8E6;
+
+    color: rgb(0, 0, 0);
+}
+
+    </style>
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $forms->first()->divisi->nama_divisi ?? '' }}</h5>
@@ -188,7 +196,7 @@
                                             @if (!$isClosed)
                                                 <tr>
                                                     <td>{{ $no++ }}
-                                                        <a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-danger" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                                                        <a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
                                                             <i class="bx bx-edit" style="font-size: 14px;"></i>
                                                         </a>
                                                     </td>
@@ -211,7 +219,20 @@
                                                     <td>
                                                         @if($resikos->isNotEmpty())
                                                             @foreach($resikos as $resiko)
-                                                                <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}" title="Matriks Before" class="btn btn-secondary" style="font-size: 9px; padding: 2px; color: white;">
+                                                                @php
+                                                                    $btnClass = '';
+                                                                    if ($resiko->tingkatan === 'HIGH') {
+                                                                        $btnClass = 'btn-danger';
+                                                                    } elseif ($resiko->tingkatan === 'MEDIUM') {
+                                                                        $btnClass = 'btn-warning';
+                                                                    } elseif ($resiko->tingkatan === 'LOW') {
+                                                                        $btnClass = 'btn-success';
+                                                                    }
+                                                                @endphp
+                                                                <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}"
+                                                                   title="Matriks Before"
+                                                                   class="btn {{ $btnClass }}"
+                                                                   style="font-size: 9px; padding: 2px; color: white;">
                                                                     <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
                                                                 </a>
                                                             @endforeach
@@ -233,13 +254,13 @@
                                                                                     {{ $tindakan->nama_tindakan }}
                                                                                 </a>
                                                                                 <div>
-                                                                                    <span class="badge bg-success">{{ $tindakan->tgl_penyelesaian ?? '-' }}</span>
-                                                                                    <span class="badge bg-warning">{{ $tindakan->user->nama_user ?? '-' }}</span>
+                                                                                    <span class="badge bg-purple">{{ $tindakan->tgl_penyelesaian ?? '-' }}</span>
+                                                                                    <span class="badge bg-purple">{{ $tindakan->user->nama_user ?? '-' }}</span>
 
                                                                                 </div>
 
                                                                                 @if($tindakan->isClosed)
-                                                                                    <span class="badge bg-danger">CLOSE</span>
+                                                                                    <span class="badge bg-purple">CLOSE</span>
                                                                                 @endif
                                                                             {{-- </li> --}}
                                                                         </ul>
@@ -259,11 +280,11 @@
                                                             @foreach($resikos as $resiko)
                                                                 <span class="badge
                                                                     @if($resiko->status == 'OPEN')
-                                                                        bg-success
+                                                                        bg-danger
                                                                     @elseif($resiko->status == 'ON PROGRES')
                                                                         bg-warning
                                                                     @elseif($resiko->status == 'CLOSE')
-                                                                        bg-danger
+                                                                        bg-success
                                                                     @endif">
                                                                     {{ $resiko->status }}<br>
                                                                     {{ $form->nilai_actual }}%
@@ -274,12 +295,21 @@
                                                         @endif
                                                         <td>
                                                             @if($resikos->isNotEmpty())
-                                                                @foreach($resikos as $resiko)
-                                                                    <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}" title="Matriks After" class="btn btn-info" style="font-size: 9px; padding: 2px; color: white;">
-                                                                        <strong>{{ $resiko->risk }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
-                                                                    </a>
-                                                                    <br>
-                                                                @endforeach
+                                                            @foreach($resikos as $resiko)
+                                                            <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}"
+                                                               title="Matriks After"
+                                                               class="btn
+                                                                   @if($resiko->risk == 'HIGH') btn-danger
+                                                                   @elseif($resiko->risk == 'MEDIUM') btn-warning
+                                                                   @elseif($resiko->risk == 'LOW') btn-success
+                                                                   @else btn-info @endif"
+                                                               style="font-size: 9px; padding: 2px; color: white;">
+                                                                <strong>{{ $resiko->risk }}</strong>
+                                                                <i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                            </a>
+                                                            <br>
+                                                        @endforeach
+
                                                                 <br>
                                                             @else
                                                                 None

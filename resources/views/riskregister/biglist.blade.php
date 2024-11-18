@@ -134,11 +134,11 @@
                         <button type="submit" class="btn btn-primary"><i class="bi bi-funnel"></i> Filter</button>
                         <a href="{{ route('riskregister.biglist') }}" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Reset</a>
 
-                        @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
+                        {{-- @if(auth()->user()->role == 'admin' || auth()->user()->role == 'manajemen')
                             <a href="{{ route('riskregister.exportFilteredExcel', array_merge(request()->all(), ['id' => $divisiList->first()->id ?? '', 'export' => 'excel'])) }}" class="btn btn-success" title="Export to Excel">
                                 <i class="bi bi-file-earmark-excel"></i> Excel
                             </a>
-                        @endif
+                        @endif --}}
 
                         <a href="{{ route('riskregister.export-pdf', ['id' => $divisiList->first()->id ?? '']) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&keyword={{ request('keyword') }}&kriteria={{ request('kriteria') }}&top10={{ request('top10') }}" class="btn btn-danger" title="Export to PDF">
                             <i class="bi bi-file-earmark-pdf"></i> PDF
@@ -251,11 +251,11 @@
                                 @foreach ($data['status'] as $status)
                                     <span class="badge
                                         @if($status == 'OPEN')
-                                            bg-success
+                                            bg-danger
                                         @elseif($status == 'ON PROGRES')
                                             bg-warning
                                         @elseif($status == 'CLOSE')
-                                            bg-danger
+                                            bg-success
                                         @endif">
                                         {{ $status }}<br>
                                         {{ $data['nilai_actual'] }}%
@@ -265,20 +265,22 @@
 
                         <!-- Action Buttons -->
                         <td>
+                            <div class="btn-group" role="group">
+                                <!-- Edit Button -->
+                                <a href="{{ route('riskregister.edit', $data['id']) }}" title="Detail Risiko" class="btn btn-success btn-sm me-1">
+                                    <i class="bx bx-edit"></i>
+                                </a>
 
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('riskregister.edit', $data['id']) }}" title="Detail Risiko" class="btn btn-secondary btn-sm me-1">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                    <form action="{{ route('riskregister.destroy', $data['id']) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="ri ri-delete-bin-fill"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                                <!-- Delete Button -->
+                                <form action="{{ route('riskregister.destroy', $data['id']) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="ri ri-delete-bin-fill"></i>
+                                    </button>
+                                </form>
 
+                            </div>
                         </td>
                         </tr>
                     @endforeach

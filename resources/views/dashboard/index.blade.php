@@ -281,6 +281,21 @@
                 }]
             },
             options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Show percentage and count in tooltip
+                            label: function(tooltipItem) {
+                                let total = tooltipItem.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                let value = tooltipItem.raw;
+                                let percentage = ((value / total) * 100).toFixed(2) + '%';
+                                let count = value;
+                                return tooltipItem.label + ': ' + count + ' (' + percentage + ')';
+                            }
+                        }
+                    }
+                },
                 onClick: (event, elements) => {
                     if (elements.length > 0) {
                         const segmentIndex = elements[0].index;
@@ -298,10 +313,25 @@
                 labels: @json($tingkatanCounts->keys()),
                 datasets: [{
                     data: @json($tingkatanCounts->values()),
-                    backgroundColor: ['#FF6347', '#32CD32','#FFD700']
+                    backgroundColor: ['#FF6347','#FFD700','#32CD32']
                 }]
             },
             options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Show percentage and count in tooltip
+                            label: function(tooltipItem) {
+                                let total = tooltipItem.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                let value = tooltipItem.raw;
+                                let percentage = ((value / total) * 100).toFixed(2) + '%';
+                                let count = value;
+                                return tooltipItem.label + ': ' + count + ' (' + percentage + ')';
+                            }
+                        }
+                    }
+                },
                 onClick: (event, elements) => {
                     if (elements.length > 0) {
                         const segmentIndex = elements[0].index;
@@ -351,22 +381,22 @@
                             <tr data-id="${resiko.idDivisi}">
                                 <td>${index + 1}</td>
                                 <td>
-                                    <!-- Link to Riskregister using id_divisi -->
                                     <a href="/riskregister/${resiko.id_divisi}">
                                         ${resiko.nama_issue}
                                     </a>
                                 </td>
                                 <td>${resiko.nama_resiko}</td>
                                 <td>${resiko.peluang}</td>
-                                <td>${resiko.nama_divisi}</td> <!-- Displaying the division name -->
+                                <td>${resiko.nama_divisi}</td>
                             </tr>`).join('')}
                     </tbody>
                 </table>
             `;
             $(modalId).modal('show'); // Show modal
         }
-
     });
 </script>
+
+
 @endsection
 
