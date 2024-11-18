@@ -524,6 +524,9 @@ foreach ($data as $riskregister) {
             'nama_resiko' => $resiko->nama_resiko,
             'probability' => $resiko->probability,
             'severity' => $resiko->severity,
+            'risk' => $resiko->risk,
+            'before' => $resiko->before,
+            'after' => $resiko->after,
             'score' => $resiko->probability * $resiko->severity
         ];
     });
@@ -533,13 +536,18 @@ foreach ($data as $riskregister) {
     $formattedData[] = [
         'id' => $riskregister->id,
         'issue' => $riskregister->issue,
-        'pihak' => $riskregister->tindakan->pluck('divisi.nama_divisi'),
+        'inex' => $riskregister->inex,
+        'pihak' => $riskregister->pihak,
+        'tindak' => $riskregister->tindakan->pluck('divisi.nama_divisi'),
         'tindak_lanjut' => $riskregister->tindakan->pluck('nama_tindakan'),
         'risiko' => $resikoData->pluck('nama_resiko'),
         'peluang' => $riskregister->peluang,
         'tingkatan' => $riskregister->resikos->pluck('tingkatan'),
         'status' => $riskregister->resikos->pluck('status'),
         'scores' => $resikoData->pluck('score'),
+        'risk' => $resikoData->pluck('risk'),
+        'before' => $resikoData->pluck('before'),
+        'after' => $resikoData->pluck('after'),
         'probabilities' => $resikoData->pluck('probability'),  // Added probabilities
         'severities' => $resikoData->pluck('severity'),        // Added severities
         'highest_score' => $highestScore,
@@ -558,11 +566,15 @@ if ($top10Filter) {
 
 // Get list of divisions for filtering in the view
 $divisiList = Divisi::all();
-
 $defaultDivisiId = $divisiList->first()->id ?? null;
 
+$divisi = Riskregister::all();
+
+
+
+
 // Pass data to the view
-return view('riskregister.biglist', compact('formattedData', 'divisiList','defaultDivisiId'));}
+return view('riskregister.biglist', compact('formattedData', 'divisiList','defaultDivisiId','divisi'));}
 
 public function exportFilteredPDF(Request $request)
 {
