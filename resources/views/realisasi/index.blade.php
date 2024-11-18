@@ -97,7 +97,7 @@
 
 
     <!-- Tabel Data Realisasi -->
-<table class="table table-striped mt-4">
+<table class="table table-striped mt-4" style="width: 100%; font-size: 13px;">
     <thead>
         <tr>
             <th scope="col">No</th>
@@ -157,11 +157,11 @@
                                     @csrf
                                     @method('PUT')
                                     <div class="mb-3">
-                                        <label for="nama_realisasi" class="form-label">Nama Activity</label>
+                                        <label for="nama_realisasi" class="form-label"><strong>Nama Activity</strong></label>
                                         <textarea name="nama_realisasi" class="form-control" required>{{ $realisasi->nama_realisasi }}</textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="target" class="form-label">PIC</label>
+                                        <label for="target" class="form-label"><strong>PIC</strong></label>
                                         <select name="target" class="form-control" required>
                                             <option value="">--Pilih PIC--</option>
                                             @foreach($usersInDivisi as $user)
@@ -172,15 +172,15 @@
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="tgl_realisasi" class="form-label">Tanggal Penyelesaian</label>
+                                        <label for="tgl_realisasi" class="form-label"><strong>Tanggal Penyelesaian</strong></label>
                                         <input type="date" name="tgl_realisasi" class="form-control" required value="{{ $realisasi->tgl_realisasi }}">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="desc" class="form-label">Noted</label>
+                                        <label for="desc" class="form-label"><strong>Noted</strong></label>
                                         <textarea name="desc" class="form-control">{{ $realisasi->desc }}</textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="presentase" class="form-label">Presentase</label>
+                                        <label for="presentase" class="form-label"><strong>Presentase</strong></label>
                                         <input type="number" name="presentase" class="form-control" value="{{ $realisasi->presentase }}">
                                     </div>
                                     <div class="modal-footer">

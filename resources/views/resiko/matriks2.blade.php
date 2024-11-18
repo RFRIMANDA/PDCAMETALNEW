@@ -70,21 +70,8 @@
         <tbody>
             @foreach($matriks_used as $i => $row)
             <tr>
-                {{-- <td>{{ $i + 1 }}</td> --}}
                 <td></td>
-                <td>
-                    {{-- Tampilkan nama_kriteria dan desc_kriteria yang sudah disaring --}}
-                    {{-- <strong>{{ $kriteriaData[$i]['nama_kriteria'] ?? 'none' }}</strong>
-                    @if(isset($kriteriaData[$i]['desc_kriteria']))
-                        <ul>
-                            @foreach($kriteriaData[$i]['desc_kriteria'] as $desc)
-                                <li>{{ $desc }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <span>none</span>
-                    @endif --}}
-                </td>
+                <td></td>
                 @foreach($row as $j => $value)
                 <td style="background-color: {{ $colors_used[$i][$j] }}; color: black;">
                     @if(($i + 1) == $severity && ($j + 1) == $probability)
@@ -125,21 +112,8 @@
         <tbody>
             @foreach($matriks_used as $i => $row)
             <tr>
-                {{-- <td>{{ $i + 1 }}</td> --}}
                 <td></td>
-                <td>
-                    {{-- Tampilkan nama_kriteria dan desc_kriteria yang sudah disaring --}}
-                    {{-- <strong>{{ $kriteriaData[$i]['nama_kriteria'] ?? 'none' }}</strong>
-                    @if(isset($kriteriaData[$i]['desc_kriteria']))
-                        <ul>
-                            @foreach($kriteriaData[$i]['desc_kriteria'] as $desc)
-                                <li>{{ $desc }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <span>none</span>
-                    @endif --}}
-                </td>
+                <td></td>
                 @foreach($row as $j => $value)
                 <td style="background-color: {{ $colors_used[$i][$j] }}; color: black;">
                     @if(($i + 1) == $severityrisk && ($j + 1) == $probabilityrisk)
@@ -163,10 +137,9 @@
         <i class="ri-arrow-go-back-line"></i>
     </a>
 
-    {{-- <a href="{{ route('riskregister.index') }}" class="btn btn-danger" title="Kembali">
-        <i class="ri-arrow-go-back-line"></i>
-    </a> --}}
-
+    <a class="btn btn-warning" href="{{ route('resiko.edit', ['id' => $same]) }}" title="Back">
+        <i class="bx bx-edit"></i>
+    </a>
 </div>
 
 @endsection

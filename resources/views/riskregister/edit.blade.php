@@ -47,7 +47,7 @@
             <!-- Opportunity -->
             <div class="mb-3">
                 <label for="peluang" class="form-label"><strong>Peluang</strong></label>
-                <textarea name="peluang" id="peluang" class="form-control">{{ old('peluang', $riskregister->peluang) }}</textarea>
+                <textarea placeholder="Masukkan Peluang jika ada" name="peluang" id="peluang" class="form-control">{{ old('peluang', $riskregister->peluang) }}</textarea>
             </div>
 
             <!-- Interested Parties -->
@@ -133,7 +133,7 @@
 
                     <div class="mb-3">
                         <label for="before_{{ $resiko->id }}" class="form-label"><strong>Before</strong></label>
-                        <textarea name="before[{{ $resiko->id }}]" id="before_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->before) }}</textarea>
+                        <textarea placeholder="Masukkan kondisi saat ini sebelum mitigasi atau tindakan lanjut dilakukan" name="before[{{ $resiko->id }}]" id="before_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->before) }}</textarea>
                     </div>
 
                     <div class="mb-3">

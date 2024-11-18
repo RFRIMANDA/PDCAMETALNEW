@@ -362,7 +362,7 @@
                 <td>
 
                         <div class="btn-group" role="group">
-                            <a href="{{ route('resiko.matriks', $data['id']) }}" title="Detail Risiko" class="btn btn-secondary btn-sm me-1">
+                            <a href="{{ route('riskregister.edit', $data['id']) }}" title="Detail Risiko" class="btn btn-secondary btn-sm me-1">
                                 <i class="bx bx-edit"></i>
                             </a>
                             <form action="{{ route('riskregister.destroy', $data['id']) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">

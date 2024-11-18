@@ -24,9 +24,21 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">TABLE RISK & OPPORTUNITY REGISTER  {{ $forms->first()->divisi->nama_divisi ?? '' }}</h5>
-            <!-- Search Button (Trigger Modal) -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter Options</button>
 
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-start gap-3 mt-3">
+                <!-- Filter Button (Trigger Modal) -->
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
+                    <i class="fa fa-filter" style="font-size: 14px;"></i> Filter Options
+                </button>
+                <!-- New Issue Button -->
+                <a href="{{ route('riskregister.create', ['id' => $id]) }}" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa fa-plus" style="font-size: 14px;"></i> New Issue
+                </a>
+
+            </div>
+        </div>
+    </div>
             <!-- Modal for Filters -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -133,7 +145,6 @@
 </div>
     </div>
 </div>
-
             <!-- Small tables -->
             <div class="card">
                 <div class="card-body">
@@ -177,8 +188,8 @@
                                             @if (!$isClosed)
                                                 <tr>
                                                     <td>{{ $no++ }}
-                                                        <a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-danger">
-                                                            <i class="bx bx-edit"></i>
+                                                        <a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-danger" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                                                            <i class="bx bx-edit" style="font-size: 14px;"></i>
                                                         </a>
                                                     </td>
                                                     <td>{{ $form->issue }}</td>
@@ -200,14 +211,13 @@
                                                     <td>
                                                         @if($resikos->isNotEmpty())
                                                             @foreach($resikos as $resiko)
-                                                                {{ $resiko->tingkatan }}
+                                                                <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}" title="Matriks Before" class="btn btn-secondary" style="font-size: 9px; padding: 2px; color: white;">
+                                                                    <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                </a>
                                                             @endforeach
                                                         @else
                                                             None
                                                         @endif
-                                                        <a href="{{ route('resiko.matriks', $form->id) }}" title="Matriks Before" class="btn btn-warning">
-                                                            <i class="ri-grid-line"></i>
-                                                        </a>
                                                     </td>
 
                                                     <!-- Kolom pihak berkepentingan dan tindakan lanjut -->
@@ -262,17 +272,23 @@
                                                         @else
                                                             None
                                                         @endif
-                                                    </td>
-                                                    <td>@if($resikos->isNotEmpty())
-                                                        @foreach($resikos as $resiko)
-                                                            {{ $resiko->risk }}
-                                                            <a href="{{ route('resiko.matriks2', $form->id) }}" title="Matriks After" class="btn btn-info">
-                                                                <i class="ri-grid-line"></i>
+                                                        <td>
+                                                            @if($resikos->isNotEmpty())
+                                                                @foreach($resikos as $resiko)
+                                                                    <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}" title="Matriks After" class="btn btn-info" style="font-size: 9px; padding: 2px; color: white;">
+                                                                        <strong>{{ $resiko->risk }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                    </a>
+                                                                    <br>
+                                                                @endforeach
+                                                                <br>
+                                                            @else
+                                                                None
+                                                            @endif
+                                                            <a class="btn btn-success" href="{{ route('resiko.edit', ['id' => $form]) }}" title="Edit Matriks" style="font-size: 10px; padding: 3px; color: white;">
+                                                                <strong>Edit</strong><i class="bx bx-edit" style="font-size: 13px;"></i>
                                                             </a>
-                                                        @endforeach
-                                                    @else
-                                                        None
-                                                    @endif</td>
+                                                        </td>
+
                                                     <td>@if($resikos->isNotEmpty())
                                                         @foreach($resikos as $resiko)
                                                             {{ $resiko->before }}

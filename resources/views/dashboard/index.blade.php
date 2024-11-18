@@ -171,7 +171,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <h5 class="modal-title" id="statusModalLabel">Status Data</h5>
                 </div>
                 <div class="modal-body">
                     <!-- Table with status details -->
@@ -221,7 +220,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <h5 class="modal-title" id="tingkatanModalLabel">Tingkatan Data</h5>
                 </div>
                 <div class="modal-body">
                     <!-- Table with tingkatan details -->

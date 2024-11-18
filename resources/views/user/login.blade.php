@@ -121,10 +121,15 @@
                 </div>
 
                 <div class="col-12">
-                  <label for="yourPassword" class="form-label">Password</label>
-                  <input type="password" name="password" class="form-control" id="yourPassword" required>
-                  <div class="invalid-feedback">Please enter your password!</div>
-                </div>
+                    <label for="yourPassword" class="form-label">Password</label>
+                    <div class="input-group">
+                      <input type="password" name="password" class="form-control" id="yourPassword" required>
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                      </button>
+                    </div>
+                    <div class="invalid-feedback">Please enter your password!</div>
+                  </div>
                 <br>
                 <div class="col-12">
                   <button class="btn btn-primary w-100" type="submit">Login</button>
@@ -140,3 +145,18 @@
 
 </body>
 </html>
+
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('yourPassword');
+      const eyeIcon = document.getElementById('eyeIcon');
+      const isPassword = passwordInput.type === 'password';
+
+      // Toggle tipe input
+      passwordInput.type = isPassword ? 'text' : 'password';
+
+      // Toggle ikon mata
+      eyeIcon.classList.toggle('bi-eye');
+      eyeIcon.classList.toggle('bi-eye-slash');
+    });
+</script>
