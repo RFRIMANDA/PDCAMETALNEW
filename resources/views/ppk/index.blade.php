@@ -42,9 +42,13 @@
                             <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-info btn-sm" title="Form PPK Ketiga">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
+                            <a href="{{ route('ppk.create4', $ppk->id) }}" class="btn btn-dark btn-sm" title="Form PPK Keempat">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
                             <a href="{{ route('ppk.export', $ppk->id) }}" class="btn btn-success btn-sm" title="Export to Excel">
                                 <i class="bi bi-file-earmark-excel-fill"></i>
                             </a>
+
                         </td>
                     </tr>
                 @endforeach
@@ -185,8 +189,12 @@
                                 <td>{{ $ppk->formppk3->pencegahan ?? 'Tidak ada pencegahan' }}</td>
                             </tr>
                             <tr>
-                                <th>Tanggal Usulan</th>
-                                <td>{{ $ppk->formppk3->target_tgl ? date('d-m-Y', strtotime($ppk->formppk3->target_tgl)) : 'Tidak ada tanggal usulan' }}</td>
+                                <th>Tanggal Penanggulangan</th>
+                                <td>{{ $ppk->formppk3->tgl_penanggulangan ? date('d-m-Y', strtotime($ppk->formppk3->tgl_penanggulangan)) : 'Tidak ada tanggal usulan' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tanggal pencegahan</th>
+                                <td>{{ $ppk->formppk3->tgl_pencegahan ? date('d-m-Y', strtotime($ppk->formppk3->tgl_pencegahan)) : 'Tidak ada tanggal usulan' }}</td>
                             </tr>
                             <tr>
                                 <th>PIC Penanggulangan</th>
@@ -195,6 +203,17 @@
                             <tr>
                                 <th>PIC Pencegahan</th>
                                 <td>{{ $ppk->formppk3->pic2User ? $ppk->formppk3->pic2User->nama_user : 'Tidak ada PIC' }}</td>
+                            </tr>
+                        @endif
+
+                        @if($ppk->formppk4)
+                            <tr>
+                                <th>Catatan</th>
+                                <td>{{ $ppk->formppk4->catatan ?? 'Tidak ada catatan' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tanggal Verifikasi</th>
+                                <td>{{ $ppk->formppk4->tgl_verif ?? 'Tidak ada Tanggal Verifikasi' }}</td>
                             </tr>
                         @endif
                     </table>

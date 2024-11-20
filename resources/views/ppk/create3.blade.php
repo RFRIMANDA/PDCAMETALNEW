@@ -49,6 +49,14 @@
                 </div>
             </div>
 
+
+            <div class="row mb-3">
+                <label for="target_tgl" class="col-sm-2 col-form-label"><strong>Target Tanggal Penanggulangan</strong></label>
+                <div class="col-sm-10">
+                    <input type="date" name="tgl_penanggulangan" class="form-control" value="{{ old('tgl_penanggulangan') }}">
+                </div>
+            </div>
+
             <div class="row mb-3">
                 <label for="pencegahan" class="col-sm-2 col-form-label"><strong>Pencegahan</strong></label>
                 <div class="col-sm-10">
@@ -73,9 +81,9 @@
             </div>
 
             <div class="row mb-3">
-                <label for="target_tgl" class="col-sm-2 col-form-label"><strong>Target Tanggal</strong></label>
+                <label for="target_tgl" class="col-sm-2 col-form-label"><strong>Target Tanggal Pencegahan</strong></label>
                 <div class="col-sm-10">
-                    <input type="date" name="target_tgl" class="form-control" value="{{ old('target_tgl') }}">
+                    <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
                 </div>
             </div>
 

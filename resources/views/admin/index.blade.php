@@ -8,7 +8,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Kelola Data User</h5>
-          <a href="/admin/create" title="Buat User" class="btn btn-sm btn-primary mb-3">Add
+          <a href="/admin/create" title="Buat User" class="btn btn-sm btn-success mb-3">Add
             <i class="bi bi-person-plus-fill"></i>
           </a>
 
@@ -21,7 +21,7 @@
 
                 <div class="col-md-4">
                     <select name="divisi" class="form-control" >
-                        <option value="" disabled selected>Pilih Divisi</option>
+                        <option value="" disabled selected>--Pilih Divisi--</option>
                         @foreach ($divisi as $d)
                             <option value="{{ $d->id }}" {{ request('divisi') == $d->id ? 'selected' : '' }}>
                                 {{ $d->nama_divisi }}
@@ -44,8 +44,8 @@
                     </div>
                 </div>
             </div><br>
-            <button type="submit" class="btn btn-primary">Cari</button> <!-- Added 'ms-2' for margin -->
-            <a href="{{ route('admin.kelolaakun') }}" class="btn btn-secondary">Reset</a>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button> <!-- Added 'ms-2' for margin -->
+            <a href="{{ route('admin.kelolaakun') }}" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></a>
         </form>
 
           <!-- End Filter Form -->
@@ -84,7 +84,7 @@
                 <td>{{ $user->divisi}}</td>
                 <td>{{ $user->role }}</td>
                 <td>
-                  <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                  <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-success" title="Edit">
                     <i class="bx bx-edit"></i>
                   </a>
 

@@ -1,0 +1,88 @@
+public function store(Request $request)
+{
+    dd($request->all);
+    $request->validate([
+        'judul' => 'nullable|string|max:1000',
+        'jenisketidaksesuaian' => 'nullable|array',
+        'jenisketidaksesuaian.*' => 'in:SISTEM,AUDIT,PRODUK,PROSES',
+        'pembuat' => 'required|string|max:255',
+        'emailpembuat' => 'required|email|max:255',
+        'divisipembuat' => 'required|string|max:255',
+        'penerima' => 'required|string|max:255',
+        'emailpenerima' => 'required|email|max:255',
+        'divisipenerima' => 'required|string|max:255',
+        'cc_email' => 'nullable|array',
+        'cc_email.*' => 'email',
+        'evidence' => 'nullable|file|mimes:jpg,jpeg,png,xlsx,xls,doc,docx|max:2048',
+        'signature' => 'nullable|string',
+        'signature_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        'identifikasi' => 'nullable|string|max:1000',
+        'signaturepenerima' => 'nullable|string',
+        'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $ccEmails = $request->cc_email ? implode(',', $request->cc_email) : null;
+    $evidence = $this->handleFileUpload($request, 'evidence', 'dokumen', 'TML');
+    $signatureFileName = $this->handleSignature($request, 'signature', 'signature_file');
+
+    try {
+        DB::beginTransaction();
+
+        // Generate nomor surat
+        $lastPpk = Ppk::latest()->first();
+        $sequence = $lastPpk ? intval(substr($lastPpk->nomor_surat, 0, 3)) + 1 : 1;
+        $nomor = str_pad($sequence, 3, '0', STR_PAD_LEFT);
+        $bulan = date('m');
+        $tahun = date('Y');
+        $semester = ($bulan <= 6) ? 'SEM 1' : 'SEM 2';
+
+        // Ambil divisi penerima jika ada
+        $user = User::find($request->penerima);
+        $divisi = $request->divisipenerima ?? ($user->divisi ?? 'UNKNOWN');
+        $nomorSurat = "$nomor/MFG/$divisi/$bulan/$tahun-$semester";
+
+        // Simpan data PPK
+        $buatppk = Ppk::create([
+            'judul' => $request->judul,
+            'jenisketidaksesuaian' => is_array($request->jenisketidaksesuaian) ? implode(',', $request->jenisketidaksesuaian) : null,
+            'pembuat' => auth()->id(),
+            'emailpembuat' => $request->emailpembuat,
+            'divisipembuat' => $request->divisipembuat,
+            'penerima' => $request->penerima,
+            'emailpenerima' => $request->emailpenerima,
+            'divisipenerima' => $divisi,
+            'cc_email' => $ccEmails,
+            'evidence' => $evidence,
+            'nomor_surat' => $nomorSurat,
+            'signature' => $signatureFileName,
+        ]);
+
+        // Tambahkan entitas terkait
+        Ppkkedua::create(['id_formppk' => $buatppk->id]);
+        Ppkketiga::create(['id_formppk' => $buatppk->id]);
+
+        // Kirim Email
+        $data_email = [
+            'subject' => "Penerbitan No PPK {$nomorSurat}",
+            'sender_name' => "{$request->emailpembuat}, {$request->divisipembuat}",
+            'paragraf1' => "Dear {$request->penerima}, {$divisi}",
+            'paragraf2' => "Berikut Terlampir PPK",
+            'paragraf3' => $nomorSurat,
+            'paragraf4' => $request->judul,
+            'paragraf5' => "yang diajukan oleh",
+            'paragraf6' => "Video panduan copy link berikut->bit.ly/pengajuanppk",
+            'paragraf7' => "Untuk menambahkan Evidence dan update progress silahkan klik link di bawah ini",
+            'paragraf8' => route('ppk.index'),
+        ];
+        Mail::to($request->emailpenerima)
+            ->cc($request->cc_email ?? [])
+            ->send(new kirimemail($data_email));
+
+        DB::commit();
+        return redirect()->route('ppk.index')->with('success', 'Data PPK berhasil disimpan. ✅');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        // \Log::error("Gagal menyimpan PPK: {$e->getMessage()}", ['trace' => $e->getTrace()]);
+        return back()->withErrors(['error' => 'Gagal menyimpan data. Silakan coba lagi.']);
+    }
+}

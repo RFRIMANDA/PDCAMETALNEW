@@ -8,7 +8,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Kelola Departemen</h5>
-          <a href="{{ route('admin.divisi.create') }}" title="Tambah Divisi" class="btn btn-sm btn-primary mb-3">
+          <a href="{{ route('admin.divisi.create') }}" title="Tambah Divisi" class="btn btn-sm btn-success mb-3">
             <i class="fa fa-plus"></i> Add Departemen
           </a>
 
@@ -18,7 +18,7 @@
                 <input type="text" name="nama_divisi" class="form-control" placeholder="Cari berdasarkan Nama Divisi" value="{{ request('nama_divisi') }}">
               </div>
               <div class="col-md-3">
-                <button type="submit" class="btn btn-primary">Cari</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
               </div>
             </div>
           </form>
@@ -37,7 +37,7 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $divisi->nama_divisi }}</td>
                 <td>
-                  <a href="{{ route('admin.divisi.edit', $divisi->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                  <a href="{{ route('admin.divisi.edit', $divisi->id) }}" class="btn btn-sm btn-success" title="Edit">
                     <i class="bx bx-edit"></i>
                   </a>
 

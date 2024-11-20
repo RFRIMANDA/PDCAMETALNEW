@@ -119,13 +119,9 @@
         <i class="ri-arrow-go-back-line"></i>
     </a>
 
-    {{-- <a href="{{ route('riskregister.index') }}" class="btn btn-danger" title="Kembali">
-        <i class="ri-arrow-go-back-line"></i>
-    </a> --}}
-
-    <a class="btn btn-warning" href="{{ route('resiko.edit', ['id' => $same]) }}" title="Back">
+    {{-- <a class="btn btn-success" href="{{ route('resiko.edit', ['id' => $same]) }}" title="Back">
         <i class="bx bx-edit"></i>
-    </a>
+    </a> --}}
 </div>
 
 @endsection

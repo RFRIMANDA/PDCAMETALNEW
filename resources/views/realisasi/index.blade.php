@@ -36,62 +36,6 @@
         }
     </style>
 
-    <!-- Form untuk Menambahkan Realisasi Baru -->
-<form action="{{ route('realisasi.store') }}" method="POST">
-    @csrf
-    <input type="hidden" name="id_tindakan" value="{{ $id }}" required>
-
-    <div class="row">
-        {{-- AKTIVITY --}}
-        <div class="col-md-4 col-sm-12 mb-3">
-            <label for="nama_realisasi"><strong>Nama Activity</strong></label>
-            <textarea name="nama_realisasi[]" class="form-control" rows="3" placeholder="Masukan Aktivitas" required></textarea>
-        </div>
-
-        {{-- PIC --}}
-        <div class="col-md-4 col-sm-12 mb-3">
-            <label for="target"><strong>PIC</strong></label>
-            <select name="target[]" class="form-control" required>
-                <option value="">--Pilih PIC--</option>
-                @foreach($usersInDivisi as $user)
-                    <option value="{{ $user->id }}" {{ old('target') == $user->id ? 'selected' : '' }}>
-                        {{ $user->nama_user }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- DESC --}}
-        <div class="col-md-4 col-sm-12 mb-3">
-            <label for="desc"><strong>Noted</strong></label>
-            <textarea name="desc[]" class="form-control" rows="3" placeholder="Masukan Catatan"></textarea>
-        </div>
-
-    </div>
-
-    <div class="row">
-        {{-- TANGGAL REALISASI --}}
-        <div class="col-md-3 col-sm-12 mb-3">
-            <label for="tgl_realisasi"><strong>Tanggal Penyelesaian</strong></label>
-            <input type="date" name="tgl_realisasi[]" class="form-control">
-        </div>
-
-        {{-- PERSENTASE % --}}
-        <div class="col-md-3 col-sm-12 mb-3">
-            <label for="presentase"><strong>Persentase</strong></label>
-            <input type="number" name="presentase[]" class="form-control" placeholder="%" step="0.01">
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add Activity
-            </button>
-        </div>
-    </div>
-</form>
-
 
     <h1 class="card-title">PIC: {{$pic}}<br><hr>Target Tanggal: {{$deadline}}</h1>
 
@@ -133,7 +77,7 @@
             <td>{{ $realisasi->tgl_realisasi ?? '-' }}</td>
             <td>{{ $realisasi->presentase ?? '-' }}%</td>
             <td>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#basicModal{{ $realisasi->id }}">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#basicModal{{ $realisasi->id }}">
                     <i class="bx bx-edit"></i>
                 </button>
                 <form action="{{ route('realisasi.destroy', $realisasi->id) }}" method="POST" style="display: inline-block;">
@@ -198,6 +142,80 @@
     </tbody>
 </table>
 
+    <!-- Button to Show/Hide Form -->
+    <button type="button" id="toggleFormButton" class="btn btn-info mb-3">
+        <i class="fa fa-eye"></i> Show Form
+    </button>
+
+    <!-- Form for Adding New Realisasi -->
+    <form id="realisasiForm" action="{{ route('realisasi.store') }}" method="POST" style="display: none;">
+        @csrf
+        <input type="hidden" name="id_tindakan" value="{{ $id }}" required>
+
+        <div class="row">
+            {{-- AKTIVITY --}}
+            <div class="col-md-4 col-sm-12 mb-3">
+                <label for="nama_realisasi"><strong>Nama Activity</strong></label>
+                <textarea name="nama_realisasi[]" class="form-control" rows="3" placeholder="Masukan Aktivitas" required></textarea>
+            </div>
+
+            {{-- PIC --}}
+            <div class="col-md-4 col-sm-12 mb-3">
+                <label for="target"><strong>PIC</strong></label>
+                <select name="target[]" class="form-control" required>
+                    <option value="">--Pilih PIC--</option>
+                    @foreach($usersInDivisi as $user)
+                        <option value="{{ $user->id }}" {{ old('target') == $user->id ? 'selected' : '' }}>
+                            {{ $user->nama_user }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- DESC --}}
+            <div class="col-md-4 col-sm-12 mb-3">
+                <label for="desc"><strong>Noted</strong></label>
+                <textarea name="desc[]" class="form-control" rows="3" placeholder="Masukan Catatan"></textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            {{-- TANGGAL REALISASI --}}
+            <div class="col-md-3 col-sm-12 mb-3">
+                <label for="tgl_realisasi"><strong>Tanggal Penyelesaian</strong></label>
+                <input type="date" name="tgl_realisasi[]" class="form-control">
+            </div>
+
+            {{-- PERSENTASE % --}}
+            <div class="col-md-3 col-sm-12 mb-3">
+                <label for="presentase"><strong>Persentase</strong></label>
+                <input type="number" name="presentase[]" class="form-control" placeholder="%" step="0.01">
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Add Activity
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- JavaScript to Toggle the Form Visibility -->
+    <script>
+        document.getElementById('toggleFormButton').addEventListener('click', function() {
+            var form = document.getElementById('realisasiForm');
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                this.innerHTML = '<i class="fa fa-eye-slash"></i> Hide Form'; // Change button text to 'Hide Form'
+            } else {
+                form.style.display = "none";
+                this.innerHTML = '<i class="fa fa-eye"></i> Show Form'; // Change button text back to 'Show Form'
+            }
+        });
+    </script>
+
 
     <!-- Form untuk Mengupdate Status -->
     <form action="{{ route('realisasi.update', $realisasiList->first()->id ?? 0) }}" method="POST" class="mt-4">
@@ -216,7 +234,7 @@
                         <option value="ON PROGRES" {{ old('status', $realisasiList->first()->status ?? '') == 'ON PROGRES' ? 'selected' : '' }}>ON PROGRES</option>
                         <option value="CLOSE" {{ old('status', $realisasiList->first()->status ?? '') == 'CLOSE' ? 'selected' : '' }}>CLOSE</option>
                     </select>
-                    <button type="submit" class="btn btn-success ms-2">Update</button>
+                    <button type="submit" class="btn btn-primary ms-2">Update</button>
                 </div>
             </div>
 

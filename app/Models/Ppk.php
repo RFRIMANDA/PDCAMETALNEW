@@ -46,6 +46,10 @@ class Ppk extends Model
 {
     return $this->hasOne(Ppkketiga::class, 'id_formppk');
 }
+public function formppk4()
+{
+    return $this->hasOne(Ppkkeempat::class, 'id_formppk');
+}
 public function divisi1()
 {
     return $this->belongsTo(Divisi::class, 'divisipembuat');

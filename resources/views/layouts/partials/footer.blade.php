@@ -3,6 +3,7 @@
       &copy; Copyright <strong><span>PT. TATA METAL LESTARI</span></strong>. All Rights Reserved
     </div>
     <div class="credits">
-      Designed by <a href="">TATA METAL LESTARI PRODUCTION</a>
+
+      Designed by <a href="">TATA METAL LESTARI PRODUCTIONS</a>
     </div>
-  </footer>
+  </footer><!-- End Footer -->

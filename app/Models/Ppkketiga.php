@@ -17,7 +17,8 @@ class Ppkketiga extends Model
         'pic1',
         'pencegahan',
         'pic2',
-        'target_tgl',
+        'tgl_penanggulangan',
+        'tgl_pencegahan',
     ];
 
     public function formppk3()

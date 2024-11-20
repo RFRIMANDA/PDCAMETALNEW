@@ -168,7 +168,7 @@
                                         <th scope="col">Resiko</th>
                                         <th scope="col">Peluang</th>
                                         <th scope="col">Tingkatan</th>
-                                        <th scope="col" style="width: 200px;">Tindakan Lanjut</th>
+                                        <th scope="col" style="width: 300px;">Tindakan Lanjut</th>
                                         <th scope="col">Target Penyelesaian</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Actual Risk</th>

@@ -8,18 +8,34 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Kelola Kriteria</h5>
-                    <a href="{{ route('admin.kriteriacreate') }}" title="Buat Kriteria" class="btn btn-sm btn-primary mb-3">
-                        Add <i class="bi bi-plus-circle-fill"></i>
+                    <a href="{{ route('admin.kriteriacreate') }}" title="Buat Kriteria" class="btn btn-sm btn-success mb-3">
+                        Add Kriteria <i class="bi bi-plus-circle-fill"></i>
                     </a>
 
                     <!-- Filter Form -->
                     <form method="GET" action="{{ route('admin.kriteria') }}" class="mb-4">
                         <div class="row">
+                            <!-- Dropdown untuk Nama Kriteria -->
                             <div class="col-md-4">
-                                <input type="text" name="nama_kriteria" class="form-control" placeholder="Cari berdasarkan Nama Kriteria" value="{{ request('nama_kriteria') }}">
+                                <select name="nama_kriteria" class="form-control">
+                                    <option value="">-- Pilih Nama Kriteria --</option>
+                                    @foreach ($namaKriteriaList as $nama)
+                                        <option value="{{ $nama }}" {{ request('nama_kriteria') == $nama ? 'selected' : '' }}>
+                                            {{ $nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-md-4">
+
+                            <!-- Input Text untuk Deskripsi -->
+                            <div class="col-md-4 d-flex align-items-center">
                                 <input type="text" name="desc_kriteria" class="form-control" placeholder="Cari berdasarkan Deskripsi" value="{{ request('desc_kriteria') }}">
+                                <button type="submit" class="btn btn-primary ms-2">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <a href="" class="btn btn-secondary ms-2">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -77,7 +93,7 @@
                                     </td>
 
                                     <td>
-                                        <a href="{{ route('admin.kriteriaedit', $k->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <a href="{{ route('admin.kriteriaedit', $k->id) }}" class="btn btn-sm btn-success" title="Edit">
                                             <i class="bx bx-edit"></i>
                                         </a>
 

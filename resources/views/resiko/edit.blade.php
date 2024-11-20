@@ -18,7 +18,7 @@
 
         <!-- Nama Resiko -->
         <div class="row mb-3">
-            <label for="nama_resiko" class="col-sm-2 col-form-label"><strong>Nama Resiko</strong></label>
+            <label for="nama_resiko" class="col-sm-2 col-form-label"><strong>Resiko</strong></label>
             <div class="col-sm-10">
                 <textarea name="nama_resiko" class="form-control" rows="3">{{ old('nama_resiko', $resiko->nama_resiko) }}</textarea>
             </div>
@@ -43,7 +43,7 @@
         <div class="row mb-3">
             <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
             <div class="col-sm-4">
-                <select class="form-select" name="severity" id="severity" required>
+                <select class="form-select" name="severity" id="severity" >
                     <option value="">--Pilih Severity--</option>
                     <!-- Isi opsi severity sesuai kriteria yang terpilih -->
                     @if(old('kriteria', $resiko->kriteria))
@@ -111,7 +111,7 @@
         <div class="row mb-3">
             <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak</strong></label>
             <div class="col-sm-4">
-                <select class="form-select" name="probability" id="probability" required onchange="calculateTingkatan()">
+                <select class="form-select" name="probability" id="probability" onchange="calculateTingkatan()">
                     <option value="">--Silahkan Pilih Probability--</option>
                     <option value="1" {{ old('probability', $resiko->probability) == 1 ? 'selected' : '' }}>1. Sangat jarang terjadi</option>
                     <option value="2" {{ old('probability', $resiko->probability) == 2 ? 'selected' : '' }}>2. Jarang terjadi</option>
@@ -139,7 +139,7 @@
         <div class="row mb-3">
             <label for="severityrisk" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
             <div class="col-sm-4">
-                <select class="form-select" name="severityrisk" id="severityrisk" required>
+                <select class="form-select" name="severityrisk" id="severityrisk" >
                     <option value="">--Pilih Severity--</option>
                     <!-- Isi opsi severity sesuai kriteria yang terpilih -->
                     @if(old('kriteria', $resiko->kriteria))

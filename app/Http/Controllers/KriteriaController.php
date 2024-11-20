@@ -8,11 +8,27 @@ use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kriteria = Kriteria::all();
-        return view('admin.kriteria', compact('kriteria'));
+        $nama_kriteria = $request->get('nama_kriteria');
+        $desc_kriteria = $request->get('desc_kriteria');
+
+        $kriteriaQuery = Kriteria::query();
+
+        if ($nama_kriteria) {
+            $kriteriaQuery->where('nama_kriteria', $nama_kriteria);
+        }
+
+        if ($desc_kriteria) {
+            $kriteriaQuery->where('desc_kriteria', 'LIKE', '%' . $desc_kriteria . '%');
+        }
+
+        $kriteria = $kriteriaQuery->get();
+        $namaKriteriaList = Kriteria::pluck('nama_kriteria')->unique();
+
+        return view('admin.kriteria', compact('kriteria', 'namaKriteriaList'));
     }
+
 
     public function create()
     {

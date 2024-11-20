@@ -15,12 +15,14 @@ class PpkExport implements FromCollection, WithStyles
     protected $ppk;
     protected $ppkdua;
     protected $ppktiga;
+    protected $ppkempat;
 
-    public function __construct($ppk, $ppkdua,$ppktiga)
+    public function __construct($ppk, $ppkdua,$ppktiga,$ppkempat)
     {
         $this->ppk = $ppk;
         $this->ppkdua = $ppkdua;
         $this->ppktiga = $ppktiga;
+        $this->ppkempat = $ppkempat;
     }
 
     public function collection()
@@ -211,10 +213,11 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
 
 
         //PENCEGAHAN & PENGENDALIAN
-        $sheet->setCellValue('B62', 'PT. TATA METAL LESTARI:');
+        $sheet->setCellValue('B62', 'PT. TATA METAL LESTARI');
 
         // Judul di B2
         $sheet->setCellValue('B64', 'PROSES PENINGKATAN KINERJA');
+        $sheet->getRowDimension(64)->setRowHeight(40);
         $sheet->mergeCells('B64:L64'); // Menggabungkan sel B2 sampai L2
         $sheet->getStyle('B64')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('B64')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Mengatur perataan horizontal ke tengah
@@ -222,10 +225,10 @@ $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 un
         // Mengatur tinggi baris untuk baris 2
         $sheet->getRowDimension(2)->setRowHeight(100); // Mengatur tinggi baris ke 30 unit
 
-        $sheet->getStyle('B64:L110')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
-        $sheet->getStyle('B64:L110')->getBorders()->getOutline()->getColor()->setARGB('000000');
-        $sheet->getStyle('B64:L110')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
-        $sheet->getStyle('B64:L110')->getBorders()->getOutline()->getColor()->setARGB('000000');
+        $sheet->getStyle('B64:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+        $sheet->getStyle('B64:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+        $sheet->getStyle('B64:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+        $sheet->getStyle('B64:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
         $sheet->getStyle('B64:L64')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
         $sheet->getStyle('B64:L64')->getBorders()->getOutline()->getColor()->setARGB('000000');
 
@@ -298,7 +301,6 @@ $sheet->getStyle('C72:K72')->getBorders()->getAllBorders()->setBorderStyle(Borde
 
 // Set the content for the next row from C73 to K73
 $sheet->setCellValue('C73', 'Pencegahan')->getStyle('C73')->getFont()->setBold(true);
-// $sheet->getStyle('C73')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 $sheet->setCellValue('E73', $this->ppktiga->pencegahan);
 $sheet->getStyle('C73:K73')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
 $sheet->getStyle('C73:K73')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
@@ -328,9 +330,83 @@ if ($this->ppkdua && $this->ppkdua->signaturepenerima && file_exists(public_path
     $sheet->setCellValue('J79', 'Tidak Ada Tanda Tangan');
 }
 // Posisi tanda tangan penerima
+$sheet->setCellValue('I81', 'Tandatangan, ');
 $sheet->setCellValue('J82', $this->ppk->penerimaUser->nama_user);
 
-    }
+// FORM VERIFIKASI
+$sheet->getStyle('B84:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B84:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+$sheet->getStyle('B84:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B84:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
 
+$sheet->setCellValue('C85', '4. Verifikasi Tindakan, sesuai kolom "Target Tanggal"')->getStyle('C85')->getFont()->setBold(true);
+$sheet->setCellValue('C87', 'Catatan: ');
+$sheet->setCellValue('D88', $this->ppkempat->catatan);
 
+$sheet->mergeCells('D88:J88');// Menggabungkan sel D44 sampai J44
+$sheet->getStyle('D88:J88')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
+$sheet->getStyle('D88:J88')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
+$sheet->getRowDimension(88)->setRowHeight(200);// Mengatur tinggi baris untuk baris 44
+$sheet->getStyle('D88:J88')->getAlignment()->setWrapText(true);
+
+$sheet->setCellValue('J92', 'Tgl. Verifikasi: ');
+$sheet->setCellValue('K92', $this->ppkempat->tgl_verif);
+
+$sheet->setCellValue('J93', 'Auditor');
+$sheet->setCellValue('J94', $this->ppk->pembuatUser->nama_user)->getStyle('J94')->getFont()->setBold(true);
+
+$sheet->setCellValue('C96', 'Efektifitas Tindakan Penanggulangan/Pencegahan dapat diverifkasi 1(satu) bulan dari Tanggal Verifikasi oleh Auditor');
+$sheet->getStyle('B98:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B98:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+$sheet->getStyle('B98:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B98:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+
+$sheet->mergeCells('C99:G99')
+      ->setCellValue('C99', '5. a) Tinjauan Status Penyelesaian Tindakan Penanggulangan' . "\n" . 'b) Tinjauan Efektivitas atas hasil Tindakan Pencegahan')
+      ->getStyle('C99')->getFont()->setBold(true);
+$sheet->getStyle('C99')->getAlignment()->setWrapText(true)->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+$sheet->getRowDimension(99)->setRowHeight(40);
+
+$sheet->setCellValue('C101', 'Catatan: ');
+
+$sheet->mergeCells('D102:J102');// Menggabungkan sel D44 sampai J44
+$sheet->getStyle('D102:J102')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
+$sheet->getStyle('D102:J102')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);// Mengatur perataan ke tengah secara vertikal
+$sheet->getRowDimension(102)->setRowHeight(150);// Mengatur tinggi baris untuk baris 44
+$sheet->getStyle('D102:J102')->getAlignment()->setWrapText(true);
+
+// Apply a single border around C104:G105 and add "TRUE"
+$sheet->getStyle('C104:F105')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+$sheet->mergeCells('C104:F105');
+$sheet->setCellValue('C104', 'TRUE');
+$sheet->getStyle('C104')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+// Apply a single border around C107:G107 and add "FALSE"
+$sheet->getStyle('C107:F108')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+$sheet->mergeCells('C107:F108');
+$sheet->setCellValue('C107', 'FALSE');
+$sheet->getStyle('C107')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+
+$sheet->mergeCells('G104:K105');
+$sheet->setCellValue('G104', ' Efektif, dalam 1 bulan masalah yang sama tidak muncul lagi & tindakan penanggulangan sudah  selesai');
+$sheet->getStyle('G104')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+
+$sheet->mergeCells('G107:K108');
+$sheet->setCellValue('G107', 'Tidak efektif, dilanjutkan dengan PPK No. ...');
+$sheet->getStyle('G107')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+
+$sheet->getStyle('B110:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B110:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+$sheet->getStyle('B110:L120')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->getStyle('B110:L120')->getBorders()->getOutline()->getColor()->setARGB('000000');
+
+$sheet->setCellValue('C111', '6. Close Out (apabila efektif)')->getStyle('C111')->getFont()->setBold(true);
+$sheet->setCellValue('G115', 'Tanda tangan: ');
+$sheet->setCellValue('G117', '(Pembuat/Inisiator): ');
+$sheet->setCellValue('G118', $this->ppk->pembuatUser->nama_user);
+
+$sheet->setCellValue('J115', 'Date: ');
+
+$sheet->setCellValue('B122', 'PT. TATA METAL LESTARI ');
+
+}
 }

@@ -51,7 +51,7 @@
 
   <main id="main" class="main">
 
-    <div class="pagetitle" style="background-color: #ddfadd; padding: 10px; border-radius: 8px;">
+    {{-- <div class="pagetitle" style="background-color: #ddfadd; padding: 10px; border-radius: 8px;">
     <h1 style="font-weight: bold; font-size: 20px; color: #395f97;">DOCUMENT CONTROL MANAGEMENT SYSTEM</h1>
         <nav>
             <ol class="breadcrumb">
@@ -59,7 +59,7 @@
                 <li class="breadcrumb-item active">Dashboard</li>
             </ol>
         </nav>
-    </div>
+    </div> --}}
 
 <!-- End Page Title -->
     @yield('content')
@@ -88,7 +88,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
 
   <!-- jQuery (Harus disertakan sebelum Select2) -->

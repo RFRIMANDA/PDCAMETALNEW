@@ -137,6 +137,22 @@
     <br>
     <div class="container-fluid">
         <div class="row justify-content-center">
+            <form method="GET" action="{{ route('dashboard.index') }}">
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manajemen')
+                <div class="form-group">
+                    <label for="departemen">Filter by Departemen:</label>
+                    <select name="departemen" id="departemen" class="form-control" onchange="this.form.submit()">
+                        <option value="">-- Select Departemen --</option>
+                        @foreach($departemenList as $departemen)
+                            <option value="{{ $departemen }}" {{ $selectedDepartemen == $departemen ? 'selected' : '' }}>
+                                {{ $departemen }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+            </form>
+
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }} {{ Auth::user()->nama_user }} 👋
@@ -147,7 +163,7 @@
             <div class="col-lg-4">
                 <div class="card animate-card">
                     <div class="card-body">
-                        <h5>Status Departemen</h5>
+                        <h5>Status Risiko</h5>
                         <canvas id="statusPieChart"></canvas>
                     </div>
                 </div>
@@ -157,7 +173,7 @@
             <div class="col-lg-4">
                 <div class="card animate-card">
                     <div class="card-body">
-                        <h5>Tingkatan Departemen</h5>
+                        <h5>Tingkatan Risiko / Peluang</h5>
                         <canvas id="tingkatanPieChart"></canvas>
                     </div>
                 </div>
@@ -266,6 +282,7 @@
     </div>
 </section>
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
         const statusDetails = @json($statusDetails);
         const tingkatanDetails = @json($tingkatanDetails);
