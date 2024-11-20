@@ -161,6 +161,7 @@
                             <table class="table table-striped" style="width: 150%; font-size: 13px;">
                                 <thead>
                                     <tr>
+                                        <th scope="col"></th>
                                         <th scope="col">No</th>
                                         <th scope="col">Issue (Int:Ex)</th>
                                         <th scope="col">I/E</th>
@@ -195,10 +196,10 @@
 
                                             @if (!$isClosed)
                                                 <tr>
+                                                    <td><a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                                                        <i class="bx bx-edit" style="font-size: 14px;"></i>
+                                                    </a></td>
                                                     <td>{{ $no++ }}
-                                                        <a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
-                                                            <i class="bx bx-edit" style="font-size: 14px;"></i>
-                                                        </a>
                                                     </td>
                                                     <td>{{ $form->issue }}</td>
                                                     <td>{{ $form->inex}}</td>
