@@ -11,7 +11,6 @@ use App\Http\Controllers\PpkController;
 use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
 
-
 //Dashboard PIECHART
 Route::get('/Dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -43,7 +42,6 @@ Route::middleware('admin','manajemen')->group(function () {
     Route::put('/admin/divisi/{id}', [AdminController::class, 'updateDivisi'])->name('admin.divisi.update');
     // Route untuk Hapus Divisi
     Route::delete('/admin/divisi/{id}', [AdminController::class, 'destroyDivisi'])->name('admin.divisi.destroy');
-
 // Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('admin.kriteria');
 Route::get('/kriteriacreate', [KriteriaController::class, 'create'])->name('admin.kriteriacreate');
@@ -52,7 +50,6 @@ Route::get('/kriteria/{id}/edit', [KriteriaController::class, 'edit'])->name('ad
 Route::put('/kriteria/{id}', [KriteriaController::class, 'update'])->name('admin.kriteria.update');
 Route::delete('/kriteria/{id}', [KriteriaController::class, 'destroy'])->name('admin.kriteriadestroy');
 });
-
 // Risk
 Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(function () {
     Route::get('/bigrisk', [RiskController::class, 'biglist'])->name('riskregister.biglist');
@@ -71,10 +68,8 @@ Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(funct
 });
 Route::get('/riskregister', [RiskController::class, 'index'])->name('riskregister.index');
 Route::get('/riskregister/{id}', [RiskController::class, 'tablerisk'])->name('riskregister.tablerisk');
-
-
 // Resiko
-Route::middleware('manager','manajemen','supervisor')->group(function () {
+Route::middleware('manager','manajemen','supervisor','admin')->group(function () {
     Route::get('/resiko/{id}', [ResikoController::class, 'index'])->name('resiko.index');
     Route::get('/resiko/create/{id}', [ResikoController::class, 'create'])->name('resiko.create');
     Route::post('/resiko/store', [ResikoController::class, 'store'])->name('resiko.store');
@@ -102,16 +97,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/ppk', [PpkController::class, 'index'])->name('ppk.index');
     Route::get('/formppk', [PpkController::class, 'create'])->name('ppk.create');
     Route::post('/form/store', [PpkController::class, 'store'])->name('ppk.store');
-    Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
-    Route::put('/ppk/{id}', [PpkController::class, 'update'])->name('ppk.update');
     Route::get('/formidentifikasi/{id}', [PpkController::class, 'create2'])->name('ppk.create2');
     Route::post('/ppk/store-2', [PpkController::class, 'store2'])->name('ppk.store2');
     Route::get('/formusulan/{id}', [PpkController::class, 'create3'])->name('ppk.create3');
     Route::get('/formverifikasi/{id}', [PpkController::class, 'create4'])->name('ppk.create4');
     Route::post('/ppk/store-3', [PpkController::class, 'store3'])->name('ppk.store3');
-    Route::post('/ppk/store-4', [PpkController::class, 'store4'])->name('ppk.store4');
     Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');
     // Route::get('/kirimemail', [PpkController::class, 'email'])->name('ppk.email');
+    Route::get('/ppk/{id}/detail', [PpkController::class, 'detail'])->name('ppk.detail');
+    Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
+    Route::get('/ppk/{id}/edit2', [PpkController::class, 'edit2'])->name('ppk.edit2');
+    Route::get('/ppk/{id}/edit3', [PpkController::class, 'edit3'])->name('ppk.edit3');
+    Route::put('/ppk/{id}/update', [PpkController::class, 'update'])->name('ppk.update');
+    Route::put('/ppk/{id}/update2', [PpkController::class, 'update2'])->name('ppk.update2');
+    Route::put('/ppk/{id}/update3', [PpkController::class, 'update3'])->name('ppk.update3');
+    Route::delete('/ppk/{id}/evidence', [PpkController::class, 'deleteEvidence'])->name('ppk.deleteEvidence');
+
+
+
 // });
 
 // });

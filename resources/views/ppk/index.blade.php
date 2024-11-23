@@ -23,32 +23,54 @@
             <thead>
                 <tr>
                     <th style="width: 60px; text-align: center;">No</th> <!-- Mengatur lebar kolom No dan meratakan teks ke tengah -->
-                    {{-- <th style="width: 250px;">Judul</th> <!-- Mengatur lebar kolom Judul --> --}}
-                    <th style="width: 60px; text-align: center;">Action</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
+                    <th style="width: 60px; text-align: center;">Action Create</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
+                    <th style="width: 60px; text-align: center;">Action Edit</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
+                    <th style="width: 60px; text-align: center;">Detail</th> <!-- Mengatur lebar kolom Action dan meratakan teks ke tengah -->
                 </tr>
             </thead>
             <tbody>
                 @foreach ($ppks as $ppk)
                     <tr>
-                        <td style="text-align: center;">{{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}</td> <!-- Meratakan teks ke tengah -->
+                        <td style="text-align: center;">
+                            <a href="{{ route('ppk.export', $ppk->id) }}" title="Export to Excel">
+                            {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}
+                        </a>
+                        </td>
+
                         {{-- <td>{{ $ppk->judul }}</td> --}}
                         <td style="text-align: center;"> <!-- Meratakan teks ke tengah -->
-                            <button type="button" title="Detail" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
+                            <button type="button" title="Track Record" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $ppk->id }}">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
-                            <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
+
+                            {{-- <a href="{{ route('ppk.create', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Judul">
                                 <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-info btn-sm" title="Form PPK Ketiga">
+                            </a> --}}
+
+                            <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-info btn-sm" title="Form PPK Identifikasi">
                                 <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            <a href="{{ route('ppk.create4', $ppk->id) }}" class="btn btn-dark btn-sm" title="Form PPK Keempat">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            <a href="{{ route('ppk.export', $ppk->id) }}" class="btn btn-success btn-sm" title="Export to Excel">
-                                <i class="bi bi-file-earmark-excel-fill"></i>
                             </a>
 
+                            <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-danger btn-sm" title="Form PPK Verifikasi">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ route('ppk.edit', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Edit Judul PPK">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-info btn-sm" title="Edit Identifikasi">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="{{ route('ppk.edit3', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Verifikasi">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                        <td>
+
+                            <a href="{{ route('ppk.detail', $ppk->id) }}" class="btn btn-dark btn-sm" title="Detail">
+                                <i class="bx bxs-detail"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach
@@ -62,161 +84,10 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="card-title" id="detailModalLabel{{ $ppk->id }}">Detail Data Proses Peningkatan Kinerja</h5>
+                    <h5 class="card-title" id="detailModalLabel{{ $ppk->id }}">Track Record Proses Peningkatan Kinerja</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Tampilkan Nomor Surat di atas Judul -->
-                    <div class="mb-3">
-                        <h6><strong>PPK NO. </strong> {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}</h6>
-                    </div>
-
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Judul</th>
-                            <td>{{ $ppk->judul }}</td>
-                        </tr>
-                        <tr>
-                            <th>Jenis Ketidaksesuaian</th>
-                            <td>{{ $ppk->jenisketidaksesuaian }}</td>
-                        </tr>
-                        <tr>
-                            <th>Inisiator</th>
-                            <td>{{ $ppk->pembuatUser->nama_user ?? 'Tidak ada nama inisiator' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email Inisiator</th>
-                            <td>{{ $ppk->emailpembuat }}</td>
-                        </tr>
-                        <tr>
-                            <th>Divisi Inisiator</th>
-                            <td>{{ $ppk->divisipembuat }}</td>
-                        </tr>
-                        <tr>
-                            <th>Penerima</th>
-                            <td>{{ $ppk->penerimaUser->nama_user ?? 'Tidak ada nama penerima' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email Penerima</th>
-                            <td>{{ $ppk->emailpenerima }}</td>
-                        </tr>
-                        <tr>
-                            <th>Divisi Penerima</th>
-                            <td>{{ $ppk->divisipenerima }}</td>
-                        </tr>
-                        <tr>
-                            <th>CC Email</th>
-                            <td>
-                                @php
-                                    $ccEmails = explode(',', $ppk->cc_email);
-                                @endphp
-                                @if(count($ccEmails) > 0)
-                                    <ul>
-                                        @foreach($ccEmails as $email)
-                                            <li>{{ trim($email) }}</li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    Tidak ada CC Email.
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Tanda Tangan Inisiator/Auditor</th>
-                            <td>
-                                @if ($ppk->signature)
-                                    @php
-                                        $signatureExtension = pathinfo($ppk->signature, PATHINFO_EXTENSION);
-                                    @endphp
-                                    @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
-                                        <img src="{{ asset('admin/img/' . $ppk->signature) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                    @endif
-                                @else
-                                    Tidak ada tanda tangan
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Evidence</th>
-                            <td>
-                                @if ($ppk->evidence)
-                                    @php
-                                        $extension = pathinfo($ppk->evidence, PATHINFO_EXTENSION);
-                                    @endphp
-                                    @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png']))
-                                        <img src="{{ asset('dokumen/' . $ppk->evidence) }}" alt="Evidence Image" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                    @endif
-                                    <a href="{{ asset('dokumen/' . $ppk->evidence) }}" target="_blank" class="btn btn-primary">
-                                        <i class="ri-download-line"></i>Download
-                                    </a>
-                                @else
-                                    Tidak ada file
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Terbit</th>
-                            <td>{{ $ppk->created_at->format('d-m-Y') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Identifikasi</th>
-                            <td>{{ $ppk->formppk2->identifikasi ?? 'Tidak ada identifikasi oleh Penerima' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tanda Tangan Penerima</th>
-                            <td>
-                                @if ($ppk->formppk2 && $ppk->formppk2->signaturepenerima)
-                                    @php
-                                        $signatureExtension = pathinfo($ppk->formppk2->signaturepenerima, PATHINFO_EXTENSION);
-                                    @endphp
-                                    @if (in_array(strtolower($signatureExtension), ['jpg', 'jpeg', 'png']))
-                                        <img src="{{ asset('admin/img/' . $ppk->formppk2->signaturepenerima) }}" alt="Signature" style="max-width: 200px; display: block; margin-bottom: 10px;">
-                                    @endif
-                                @else
-                                    Tidak ada tanda tangan
-                                @endif
-                            </td>
-                        </tr>
-
-                        <!-- Hasil dari Form PPK Ketiga -->
-                        @if($ppk->formppk3)
-                            <tr>
-                                <th>Penanggulangan</th>
-                                <td>{{ $ppk->formppk3->penanggulangan ?? 'Tidak ada penanggulangan' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Pencegahan</th>
-                                <td>{{ $ppk->formppk3->pencegahan ?? 'Tidak ada pencegahan' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Tanggal Penanggulangan</th>
-                                <td>{{ $ppk->formppk3->tgl_penanggulangan ? date('d-m-Y', strtotime($ppk->formppk3->tgl_penanggulangan)) : 'Tidak ada tanggal usulan' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Tanggal pencegahan</th>
-                                <td>{{ $ppk->formppk3->tgl_pencegahan ? date('d-m-Y', strtotime($ppk->formppk3->tgl_pencegahan)) : 'Tidak ada tanggal usulan' }}</td>
-                            </tr>
-                            <tr>
-                                <th>PIC Penanggulangan</th>
-                                <td>{{ $ppk->formppk3->pic1User ? $ppk->formppk3->pic1User->nama_user : 'Tidak ada PIC' }}</td>
-                            </tr>
-                            <tr>
-                                <th>PIC Pencegahan</th>
-                                <td>{{ $ppk->formppk3->pic2User ? $ppk->formppk3->pic2User->nama_user : 'Tidak ada PIC' }}</td>
-                            </tr>
-                        @endif
-
-                        @if($ppk->formppk4)
-                            <tr>
-                                <th>Catatan</th>
-                                <td>{{ $ppk->formppk4->catatan ?? 'Tidak ada catatan' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Tanggal Verifikasi</th>
-                                <td>{{ $ppk->formppk4->tgl_verif ?? 'Tidak ada Tanggal Verifikasi' }}</td>
-                            </tr>
-                        @endif
-                    </table>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -244,62 +115,4 @@
     margin-left: 10px; /* Memberikan jarak antara ikon dan konten aktivitas */
 }
 </style>
-
-<section class="section dashboard">
-    <div class="activity d-flex justify-content-center flex-wrap">
-            <!-- Recent Activity -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">TRACK RECORD <span>| History</span></h5>
-                    <div class="activity">
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">
-                                <a href="{{ route('ppk.create') }}" class="btn btn-primary">Tahap 1</a>
-                            </div>
-                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                            <div class="activity-content">
-                                Pengisian form pertama Judul, Jenis Ketidaksesuaian dan Identifikasi, Evaluasi Proses Peningkatan Kinerja
-                            </div>
-                        </div><!-- End activity item-->
-                        <br>
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">
-                                <a class="btn btn-primary">Tahap 2</a>
-                            </div>
-                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
-                            <div class="activity-content">
-                                Pengisian form kedua Penanggulangan dan Pencegahan oleh Inisiator dan Penerima Proses Peningkatan Kinerja Diterima
-                            </div>
-                        </div>
-                        <!-- End activity item -->
-                        <br>
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">
-                                <a class="btn btn-warning">Prosses</a>
-                            </div>
-                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                            <div class="activity-content">
-                                Proses Verifikasi Tindakan Penanggulangan dan Pencegahan 1 (satu) bulan dari Tanggal Verifikasi oleh Auditor
-                            </div>
-                        </div><!-- End activity item-->
-                        <br>
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">
-                                <div class="activite-label">
-                                    <a class="btn btn-warning">Tahap 3</a>
-                                </div>
-                            </div>
-                            <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                            <div class="activity-content">
-                                Verifikasi Tindakan Penanggulangan dan Pencegahan 1 (satu) bulan dari Tanggal Verifikasi oleh Auditor
-                            </div>
-                          </div><!-- End activity item-->
-                    </div>
-                </div>
-            </div><!-- End Recent Activity -->
-        </div><!-- End Right side columns -->
-    </div>
-</section>
 @endsection

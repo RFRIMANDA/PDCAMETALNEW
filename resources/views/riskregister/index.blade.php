@@ -11,7 +11,7 @@
               <h5 class="card-title">Departement</h5>
 
               <!-- Table with stripped rows -->
-              <table class="table table-bordered">
+              <table class="table table-bordered" >
                 <thead>
                     <tr>
                         <th style="text-align: center; vertical-align: middle;">

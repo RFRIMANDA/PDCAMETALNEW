@@ -26,7 +26,19 @@
     background-color: #ADD8E6;
 
     color: rgb(0, 0, 0);
-}
+    }
+    .table-wrapper {
+        position: relative;
+        max-height: 400px; /* Adjust height as needed */
+        overflow-y: auto;
+    }
+
+    .table th {
+        position: sticky;
+        top: 0;
+        background-color: #fff; /* Optional: to make sure the header has a white background */
+        z-index: 1; /* Ensure the header is above the table rows */
+    }
 
     </style>
     <div class="card">
@@ -48,117 +60,117 @@
         </div>
     </div>
             <!-- Modal for Filters -->
-<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="GET" action="{{ route('riskregister.tablerisk', $id) }}">
-                    <div class="row mb-4">
-                        <!-- Kriteria -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Kriteria</label>
-                                <select name="kriteria" class="form-select">
-                                    <option value="">--Semua Kriteria--</option>
-                                    <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
-                                    <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
-                                    <option value="Enviromental (lingkungan)" {{ request('kriteria') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
-                                    <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
-                                    <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
-                                    <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
-                                    <option value="Kinerja" {{ request('kriteria') == 'Kinerja' ? 'selected' : '' }}>Kinerja</option>
-                                </select>
-                            </div>
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+                        <div class="modal-body">
+                            <form method="GET" action="{{ route('riskregister.tablerisk', $id) }}">
+                                <div class="row mb-4">
+                                    <!-- Kriteria -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Kriteria</label>
+                                            <select name="kriteria" class="form-select">
+                                                <option value="">--Semua Kriteria--</option>
+                                                <option value="Unsur keuangan / Kerugian" {{ request('kriteria') == 'Unsur keuangan / Kerugian' ? 'selected' : '' }}>Unsur keuangan / Kerugian</option>
+                                                <option value="Safety & Health" {{ request('kriteria') == 'Safety & Health' ? 'selected' : '' }}>Safety & Health</option>
+                                                <option value="Enviromental (lingkungan)" {{ request('kriteria') == 'Enviromental (lingkungan)' ? 'selected' : '' }}>Enviromental (lingkungan)</option>
+                                                <option value="Reputasi" {{ request('kriteria') == 'Reputasi' ? 'selected' : '' }}>Reputasi</option>
+                                                <option value="Financial" {{ request('kriteria') == 'Financial' ? 'selected' : '' }}>Financial</option>
+                                                <option value="Operational" {{ request('kriteria') == 'Operational' ? 'selected' : '' }}>Operational</option>
+                                                <option value="Kinerja" {{ request('kriteria') == 'Kinerja' ? 'selected' : '' }}>Kinerja</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-                        <!-- Tingkatan -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tingkatan</label>
-                                <select name="tingkatan" class="form-select">
-                                    <option value="">--Semua Tingkatan--</option>
-                                    <option value="LOW" {{ request('tingkatan') == 'LOW' ? 'selected' : '' }}>LOW</option>
-                                    <option value="MEDIUM" {{ request('tingkatan') == 'MEDIUM' ? 'selected' : '' }}>MEDIUM</option>
-                                    <option value="HIGH" {{ request('tingkatan') == 'HIGH' ? 'selected' : '' }}>HIGH</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <!-- Status -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Status</label>
-                                <select name="status" class="form-select">
-                                    <option value="">--Semua Status--</option>
-                                    <option value="OPEN" {{ request('status') == 'OPEN' ? 'selected' : '' }}>OPEN</option>
-                                    <option value="ON PROGRES" {{ request('status') == 'ON PROGRES' ? 'selected' : '' }}>ON PROGRESS</option>
-                                    <option value="CLOSE" {{ request('status') == 'CLOSE' ? 'selected' : '' }}>CLOSE</option>
-                                    <option value="open_on_progres" {{ request('status') == 'open_on_progres' ? 'selected' : '' }}>OPEN & ON PROGRES</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Search for Target PIC -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Cari PIC</label>
-                                <select name="targetpic" class="form-select">
-                                    <option value="">Pilih Target PIC</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->nama_user }}" {{ request('targetpic') == $user->nama_user ? 'selected' : '' }}>{{ $user->nama_user }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <!-- Search for Issue -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Cari Issue</label>
-                                <textarea name="keyword" class="form-control" placeholder="Masukkan Issue" rows="3">{{ request('keyword') }}</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Top 10 Highest Risk -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input type="checkbox" name="top10" value="1" class="form-check-input" {{ request('top10') ? 'checked' : '' }}>
-                                    <label class="form-check-label">Tampilkan hanya 10 tertinggi</label>
+                                    <!-- Tingkatan -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Tingkatan</label>
+                                            <select name="tingkatan" class="form-select">
+                                                <option value="">--Semua Tingkatan--</option>
+                                                <option value="LOW" {{ request('tingkatan') == 'LOW' ? 'selected' : '' }}>LOW</option>
+                                                <option value="MEDIUM" {{ request('tingkatan') == 'MEDIUM' ? 'selected' : '' }}>MEDIUM</option>
+                                                <option value="HIGH" {{ request('tingkatan') == 'HIGH' ? 'selected' : '' }}>HIGH</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="row mb-4">
+                                    <!-- Status -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Status</label>
+                                            <select name="status" class="form-select">
+                                                <option value="">--Semua Status--</option>
+                                                <option value="OPEN" {{ request('status') == 'OPEN' ? 'selected' : '' }}>OPEN</option>
+                                                <option value="ON PROGRES" {{ request('status') == 'ON PROGRES' ? 'selected' : '' }}>ON PROGRESS</option>
+                                                <option value="CLOSE" {{ request('status') == 'CLOSE' ? 'selected' : '' }}>CLOSE</option>
+                                                <option value="open_on_progres" {{ request('status') == 'open_on_progres' ? 'selected' : '' }}>OPEN & ON PROGRES</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search for Target PIC -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Cari PIC</label>
+                                            <select name="targetpic" class="form-select">
+                                                <option value="">Pilih Target PIC</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->nama_user }}" {{ request('targetpic') == $user->nama_user ? 'selected' : '' }}>{{ $user->nama_user }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <!-- Search for Issue -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Cari Issue</label>
+                                            <textarea name="keyword" class="form-control" placeholder="Masukkan Issue" rows="3">{{ request('keyword') }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Top 10 Highest Risk -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="top10" value="1" class="form-check-input" {{ request('top10') ? 'checked' : '' }}>
+                                                <label class="form-check-label">Tampilkan hanya 10 tertinggi</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary px-4"><i class="bi bi-funnel"></i>Filter</button>
+                                    <button type="reset" class="btn btn-warning px-4"><i class="bi bi-arrow-clockwise"></i>Reset</button>
+                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                                    <a href="{{ route('riskregister.export-pdf', ['id' => $divisiList]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&search={{ request('search') }}&kriteria={{ request('kriteria') }}&top10={{ request('top10') }}" title="Export PDF" class="btn btn-danger ms-2">
+                                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                                    </a>
+                                </div>
+                            </form>
                         </div>
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-funnel"></i>Filter</button>
-                        <button type="reset" class="btn btn-warning px-4"><i class="bi bi-arrow-clockwise"></i>Reset</button>
-                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
-                        <a href="{{ route('riskregister.export-pdf', ['id' => $divisiList]) }}?tingkatan={{ request('tingkatan') }}&status={{ request('status') }}&nama_divisi={{ request('nama_divisi') }}&year={{ request('year') }}&search={{ request('search') }}&kriteria={{ request('kriteria') }}&top10={{ request('top10') }}" title="Export PDF" class="btn btn-danger ms-2">
-                            <i class="bi bi-file-earmark-pdf"></i> Export PDF
-                        </a>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-    </div>
-</div>
+                </div>
+            </div>
             <!-- Small tables -->
             <div class="card">
                 <div class="card-body">
                     <div style="overflow-x: auto;">
                         <div class="table-wrapper">
-                            <table class="table table-striped" style="width: 150%; font-size: 13px;">
+                            <table class="table table-striped" style="width: 180%; font-size: 13px;">
                                 <thead>
                                     <tr>
                                         <th scope="col"></th>
@@ -231,11 +243,15 @@
                                                                     }
                                                                 @endphp
                                                                 <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}"
-                                                                   title="Matriks Before"
-                                                                   class="btn {{ $btnClass }}"
-                                                                   style="font-size: 9px; padding: 2px; color: white;">
-                                                                    <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
-                                                                </a>
+                                                                    title="Matriks Before"
+                                                                    class="btn {{ $btnClass }}"
+                                                                    style="font-size: 9px; padding: 2px; color: white;">
+                                                                     <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                 </a>
+                                                                 <br>
+                                                                 <a class="btn btn-success mt-2" href="{{ route('resiko.edit', ['id' => $form]) }}" title="Edit Matriks" style="font-size: 10px; padding: 3px; color: white;">
+                                                                     <strong>Edit</strong><i class="bx bx-edit" style="font-size: 13px;"></i>
+                                                                 </a>
                                                             @endforeach
                                                         @else
                                                             None
@@ -296,27 +312,29 @@
                                                         @endif
                                                         <td>
                                                             @if($resikos->isNotEmpty())
-                                                            @foreach($resikos as $resiko)
-                                                            <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}"
-                                                               title="Matriks After"
-                                                               class="btn
-                                                                   @if($resiko->risk == 'HIGH') btn-danger
-                                                                   @elseif($resiko->risk == 'MEDIUM') btn-warning
-                                                                   @elseif($resiko->risk == 'LOW') btn-success
-                                                                   @else btn-info @endif"
-                                                               style="font-size: 9px; padding: 2px; color: white;">
-                                                                <strong>{{ $resiko->risk }}</strong>
-                                                                <i class="ri-grid-line" style="font-size: 14px;"></i>
-                                                            </a>
-                                                            <br>
-                                                        @endforeach
-
-                                                                <br>
+                                                                @foreach($resikos as $resiko)
+                                                                    <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}"
+                                                                       title="Matriks After"
+                                                                       class="btn
+                                                                           @if($resiko->risk == 'HIGH') btn-danger
+                                                                           @elseif($resiko->risk == 'MEDIUM') btn-warning
+                                                                           @elseif($resiko->risk == 'LOW') btn-success
+                                                                           @else btn-info @endif"
+                                                                       style="font-size: 9px; padding: 2px; color: white; margin-bottom: 5px;">
+                                                                        <strong>{{ $resiko->risk }}</strong>
+                                                                        <i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                    </a>
+                                                                @endforeach
                                                             @else
                                                                 None
                                                             @endif
-                                                            <a class="btn btn-success" href="{{ route('resiko.edit', ['id' => $form]) }}" title="Edit Matriks" style="font-size: 10px; padding: 3px; color: white;">
-                                                                <strong>Edit</strong><i class="bx bx-edit" style="font-size: 13px;"></i>
+
+                                                            <a class="btn btn-success mt-2"
+                                                               href="{{ route('resiko.edit', ['id' => $form]) }}"
+                                                               title="Edit Matriks"
+                                                               style="font-size: 10px; padding: 3px; color: white;">
+                                                                <strong>Edit</strong>
+                                                                <i class="bx bx-edit" style="font-size: 10px;"></i>
                                                             </a>
                                                         </td>
 
@@ -405,4 +423,4 @@
         });
     </script>
 
-    @endsection
+@endsection

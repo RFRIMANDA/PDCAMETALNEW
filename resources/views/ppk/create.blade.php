@@ -3,60 +3,57 @@
 @section('content')
 
 <body>
-    <div class="card">
+    <div class="card shadow-lg border-0">
         <div class="card-body">
-            <h5 class="card-title">PROSES PENINGKATAN KINERJA</h5>
+            <h5 class="card-title text-center text-uppercase fw-bold text-primary">Proses Peningkatan Kinerja</h5>
+            <hr class="mb-4" style="border: 1px solid #0d6efd;">
 
-            <!-- General Form Elements -->
             <form method="POST" action="{{ route('ppk.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 @if($errors->any())
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
 
                 <!-- Judul PPK -->
-                <div class="row mb-3">
-                    <label for="inputJudul" class="col-sm-2 col-form-label">Judul PPK</label>
-                    <div class="col-sm-10">
-                        <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK">{{ old('judul') }}</textarea>
-                    </div>
+                <div class="mb-3">
+                    <label for="inputJudul" class="form-label fw-bold">Judul PPK</label>
+                    <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK" rows="3">{{ old('judul') }}</textarea>
                 </div>
 
                 <!-- Jenis Ketidaksesuaian -->
-                <div class="row mb-3">
-                    <label for="inputJenis" class="col-sm-2 col-form-label">Jenis Ketidaksesuaian</label>
-                    <div class="col-sm-10">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="SISTEM">
-                            <label class="form-check-label">Sistem</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PROSES">
-                            <label class="form-check-label">Proses</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PRODUK">
-                            <label class="form-check-label">Produk</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="AUDIT">
-                            <label class="form-check-label">Audit</label>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Jenis Ketidaksesuaian</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="SISTEM">
+                        <label class="form-check-label">Sistem</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PROSES">
+                        <label class="form-check-label">Proses</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="PRODUK">
+                        <label class="form-check-label">Produk</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="AUDIT">
+                        <label class="form-check-label">Audit</label>
                     </div>
                 </div>
 
                 <!-- Pembuat dan Divisi Pembuat -->
-                <div class="row mb-3">
-                    <label for="pembuat" class="col-sm-2 col-form-label">Nama Inisiator</label>
-                    <div class="col-sm-10">
-                        <select id="pembuat" name="pembuat" class="form-control">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="pembuat" class="form-label fw-bold">Nama Inisiator</label>
+                        <select id="pembuat" name="pembuat" class="form-select">
                             <option value="">Pilih Pembuat</option>
                             @foreach($data as $user)
                                 <option value="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
@@ -65,27 +62,22 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="emailpembuat" class="col-sm-2 col-form-label">Email Inisiator</label>
-                    <div class="col-sm-10">
-                        <input type="email" id="emailpembuat" name="emailpembuat" class="form-control" value="{{ old('emailpembuat') }}" placeholder="Email Pembuat" readonly>
+                    <div class="col-md-6">
+                        <label for="emailpembuat" class="form-label fw-bold">Email Inisiator</label>
+                        <input placeholder="Email" type="email" id="emailpembuat" name="emailpembuat" class="form-control" value="{{ old('emailpembuat') }}" readonly>
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    <label for="divisipembuat" class="col-sm-2 col-form-label">Divisi Inisiator</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="divisipembuat" id="divisipembuat" class="form-control" value="{{ old('divisipembuat') }}" placeholder="Divisi Pembuat" readonly>
-                    </div>
+                <div class="mb-3">
+                    <label for="divisipembuat" class="form-label fw-bold">Divisi Inisiator</label>
+                    <input placeholder="Divisi" type="text" name="divisipembuat" id="divisipembuat" class="form-control" value="{{ old('divisipembuat') }}" readonly>
                 </div>
 
-                <!-- Lakukan hal yang sama untuk Penerima -->
-                <div class="row mb-3">
-                    <label for="penerima" class="col-sm-2 col-form-label">Nama Penerima</label>
-                    <div class="col-sm-10">
-                        <select id="penerima" name="penerima" class="form-control">
+                <hr>
+                <!-- Penerima -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="penerima" class="form-label fw-bold">Nama Penerima</label>
+                        <select id="penerima" name="penerima" class="form-select">
                             <option value="">Pilih Penerima</option>
                             @foreach($data as $user)
                                 <option value="{{ $user->id }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
@@ -94,66 +86,117 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="emailpenerima" class="col-sm-2 col-form-label">Email Penerima</label>
-                    <div class="col-sm-10">
-                        <input type="email" name="emailpenerima" id="emailpenerima" class="form-control" value="{{ old('emailpenerima') }}" placeholder="Email Penerima" readonly>
+                    <div class="col-md-6">
+                        <label for="emailpenerima" class="form-label fw-bold">Email Penerima</label>
+                        <input placeholder="Email" type="email" name="emailpenerima" id="emailpenerima" class="form-control" value="{{ old('emailpenerima') }}" readonly>
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    <label for="divisipenerima" class="col-sm-2 col-form-label">Divisi Penerima</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" placeholder="Divisi Penerima" readonly>
-                    </div>
+                <div class="mb-3">
+                    <label for="divisipenerima" class="form-label fw-bold">Divisi Penerima</label>
+                    <input placeholder="Divisi" type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" readonly>
                 </div>
 
+                <!-- Tanda Tangan -->
                 <div class="row mb-3">
-                    <label for="signature" class="col-sm-2 col-form-label">Tanda Tangan</label>
+                    <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan</label>
                     <div class="col-sm-10">
                         <!-- Opsi untuk Menggambar Tanda Tangan -->
-                        <p><strong>Opsi 1:</strong> Tanda tangan langsung</p>
-                        <canvas id="signature-pad" style="border: 1px solid #ccc; width: 100%; height: 200px;"></canvas>
-                        <button id="clear" title="Clear" type="button" class="btn btn-secondary mt-2"><i class="bx bxs-eraser"></i> Clear</button>
-                        <input type="hidden" name="signature" id="signature">
+                        <div class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
+                            <p class="fw-bold">Opsi 1: Tanda tangan langsung</p>
+                            <canvas id="signature-pad" class="border rounded" style="width: 100%; height: 200px;"></canvas>
+                            <button id="clear" title="Clear" type="button" class="btn btn-outline-secondary mt-2">
+                                <i class="bx bxs-eraser"></i> Clear
+                            </button>
+                            <input type="hidden" name="signature" id="signature">
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-top my-4"></div>
 
                         <!-- Opsi untuk Mengunggah Tanda Tangan -->
-                        <p class="mt-3"><strong>Opsi 2:</strong> Unggah file tanda tangan (jpg, jpeg, png)</p>
-                        <input type="file" name="signature_file" id="signature-file" class="form-control" accept="image/*">
-                    </div>
-                </div>
-
-
-                <!-- Evidence Input with Preview -->
-                <div class="row mb-3">
-                    <label for="evidence" class="col-sm-2 col-form-label">Evidence</label>
-                    <div class="col-sm-10">
-                        <input type="file" name="evidence" id="evidence" class="form-control" accept="image/*">
-                        <img id="evidencePreview" src="#" alt="Evidence Preview" style="display: none; margin-top: 10px; max-width: 200px;"/>
-                    </div>
-                </div>
-
-                <!-- CC Email -->
-                <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label">CC Email</label>
-                    <div class="col-sm-10">
-                        <div id="cc-email-container">
-                            <div class="input-group mb-2">
-                                <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
-                                <button type="button" class="btn btn-outline-warning add-cc-email">+</button>
-                            </div>
+                        <div class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
+                            <p class="fw-bold">Opsi 2: Unggah file tanda tangan</p>
+                            <input type="file" name="signature_file" id="signature-file" class="form-control">
+                            <small class="text-muted d-block mt-2">Format file yang didukung: jpg, jpeg, png</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
+
+                <!-- Evidence -->
+<div class="mb-3">
+    <label for="evidence" class="form-label fw-bold">Evidence</label>
+    <div>
+        <input type="file" id="evidence" name="evidence[]" class="form-control" multiple>
+        <!-- Preview container for uploaded files -->
+        <div id="evidencePreviewContainer" class="mt-3 d-flex flex-wrap gap-3"></div>
+    </div>
+</div>
+
+<script>
+    // JavaScript for handling the file preview
+    document.getElementById('evidence').addEventListener('change', function(event) {
+        const previewContainer = document.getElementById('evidencePreviewContainer');
+        previewContainer.innerHTML = ''; // Clear previous previews
+
+        // Loop through selected files
+        Array.from(event.target.files).forEach(file => {
+            const fileReader = new FileReader();
+
+            fileReader.onload = function(e) {
+                const fileUrl = e.target.result;
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                // Create a container for each file preview
+                const filePreview = document.createElement('div');
+                filePreview.classList.add('file-preview', 'text-center');
+                filePreview.style.width = '200px';
+
+                if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+                    // For image files, show image preview
+                    const img = document.createElement('img');
+                    img.src = fileUrl;
+                    img.alt = file.name;
+                    img.style = 'max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 5px;';
+                    filePreview.appendChild(img);
+                } else {
+                    // For other file types, show a download link
+                    const link = document.createElement('a');
+                    link.href = fileUrl;
+                    link.target = '_blank';
+                    link.textContent = file.name;
+                    link.classList.add('btn', 'btn-primary', 'btn-sm', 'w-100');
+                    filePreview.appendChild(link);
+                }
+
+                // Add file name below the preview
+                const fileName = document.createElement('small');
+                fileName.textContent = file.name;
+                fileName.style = 'display: block; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+                filePreview.appendChild(fileName);
+
+                previewContainer.appendChild(filePreview);
+            };
+
+            fileReader.readAsDataURL(file); // Read the file as a data URL
+        });
+    });
+</script>
+
+                <!-- CC Email -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">CC Email</label>
+                    <div id="cc-email-container">
+                        <div class="input-group mb-2">
+                            <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
+                            <button type="button" class="btn btn-outline-primary add-cc-email">+</button>
+                        </div>
                     </div>
                 </div>
 
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
+                </div>
             </form>
         </div>
     </div>

@@ -15,14 +15,12 @@ class PpkExport implements FromCollection, WithStyles
     protected $ppk;
     protected $ppkdua;
     protected $ppktiga;
-    protected $ppkempat;
 
-    public function __construct($ppk, $ppkdua,$ppktiga,$ppkempat)
+    public function __construct($ppk, $ppkdua,$ppktiga)
     {
         $this->ppk = $ppk;
         $this->ppkdua = $ppkdua;
         $this->ppktiga = $ppktiga;
-        $this->ppkempat = $ppkempat;
     }
 
     public function collection()
@@ -341,7 +339,7 @@ $sheet->getStyle('B84:L120')->getBorders()->getOutline()->getColor()->setARGB('0
 
 $sheet->setCellValue('C85', '4. Verifikasi Tindakan, sesuai kolom "Target Tanggal"')->getStyle('C85')->getFont()->setBold(true);
 $sheet->setCellValue('C87', 'Catatan: ');
-$sheet->setCellValue('D88', $this->ppkempat->catatan);
+$sheet->setCellValue('D88', $this->ppktiga->verifikasi);
 
 $sheet->mergeCells('D88:J88');// Menggabungkan sel D44 sampai J44
 $sheet->getStyle('D88:J88')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);// Mengatur perataan ke kiri
@@ -350,7 +348,7 @@ $sheet->getRowDimension(88)->setRowHeight(200);// Mengatur tinggi baris untuk ba
 $sheet->getStyle('D88:J88')->getAlignment()->setWrapText(true);
 
 $sheet->setCellValue('J92', 'Tgl. Verifikasi: ');
-$sheet->setCellValue('K92', $this->ppkempat->tgl_verif);
+$sheet->setCellValue('K92', $this->ppktiga->tinjauan);
 
 $sheet->setCellValue('J93', 'Auditor');
 $sheet->setCellValue('J94', $this->ppk->pembuatUser->nama_user)->getStyle('J94')->getFont()->setBold(true);

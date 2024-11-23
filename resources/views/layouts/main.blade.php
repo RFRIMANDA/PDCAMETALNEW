@@ -24,7 +24,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-
   <link href="{{ asset('admin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
@@ -37,8 +36,6 @@
   <!-- Template Main CSS File -->
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
 </head>
-
-
 <body>
 
   <!-- ======= Header ======= -->
@@ -50,17 +47,6 @@
   <!-- End Sidebar-->
 
   <main id="main" class="main">
-
-    {{-- <div class="pagetitle" style="background-color: #ddfadd; padding: 10px; border-radius: 8px;">
-    <h1 style="font-weight: bold; font-size: 20px; color: #395f97;">DOCUMENT CONTROL MANAGEMENT SYSTEM</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </nav>
-    </div> --}}
-
 <!-- End Page Title -->
     @yield('content')
   </main><!-- End #main -->

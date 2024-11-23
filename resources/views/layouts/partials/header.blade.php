@@ -7,7 +7,7 @@
             <span class="d-none d-lg-block" style="color: white; font-size: 1.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">Tata Metal Lestari</span>
         </a>
         <!-- Sidebar Toggle Button (Left side) -->
-        <i class="bi bi-list toggle-sidebar-btn text-white fs-3"></i>
+        <i class="bi bi-list toggle-sidebar-btn text-white fs-3" title="Full Screen / Small Screen"></i>
 
         <!-- Center Text -->
         <div class="center-text mx-auto text-center">

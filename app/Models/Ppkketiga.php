@@ -13,12 +13,9 @@ class Ppkketiga extends Model
 
     protected $fillable = [
         'id_formppk',
-        'penanggulangan',
-        'pic1',
-        'pencegahan',
-        'pic2',
-        'tgl_penanggulangan',
-        'tgl_pencegahan',
+        'verifikasi',
+        'tinjauan',
+        'status',
     ];
 
     public function formppk3()

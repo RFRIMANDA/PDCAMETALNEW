@@ -838,6 +838,3 @@ public function exportFilteredPDF(Request $request)
         return redirect()->route('riskregister.biglist')->with('success', 'Data berhasil dihapus!. ✅');
     }
 }
-
-
-
