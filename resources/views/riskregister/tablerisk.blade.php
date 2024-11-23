@@ -55,6 +55,9 @@
                 <a href="{{ route('riskregister.create', ['id' => $id]) }}" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
                     <i class="fa fa-plus" style="font-size: 14px;"></i> New Issue
                 </a>
+                <a href="{{ url()->current() }}" class="btn btn-secondary" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa fa-refresh" style="font-size: 14px;"></i> Reset
+                </a>
 
             </div>
         </div>

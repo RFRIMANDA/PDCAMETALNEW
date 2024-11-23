@@ -398,7 +398,7 @@
                             <tr data-id="${resiko.idDivisi}">
                                 <td>${index + 1}</td>
                                 <td>
-                                    <a href="/riskregister/${resiko.id_divisi}">
+                                    <a href="/riskregister/${resiko.id_divisi}?keyword=${encodeURIComponent(resiko.nama_issue)}">
                                         ${resiko.nama_issue}
                                     </a>
                                 </td>
