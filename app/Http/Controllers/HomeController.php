@@ -30,11 +30,9 @@ class HomeController extends Controller
 
             // Ambil nama_user dari relasi targetpicUser di model Tindakan
             $resiko->user = $resiko->tindakan->user->nama_user ?? 'N/A'; // Pastikan ada pengecekan null
-
             return $resiko;
         });
     });
-
 
     // Aggregate counts for the pie charts based on status and tingkatan
     $statusCounts = $resikos->groupBy('status')->map->count();

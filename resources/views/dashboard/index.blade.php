@@ -282,7 +282,6 @@
     </div>
 </section>
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         const statusDetails = @json($statusDetails);
         const tingkatanDetails = @json($tingkatanDetails);
@@ -413,7 +412,5 @@
         }
     });
 </script>
-
-
 @endsection
 

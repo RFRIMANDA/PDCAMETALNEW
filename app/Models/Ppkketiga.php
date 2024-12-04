@@ -16,6 +16,8 @@ class Ppkketiga extends Model
         'verifikasi',
         'tinjauan',
         'status',
+        'newppk',
+        'verifikasi_img',
     ];
 
     public function formppk3()

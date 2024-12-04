@@ -36,13 +36,13 @@
             </a>
             <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/formppk">
-                        <i class="bi bi-circle"></i><span>Create Proses Peningkatan Kinerja (PPK)</span>
+                    <a href="/adminppk">
+                        <i class="bi bi-circle"></i><span>All Proses Peningkatan Kinerja (PPK)</span>
                     </a>
                 </li>
             </ul>
         </li>
-        
+
         <!-- End Proses Peningkatan Kinerja Nav -->
 
         <!-- Admin/Management Actions -->

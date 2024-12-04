@@ -114,7 +114,7 @@
                 </tr>
                 <tr>
                     <th>PIC Penanggulangan</th>
-                    <td>{{ $ppk->formppk2->pic1User->nama_user ?? '-' }}</td>
+                    <td>{{ $ppk->formppk2->pic1 ?? '-' }}</td>
                 </tr>
                 <tr>
                     <th>PIC Pencegahan</th>
@@ -134,9 +134,7 @@
                 </tr>
             </table>
             <a href="{{ route('ppk.index') }}" class="btn btn-secondary mt-3">Kembali</a>
-            <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-secondary btn-sm" title="Form PPK Kedua">
-                <i class="bi bi-pencil-fill"></i>
-            </a>
+
         </div>
     </div>
 </div>

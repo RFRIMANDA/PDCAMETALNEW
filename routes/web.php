@@ -111,10 +111,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/ppk/{id}/update', [PpkController::class, 'update'])->name('ppk.update');
     Route::put('/ppk/{id}/update2', [PpkController::class, 'update2'])->name('ppk.update2');
     Route::put('/ppk/{id}/update3', [PpkController::class, 'update3'])->name('ppk.update3');
-    Route::delete('/ppk/{id}/evidence', [PpkController::class, 'deleteEvidence'])->name('ppk.deleteEvidence');
+    Route::get('/ppk/{id}/pdf', [PpkController::class, 'generatePdf'])->name('ppk.pdf');
+    Route::get('/ppk/accept/{id}', [PpkController::class, 'accept'])->name('ppk.accept');
 
-
-
+Route::middleware('admin')->group(function () {
+    Route::get('/adminppk', [PpkController::class, 'index2'])->name('ppk.index2');
+});
 // });
 
 // });

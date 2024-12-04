@@ -13,9 +13,85 @@
 
                 <!-- Judul PPK -->
                 <div class="mb-3">
-                    <label for="inputJudul" class="form-label fw-bold">Judul PPK</label>
+                    <label for="inputJudul" class="form-label fw-bold">1. Jelaskan ketidaksesuaian yang terjadi atau peningkatan yang akan dibuat</label>
                     <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK" rows="3">{{ old('judul', $ppk->judul) }}</textarea>
                 </div>
+
+                <!-- Evidence -->
+                <div class="mb-3">
+                    <label for="evidence" class="form-label fw-bold">Evidence</label>
+                    @php
+                        $evidences = json_decode($ppk->evidence ?? '[]', true);
+                    @endphp
+
+                    @if(is_array($evidences) && count($evidences) > 0)
+                        <div id="evidencePreviewContainer" class="d-flex flex-wrap mt-3">
+                            @foreach($evidences as $index => $evidence)
+                                @php
+                                    $filePath = asset('storage/' . $evidence);
+                                    $fileExtension = pathinfo($evidence, PATHINFO_EXTENSION);
+                                @endphp
+                                <div class="evidence-item text-center me-3 mb-2">
+                                    @if(in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png']))
+                                        <img src="{{ $filePath }}" alt="Evidence Image" class="img-thumbnail" style="max-width: 150px; height: auto;">
+                                    @else
+                                        <a href="{{ $filePath }}" target="_blank">{{ basename($evidence) }}</a>
+                                    @endif
+                                    <br>
+                                    <a href="{{ $filePath }}" download="{{ basename($evidence) }}" title="Download Image" class="btn btn-sm btn-primary mt-2">
+                                        <i class="bi bi-cloud-download"></i> Download
+                                    </a>
+                                    <br>
+                                    <input type="checkbox" name="delete_evidence[]" value="{{ $evidence }}" id="delete_{{ $index }}">
+                                    <label for="delete_{{ $index }}" class="text-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p>No evidence uploaded.</p>
+                    @endif
+
+                    <div class="mt-3">
+                        <label for=""><strong>Tambah Evidence (jika ada)</strong></label>
+                        <input type="file" name="evidence[]" id="evidence" class="form-control" multiple onchange="previewEvidenceImages()">
+                    </div>
+
+                    <div id="evidencePreview" class="d-flex flex-wrap mt-3">
+                        <!-- Preview images will appear here -->
+                    </div>
+                </div>
+
+                <script>
+                    function previewEvidenceImages() {
+                        const fileInput = document.getElementById('evidence');
+                        const previewContainer = document.getElementById('evidencePreview');
+
+                        // Clear previous previews
+                        previewContainer.innerHTML = '';
+
+                        // Loop through the selected files
+                        const files = fileInput.files;
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            const reader = new FileReader();
+
+                            // Preview the image
+                            reader.onload = function(e) {
+                                const imgElement = document.createElement('img');
+                                imgElement.src = e.target.result;
+                                imgElement.classList.add('img-thumbnail');
+                                imgElement.style.maxWidth = '150px';
+                                imgElement.style.height = 'auto';
+                                previewContainer.appendChild(imgElement);
+                            };
+
+                            // Read the file as a data URL
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                </script>
 
                 <!-- Jenis Ketidaksesuaian -->
                 <div class="mb-3">
@@ -106,106 +182,66 @@
                 });
                 </script>
 
-                <!-- Evidence -->
-<div class="mb-3">
-    <div class="mb-3 row">
-        <label for="evidence" class="form-label fw-bold">Evidence</label>
-        <div class="col-sm-10">
-            <!-- Input file multiple -->
 
-            <!-- Display the uploaded evidence images (if any) -->
-            @if(!empty($ppk->evidence))
-                @php
-                    $evidences = json_decode($ppk->evidence, true);  // Decode as an array
-                @endphp
-                @if(is_array($evidences) && count($evidences) > 0)
-                    <div id="evidencePreviewContainer" class="d-flex flex-wrap mt-3">
-                        @foreach($evidences as $index => $evidence)
-                            @php
-                                $filePath = asset('storage/' . $evidence);
-                                $fileExtension = pathinfo($evidence, PATHINFO_EXTENSION);
-                            @endphp
 
-                            <div class="evidence-item text-center me-3 mb-2">
-                                <!-- Check if the file is an image (jpg, jpeg, png) and display it -->
-                                @if(in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png']))
-                                    <img src="{{ $filePath }}" alt="Evidence Image" class="img-thumbnail" style="max-width: 150px; height: auto;">
-                                    <br>
-                                    <a href="{{ $filePath }}" download="{{ basename($evidence) }}" class="btn btn-sm btn-primary mt-2">Download</a>
-                                @else
-                                    <!-- Display link for non-image files -->
-                                    <a href="{{ $filePath }}" target="_blank">{{ basename($evidence) }}</a>
-                                    <br>
-                                    <a href="{{ $filePath }}" download="{{ basename($evidence) }}" class="btn btn-sm btn-primary mt-2">Download</a>
-                                @endif
-                                <br>
+                        <!-- CC Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">CC Email</label>
+                            <div id="cc-email-container">
+                                @php
+                                    $ccEmails = explode(',', $ppk->cc_email ?? '');
+                                @endphp
+                                @foreach($ccEmails as $cc)
+                                    @if($cc)
+                                        <div class="input-group mb-2">
+                                            <input type="email" name="cc_email[]" class="form-control" value="{{ $cc }}">
+                                            <button type="button" class="btn btn-outline-danger remove-cc-email">-</button>
+                                        </div>
+                                    @endif
+                                @endforeach
+
                             </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p>No evidence uploaded.</p>
-                @endif
-            @else
-                <p>No evidence uploaded.</p>
-            @endif
-        </div>
-    </div>
-                <!-- CC Email -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">CC Email</label>
-                    <div id="cc-email-container">
-                        @php
-                            $ccEmails = explode(',', $ppk->cc_email ?? '');
-                        @endphp
-                        @foreach($ccEmails as $cc)
-                            @if($cc)
-                                <div class="input-group mb-2">
-                                    <input type="email" name="cc_email[]" class="form-control" value="{{ $cc }}">
+                            <button type="button" class="btn btn-outline-primary add-cc-email">+ CC Email</button>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <a href="{{ route('ppk.index') }}" class="btn btn-secondary">Kembali</a>
+                                <button type="submit" class="btn btn-primary">Update <i class="ri-save-3-fill"></i></button>
+                            </div>
+
+                        </div>
+
+                    <script>
+                        // Add CC Email functionality
+                        document.querySelector('.add-cc-email').addEventListener('click', function() {
+                            const container = document.getElementById('cc-email-container');
+
+                            // Prevent adding more than 5 CC emails
+                            if (container.querySelectorAll('.input-group').length < 10) {
+                                const inputGroup = document.createElement('div');
+                                inputGroup.className = 'input-group mb-2';
+                                inputGroup.innerHTML = `
+                                    <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
                                     <button type="button" class="btn btn-outline-danger remove-cc-email">-</button>
-                                </div>
-                            @endif
-                        @endforeach
+                                `;
+                                container.appendChild(inputGroup);
 
-                    </div>
-                    <button type="button" class="btn btn-outline-primary add-cc-email">+ CC Email</button>
-
-                </div>
-
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">Update <i class="ri-save-3-fill"></i></button>
-                </div>
-
-            <script>
-                // Add CC Email functionality
-                document.querySelector('.add-cc-email').addEventListener('click', function() {
-                    const container = document.getElementById('cc-email-container');
-
-                    // Prevent adding more than 5 CC emails
-                    if (container.querySelectorAll('.input-group').length < 10) {
-                        const inputGroup = document.createElement('div');
-                        inputGroup.className = 'input-group mb-2';
-                        inputGroup.innerHTML = `
-                            <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
-                            <button type="button" class="btn btn-outline-danger remove-cc-email">-</button>
-                        `;
-                        container.appendChild(inputGroup);
-
-                        // Add event listener to the remove button
-                        inputGroup.querySelector('.remove-cc-email').addEventListener('click', function() {
-                            container.removeChild(inputGroup);
+                                // Add event listener to the remove button
+                                inputGroup.querySelector('.remove-cc-email').addEventListener('click', function() {
+                                    container.removeChild(inputGroup);
+                                });
+                            } else {
+                                alert('You can add a maximum of 10 CC emails.');
+                            }
                         });
-                    } else {
-                        alert('You can add a maximum of 10 CC emails.');
-                    }
-                });
 
-                // Attach event listener to existing remove buttons (for CC emails pre-loaded into the form)
-                document.querySelectorAll('.remove-cc-email').forEach(function(button) {
-                    button.addEventListener('click', function() {
-                        const container = document.getElementById('cc-email-container');
-                        const inputGroup = button.closest('.input-group');
-                        container.removeChild(inputGroup);
-                    });
-                });
-            </script>
+                        // Attach event listener to existing remove buttons (for CC emails pre-loaded into the form)
+                        document.querySelectorAll('.remove-cc-email').forEach(function(button) {
+                            button.addEventListener('click', function() {
+                                const container = document.getElementById('cc-email-container');
+                                const inputGroup = button.closest('.input-group');
+                                container.removeChild(inputGroup);
+                            });
+                        });
+                    </script>
+            </form>
 @endsection

@@ -369,6 +369,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <script>
         function loadDetail(id) {

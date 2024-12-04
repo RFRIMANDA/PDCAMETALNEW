@@ -10,7 +10,7 @@
 
 <div class="card shadow-lg border-0">
     <div class="card-body">
-        <h5 class="card-title text-center text-uppercase fw-bold text-primary">Proses Peningkatan Kinerja</h5>
+        <h5 class="card-title text-center text-uppercase fw-bold text-primary">Identifikasi Proses Peningkatan Kinerja</h5>
         <hr class="mb-4" style="border: 1px solid #0d6efd;">
 
         <!-- General Form Elements -->
@@ -31,16 +31,21 @@
 
             <!-- Identifikasi -->
             <div class="mb-3">
-                <label for="identifikasi" class="form-label fw-bold">Identifikasi</label>
-                <textarea placeholder="Masukan identifikasi" name="identifikasi" class="form-control" id="identifikasi" rows="3">{{ old('identifikasi', $ppk->identifikasi ?? '') }}</textarea>
+                <label for="identifikasi" class="form-label fw-bold">2. Identifikasi, evaluasi & pastikan akar penyebab masalah/Root Cause</label>
+                <textarea placeholder="" name="identifikasi" class="form-control" id="identifikasi" rows="3">{{ old('identifikasi', $ppk->identifikasi ?? '') }}</textarea>
+                <span style="font-size: 0.750em;">*Gunakan metode 5WHYS untuk menentukan Root Cause; Fish Bone; Diagram alir; Penilaian situasi; Kendali proses dan peningkatan.</span>
+
             </div>
             <hr>
             <hr>
 
             <!-- Penanggulangan -->
+            <span style="font-size: 2rm;"><strong>3. Usulan tindakan: Jelaskan apa, siapa dan kapan akan dilaksanakan dan siapa yang akan melakukan tindakan Penanggulangan/Pencegahan tersebut dan kapan akan diselesaikan.</strong></span>
             <div class="mb-3">
+                <br>
+                <br>
                 <label for="penanggulangan" class="form-label fw-bold">Penanggulangan</label>
-                <textarea name="penanggulangan" class="form-control" placeholder="Masukkan tindakan penanggulangan">{{ old('penanggulangan') }}</textarea>
+                <textarea name="penanggulangan" class="form-control" placeholder="">{{ old('penanggulangan') }}</textarea>
             </div>
 
             <!-- Target Tanggal Penanggulangan -->
@@ -50,22 +55,29 @@
             </div>
 
              <!-- PIC Penanggulangan -->
-             <div class="mb-3">
+            <div class="mb-3">
                 <label for="pic1" class="form-label fw-bold">PIC Penanggulangan</label>
-                <select name="pic1" class="form-select">
+                <select id="pic1" name="pic1" class="form-select" onchange="togglePic1Input()">
                     <option value="">Pilih PIC</option>
                     @foreach($data as $user)
-                        <option value="{{ $user->id }}" {{ old('pic1') == $user->id ? 'selected' : '' }}>{{ $user->nama_user }}</option>
+                        <option value="{{ $user->id }}" {{ old('pic1') == $user->id ? 'selected' : '' }}>
+                            {{ $user->nama_user }}
+                        </option>
                     @endforeach
+                    <option value="other" {{ old('pic1') == 'other' ? 'selected' : '' }}>Lainnya (Tuliskan di bawah)</option> <!-- Option for manual input -->
                 </select>
+
+                <!-- Manual input for PIC Penanggulangan -->
+                <input type="text" id="pic1_other" name="pic1_other" class="form-control mt-2" placeholder="Masukkan nama PIC Penanggulangan" style="display: none;" value="{{ old('pic1_other') }}">
             </div>
+
             <hr>
             <hr>
 
             <!-- Pencegahan -->
             <div class="mb-3">
                 <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
-                <textarea name="pencegahan" class="form-control" placeholder="Masukkan tindakan pencegahan">{{ old('pencegahan') }}</textarea>
+                <textarea name="pencegahan" class="form-control" placeholder="">{{ old('pencegahan') }}</textarea>
             </div>
 
             <!-- Target Tanggal Pencegahan -->
@@ -77,17 +89,22 @@
             <!-- PIC Pencegahan -->
             <div class="mb-3">
                 <label for="pic2" class="form-label fw-bold">PIC Pencegahan</label>
-                <select name="pic2" class="form-select">
+                <select id="pic2" name="pic2" class="form-select" onchange="togglePic2Input()">
                     <option value="">Pilih PIC</option>
                     @foreach($data as $user)
-                        <option value="{{ $user->id }}" {{ old('pic2') == $user->id ? 'selected' : '' }}>{{ $user->nama_user }}</option>
+                        <option value="{{ $user->id }}" {{ old('pic2') == $user->nama_user ? 'selected' : '' }}>
+                            {{ $user->nama_user }}
+                        </option>
                     @endforeach
+                    <option value="other">Lainnya (Tuliskan di bawah)</option> <!-- Option for manual input -->
                 </select>
+                <input type="text" id="pic2_other" name="pic2_other" class="form-control mt-2" placeholder="Masukkan nama PIC Pencegahan" style="display: none;">
             </div>
+
 
              <!-- Tanda Tangan -->
             <div class="row mb-3">
-                <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan</label>
+                <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan</label>
                 <div class="col-sm-10">
                     <!-- Opsi untuk Menggambar Tanda Tangan -->
                     <div class="mb-3">
@@ -116,8 +133,9 @@
             </div>
 
 
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a href="{{ route('ppk.index') }}" class="btn btn-secondary">Kembali</a>
+                <button type="submit" class="btn btn-primary">Update <i class="ri-save-3-fill"></i></button>
             </div>
         </form>
     </div>
@@ -166,5 +184,28 @@
     });
 </script>
 
+<script>
+    // Show input field for manual entry of pic2 if "other" is selected
+    function togglePic2Input() {
+        var pic2Select = document.getElementById('pic2');
+        var pic2OtherInput = document.getElementById('pic2_other');
+        if (pic2Select.value === 'other') {
+            pic2OtherInput.style.display = 'block';
+        } else {
+            pic2OtherInput.style.display = 'none';
+        }
+    }
+
+    // Show input field for manual entry of pic1 if "other" is selected
+    function togglePic1Input() {
+        var pic1Select = document.getElementById('pic1');
+        var pic1OtherInput = document.getElementById('pic1_other');
+        if (pic1Select.value === 'other') {
+            pic1OtherInput.style.display = 'block';
+        } else {
+            pic1OtherInput.style.display = 'none';
+        }
+    }
+</script>
 @endsection
 

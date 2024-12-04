@@ -24,8 +24,18 @@
 
                 <!-- Judul PPK -->
                 <div class="mb-3">
-                    <label for="inputJudul" class="form-label fw-bold">Judul PPK</label>
-                    <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK" rows="3">{{ old('judul') }}</textarea>
+                    <label for="inputJudul" class="form-label fw-bold">1. Jelaskan ketidaksesuaian yang terjadi atau peningkatan yang akan dibuat</label>
+                    <textarea name="judul" class="form-control" placeholder="" rows="3">{{ old('judul') }}</textarea>
+                </div>
+
+                <!-- Evidence -->
+                <div class="mb-3">
+                    <label for="evidence" class="form-label fw-bold">Evidence</label>
+                    <div>
+                        <input type="file" id="evidence" name="evidence[]" class="form-control" multiple>
+                        <!-- Preview container for uploaded files -->
+                        <div id="evidencePreviewContainer" class="mt-3 d-flex flex-wrap gap-3"></div>
+                    </div>
                 </div>
 
                 <!-- Jenis Ketidaksesuaian -->
@@ -51,25 +61,33 @@
 
                 <!-- Pembuat dan Divisi Pembuat -->
                 <div class="row g-3 mb-3">
+                    <!-- Nama Inisiator -->
                     <div class="col-md-6">
                         <label for="pembuat" class="form-label fw-bold">Nama Inisiator</label>
                         <select id="pembuat" name="pembuat" class="form-select">
                             <option value="">Pilih Pembuat</option>
                             @foreach($data as $user)
-                                <option value="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-divisi="{{ $user->divisi }}">
+                                <option value="{{ $user->nama_user }}"
+                                        data-email="{{ $user->email }}"
+                                        data-divisi="{{ $user->divisi }}">
                                     {{ $user->nama_user }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
+                    <!-- Divisi Inisiator -->
                     <div class="col-md-6">
-                        <label for="emailpembuat" class="form-label fw-bold">Email Inisiator</label>
-                        <input placeholder="Email" type="email" id="emailpembuat" name="emailpembuat" class="form-control" value="{{ old('emailpembuat') }}" readonly>
+                        <label for="divisipembuat" class="form-label fw-bold">Divisi Inisiator</label>
+                        <input type="text" id="divisipembuat" name="divisipembuat"class="form-control"placeholder="Divisi" value="{{ old('divisipembuat') }}"readonly>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="divisipembuat" class="form-label fw-bold">Divisi Inisiator</label>
-                    <input placeholder="Divisi" type="text" name="divisipembuat" id="divisipembuat" class="form-control" value="{{ old('divisipembuat') }}" readonly>
+
+                <div class="row g-3 mb-3">
+                    <!-- Email Inisiator -->
+                    <div class="col-md-6">
+                        <label for="emailpembuat" class="form-label fw-bold">Email Inisiator</label>
+                        <input type="email" id="emailpembuat" name="emailpembuat" class="form-control"placeholder="Email" value="{{ old('emailpembuat') }}"readonly>
+                    </div>
                 </div>
 
                 <hr>
@@ -87,14 +105,18 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="emailpenerima" class="form-label fw-bold">Email Penerima</label>
-                        <input placeholder="Email" type="email" name="emailpenerima" id="emailpenerima" class="form-control" value="{{ old('emailpenerima') }}" readonly>
+                        <label for="divisipenerima" class="form-label fw-bold">Divisi Penerima</label>
+                        <input placeholder="Divisi" type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" readonly>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="divisipenerima" class="form-label fw-bold">Divisi Penerima</label>
-                    <input placeholder="Divisi" type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" readonly>
+                <div class="row g-3 mb-3">
+                    <!-- Email Inisiator -->
+                    <div class="col-md-6">
+                        <label for="emailpenerima" class="form-label fw-bold">Email Penerima</label>
+                        <input type="email" id="emailpenerima" name="emailpenerima" class="form-control" placeholder="Email" value="{{ old('emailpenerima') }}"readonly>
+                    </div>
                 </div>
+                <br>
 
                 <!-- Tanda Tangan -->
                 <div class="row mb-3">
@@ -122,81 +144,72 @@
                     </div>
                 </div>
 
+                <script>
+                    // JavaScript for handling the file preview
+                    document.getElementById('evidence').addEventListener('change', function(event) {
+                        const previewContainer = document.getElementById('evidencePreviewContainer');
+                        previewContainer.innerHTML = ''; // Clear previous previews
 
-                <!-- Evidence -->
-<div class="mb-3">
-    <label for="evidence" class="form-label fw-bold">Evidence</label>
-    <div>
-        <input type="file" id="evidence" name="evidence[]" class="form-control" multiple>
-        <!-- Preview container for uploaded files -->
-        <div id="evidencePreviewContainer" class="mt-3 d-flex flex-wrap gap-3"></div>
-    </div>
-</div>
+                        // Loop through selected files
+                        Array.from(event.target.files).forEach(file => {
+                            const fileReader = new FileReader();
 
-<script>
-    // JavaScript for handling the file preview
-    document.getElementById('evidence').addEventListener('change', function(event) {
-        const previewContainer = document.getElementById('evidencePreviewContainer');
-        previewContainer.innerHTML = ''; // Clear previous previews
+                            fileReader.onload = function(e) {
+                                const fileUrl = e.target.result;
+                                const fileExtension = file.name.split('.').pop().toLowerCase();
 
-        // Loop through selected files
-        Array.from(event.target.files).forEach(file => {
-            const fileReader = new FileReader();
+                                // Create a container for each file preview
+                                const filePreview = document.createElement('div');
+                                filePreview.classList.add('file-preview', 'text-center');
+                                filePreview.style.width = '200px';
 
-            fileReader.onload = function(e) {
-                const fileUrl = e.target.result;
-                const fileExtension = file.name.split('.').pop().toLowerCase();
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+                                    // For image files, show image preview
+                                    const img = document.createElement('img');
+                                    img.src = fileUrl;
+                                    img.alt = file.name;
+                                    img.style = 'max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 5px;';
+                                    filePreview.appendChild(img);
+                                } else {
+                                    // For other file types, show a download link
+                                    const link = document.createElement('a');
+                                    link.href = fileUrl;
+                                    link.target = '_blank';
+                                    link.textContent = file.name;
+                                    link.classList.add('btn', 'btn-primary', 'btn-sm', 'w-100');
+                                    filePreview.appendChild(link);
+                                }
 
-                // Create a container for each file preview
-                const filePreview = document.createElement('div');
-                filePreview.classList.add('file-preview', 'text-center');
-                filePreview.style.width = '200px';
+                                // Add file name below the preview
+                                const fileName = document.createElement('small');
+                                fileName.textContent = file.name;
+                                fileName.style = 'display: block; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+                                filePreview.appendChild(fileName);
 
-                if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
-                    // For image files, show image preview
-                    const img = document.createElement('img');
-                    img.src = fileUrl;
-                    img.alt = file.name;
-                    img.style = 'max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 5px;';
-                    filePreview.appendChild(img);
-                } else {
-                    // For other file types, show a download link
-                    const link = document.createElement('a');
-                    link.href = fileUrl;
-                    link.target = '_blank';
-                    link.textContent = file.name;
-                    link.classList.add('btn', 'btn-primary', 'btn-sm', 'w-100');
-                    filePreview.appendChild(link);
-                }
+                                previewContainer.appendChild(filePreview);
+                            };
 
-                // Add file name below the preview
-                const fileName = document.createElement('small');
-                fileName.textContent = file.name;
-                fileName.style = 'display: block; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
-                filePreview.appendChild(fileName);
+                            fileReader.readAsDataURL(file); // Read the file as a data URL
+                        });
+                    });
+                </script>
 
-                previewContainer.appendChild(filePreview);
-            };
-
-            fileReader.readAsDataURL(file); // Read the file as a data URL
-        });
-    });
-</script>
-
-                <!-- CC Email -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">CC Email</label>
-                    <div id="cc-email-container">
-                        <div class="input-group mb-2">
-                            <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
-                            <button type="button" class="btn btn-outline-primary add-cc-email">+</button>
-                        </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">CC Email</label>
+                <div id="cc-email-container" style="max-width: 400px;">
+                    <div class="input-group mb-2">
+                        <input type="email" name="cc_email[]" class="form-control" style="width: 70%;" placeholder="Masukkan CC Email">
+                        <button type="button" class="btn btn-outline-primary add-cc-email" style="width: 10%;">+</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
-                </div>
+
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a href="{{ route('ppk.index') }}" class="btn btn-secondary">Kembali</a>
+                <button type="submit" class="btn btn-primary">Save <i class="ri-save-3-fill"></i></button>
+            </div>
             </form>
         </div>
     </div>
