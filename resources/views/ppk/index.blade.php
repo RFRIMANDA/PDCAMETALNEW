@@ -27,8 +27,6 @@
         </div>
     @endif
 
-
-
     <div class="card text-center">
         <div class="card-body">
             <h5 class="card-title" style="font-size: 25px; font-weight: 700; letter-spacing: 2px;">
@@ -62,120 +60,103 @@
             </thead>
             <tbody>
                 @foreach ($ppks as $ppk)
-                <tr>
-                    <td style="text-align: center;">
-                        <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF">
-                            {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}
+    <tr>
+        <td style="text-align: center;">
+            <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF">
+                {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}
+            </a>
+        </td>
+
+        <td style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <!-- Identifikasi -->
+            @if ($ppk->formppk2 && is_null($ppk->formppk2->signaturepenerima))
+                <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-warning btn-sm" title="Form PPK Identifikasi">
+                    <i class="bi bi-bell"></i>
+                </a>
+            @elseif ($ppk->formppk2 && !is_null($ppk->formppk2->signaturepenerima))
+
+            @if ((empty($ppk->formppk2->pencegahan) || empty($ppk->formppk2->penanggulangan)) && !is_null($ppk->formppk2->signaturepenerima))
+                <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Identifikasi">
+                    <i class="bi bi-bell"></i>
+                </a>
+            @endif
+
+
+                <!-- Verifikasi -->
+            @if ($ppk->formppk3)
+                @if (is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->pencegahan) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->identifikasi))
+                    @if ($ppk->pembuat == auth()->id())
+                        <!-- Show Create3 button for pembuat when all fields in formppk2 are filled -->
+                        <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-success btn-sm" title="Form PPK Verifikasi">
+                            <i class="bi bi-bell"></i>
                         </a>
-                    </td>
-
-                    <td style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;">
-                        <!-- Identifikasi -->
-                        @if ($ppk->formppk2 && is_null($ppk->formppk2->signaturepenerima))
-                            <a href="{{ route('ppk.create2', $ppk->id) }}" class="btn btn-warning btn-sm" title="Form PPK Identifikasi">
-                                <i class="bi bi-bell"></i>
-                            </a>
-                        @elseif ($ppk->formppk2 && !is_null($ppk->formppk2->signaturepenerima))
-
-                            @if((empty($ppk->formppk2->pencegahan) || empty($ppk->formppk2->penanggulangan)) && !is_null($ppk->formppk2->signaturepenerima))
-                                <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Identifikasi">
-                                    <i class="bi bi-bell"></i>
-                                </a>
-                            @endif
-
-                            <!-- Verifikasi -->
-                        @if ($ppk->formppk3)
-                            @if (is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->pencegahan) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->identifikasi))
-                                @if ($ppk->pembuat == auth()->id())
-                                    <!-- Show Create3 button for pembuat when all fields in formppk2 are filled -->
-                                    <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-success btn-sm" title="Form PPK Verifikasi">
-                                        <i class="bi bi-bell"></i>
-                                    </a>
-                                @else
-                                    <!-- Show WAITING for penerima if verifikasi is null -->
-                                    <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
-                                @endif
-                                    @elseif (!is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->pencegahan))
-                                        <!-- Show VERIFIED if verifikasi is not null and other fields are filled -->
-                                        <span class="text-success fw-bold">VERIFIED <i class="bi bi-check-circle-fill"></i></span>
-                                    @endif
-                            @endif
+                    @else
+                        <!-- Show WAITING for penerima if verifikasi is null -->
+                        <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
+                    @endif
+                        @elseif (!is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->pencegahan))
+                            <!-- Show VERIFIED if verifikasi is not null and other fields are filled -->
+                            <span class="text-success fw-bold">VERIFIED <i class="bi bi-check-circle-fill"></i></span>
                         @endif
-                    </td>
-
-                    <td>
-                        @if(auth()->id() == $ppk->pembuat && !empty($ppk->formppk2->pencegahan) && !empty($ppk->formppk2->penanggulangan) && !is_null($ppk->formppk2->signaturepenerima))
-
-                        <!-- Edit Judul PPK - Available for all users -->
-                        <a href="{{ route('ppk.edit', $ppk->id) }}" class="btn btn-primary btn-sm" title="Edit Judul PPK">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        @endif
-
-                        <!-- Edit Identifikasi - Only for pembuat -->
-                            <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-warning btn-sm" title="Edit Identifikasi">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-
-                        <!-- Edit Verifikasi - Only for pembuat -->
-                        @if(auth()->id() == $ppk->pembuat)
-                            <a href="{{ route('ppk.edit3', $ppk->id) }}" class="btn btn-success btn-sm" title="Edit Verifikasi">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                        @endif
-                        <a href="{{ route('ppk.detail', $ppk->id) }}" class="btn btn-success btn-sm" title="Edit Verifikasi">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-
-        <script>
-            @foreach ($ppks as $ppk)
-                @if ($ppk->formppk2 && !is_null($ppk->formppk2->pencegahan) && !is_null($ppk->formppk2->penanggulangan))
-                    // Simpan timestamp di localStorage jika belum ada
-                    if (!localStorage.getItem('verifikasiTimestamp-{{ $ppk->id }}')) {
-                        localStorage.setItem('verifikasiTimestamp-{{ $ppk->id }}', Date.now());
-                    }
-
-                    // Periksa apakah 10 detik sudah berlalu
-                    setInterval(function () {
-                        var savedTimestamp = localStorage.getItem('verifikasiTimestamp-{{ $ppk->id }}');
-                        if (savedTimestamp && (Date.now() - savedTimestamp >= 10000)) {
-                            var verifikasiContainer = document.getElementById('verifikasi-container-{{ $ppk->id }}');
-                            if (verifikasiContainer) {
-                                verifikasiContainer.style.display = 'block';
-                            }
-                        }
-                    }, 1000); // Periksa setiap 1 detik
                 @endif
-            @endforeach
-        </script>
+            @endif
+        </td>
+
+        <td>
+            @if(auth()->id() == $ppk->pembuat)
+                <a href="{{ route('ppk.edit', $ppk->id) }}" class="btn btn-primary btn-sm" title="Edit Judul PPK">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            @endif
+
+            @if (
+                !is_null($ppk->formppk2->identifikasi) &&
+                !is_null($ppk->formppk2->signaturepenerima) &&
+                !is_null($ppk->formppk2->penanggulangan) &&
+                !is_null($ppk->formppk2->pencegahan) &&
+                !is_null($ppk->formppk2->tgl_penanggulangan) &&
+                !is_null($ppk->formppk2->tgl_pencegahan)
+            )
+                <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Identifikasi">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            @endif
+
+            @if(auth()->id() == $ppk->pembuat)
+                <a href="{{ route('ppk.edit3', $ppk->id) }}" class="btn btn-success btn-sm" title="Edit Verifikasi">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            @endif
+        </td>
+    </tr>
+@endforeach
+
+
+                <script>
+                    @foreach ($ppks as $ppk)
+                        @if ($ppk->formppk2 && !is_null($ppk->formppk2->pencegahan) && !is_null($ppk->formppk2->penanggulangan))
+                            // Simpan timestamp di localStorage jika belum ada
+                            if (!localStorage.getItem('verifikasiTimestamp-{{ $ppk->id }}')) {
+                                localStorage.setItem('verifikasiTimestamp-{{ $ppk->id }}', Date.now());
+                            }
+
+                            // Periksa apakah 10 detik sudah berlalu
+                            setInterval(function () {
+                                var savedTimestamp = localStorage.getItem('verifikasiTimestamp-{{ $ppk->id }}');
+                                if (savedTimestamp && (Date.now() - savedTimestamp >= 10000)) {
+                                    var verifikasiContainer = document.getElementById('verifikasi-container-{{ $ppk->id }}');
+                                    if (verifikasiContainer) {
+                                        verifikasiContainer.style.display = 'block';
+                                    }
+                                }
+                            }, 1000); // Periksa setiap 1 detik
+                        @endif
+                    @endforeach
+                </script>
 
             </tbody>
         </table>
     @endif
-
-<!-- Modal Detail Data PPK -->
-@foreach ($ppks as $ppk)
-    <div class="modal fade" id="detailModal{{ $ppk->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $ppk->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="card-title" id="detailModalLabel{{ $ppk->id }}">Track Record Proses Peningkatan Kinerja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
-</div>
 
 {{-- Modal --}}
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">

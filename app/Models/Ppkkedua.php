@@ -19,6 +19,8 @@ class Ppkkedua extends Model
         'pencegahan',
         'pic1',
         'pic2',
+        'pic1_other',
+        'pic2_other',
         'tgl_penanggulangan',
         'tgl_pencegahan',
     ];
@@ -33,12 +35,12 @@ public function picUser()
 
 public function pic1User()
 {
-    return $this->belongsTo(User::class, 'pic1');
+    return $this->belongsTo(User::class, 'pic1','id');
 }
 
 public function pic2User()
 {
-    return $this->belongsTo(User::class, 'pic2');
+    return $this->belongsTo(User::class, 'pic2','id');
 }
  // Pastikan kolom target_tgl di-cast sebagai tanggal
  protected $dates = ['target_tgl'];

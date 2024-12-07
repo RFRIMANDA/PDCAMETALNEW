@@ -120,10 +120,26 @@
 
                 <!-- Tanda Tangan -->
                 <div class="row mb-3">
-                    <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan</label>
+                    <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan (Pilih Opsi)</label>
                     <div class="col-sm-10">
+                        <!-- Pilihan Opsi -->
+                        <div class="row mb-3 mt-1">
+                            <div class="form-check mb-2">
+                                <div class="col-sm-10">
+                                    <input class="form-check-input" type="radio" name="signature_option" id="option1" value="1" checked>
+                                    <label class="form-check-label" for="option1"><strong>1. Tanda tangan langsung</strong></label>
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                <div class="col-sm-10">
+                                <input class="form-check-input" type="radio" name="signature_option" id="option2" value="2">
+                                <label class="form-check-label" for="option2"><strong>2. Unggah file tanda tangan</strong></label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Opsi untuk Menggambar Tanda Tangan -->
-                        <div class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
+                        <div id="option1-container" class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
                             <p class="fw-bold">Opsi 1: Tanda tangan langsung</p>
                             <canvas id="signature-pad" class="border rounded" style="width: 100%; height: 200px;"></canvas>
                             <button id="clear" title="Clear" type="button" class="btn btn-outline-secondary mt-2">
@@ -136,13 +152,36 @@
                         <div class="border-top my-4"></div>
 
                         <!-- Opsi untuk Mengunggah Tanda Tangan -->
-                        <div class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
+                        <div id="option2-container" class="mb-3 border p-3 rounded d-none" style="background-color: #f8f9fa;">
                             <p class="fw-bold">Opsi 2: Unggah file tanda tangan</p>
                             <input type="file" name="signature_file" id="signature-file" class="form-control">
                             <small class="text-muted d-block mt-2">Format file yang didukung: jpg, jpeg, png</small>
                         </div>
                     </div>
                 </div>
+
+                <script>
+                    // Mengontrol visibilitas opsi berdasarkan pilihan checkbox
+                    const option1Radio = document.getElementById('option1');
+                    const option2Radio = document.getElementById('option2');
+                    const option1Container = document.getElementById('option1-container');
+                    const option2Container = document.getElementById('option2-container');
+
+                    option1Radio.addEventListener('change', () => {
+                        if (option1Radio.checked) {
+                            option1Container.classList.remove('d-none');
+                            option2Container.classList.add('d-none');
+                        }
+                    });
+
+                    option2Radio.addEventListener('change', () => {
+                        if (option2Radio.checked) {
+                            option2Container.classList.remove('d-none');
+                            option1Container.classList.add('d-none');
+                        }
+                    });
+                </script>
+
 
                 <script>
                     // JavaScript for handling the file preview

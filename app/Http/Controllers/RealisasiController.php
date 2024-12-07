@@ -26,7 +26,7 @@ class RealisasiController extends Controller
         $pic = User::where('id', $targetpicId)->value('nama_user'); // Mengambil nama_user berdasarkan user_id dari targetpic
 
         // Format deadline
-        $deadline = Carbon::parse($form->tgl_penyelesaian)->format('d-m-Y');
+        $deadline = Carbon::parse($form->tgl_penyelesaian)->format('m-d-Y');
 
         // Ambil id_divisi dari tabel Riskregister berdasarkan id_tindakan
         $riskregister = Riskregister::where('id', $form->id_riskregister)->first();

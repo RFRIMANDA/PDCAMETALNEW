@@ -77,8 +77,8 @@ class RiskController extends Controller
             'nama_resiko' => 'nullable|required_without:peluang|string',
             'peluang' => 'nullable|required_without:nama_resiko|string',
             'kriteria' => 'nullable|in:Unsur Keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',
-            'probability' => 'required|integer|min:1|max:5',
-            'severity' => 'required|integer|min:1|max:5',
+            'probability' => 'nullable|integer|min:1|max:5',
+            'severity' => 'nullable|integer|min:1|max:5',
             'nama_tindakan' => 'required|array',
             'nama_tindakan.*' => 'required|string',
             'pihak' => 'nullable|array', // Pastikan pihak berupa array jika memilih beberapa divisi
@@ -398,7 +398,7 @@ public function update(Request $request, $id)
                                             ->exists();
 
             $tindakan->tgl_penyelesaian = $tindakan->tgl_penyelesaian
-                ? Carbon::parse($tindakan->tgl_penyelesaian)->format('d-m-Y')
+                ? Carbon::parse($tindakan->tgl_penyelesaian)->format('m-d-Y')
                 : '-';
 
             $tindakan->targetpic = $tindakan->targetpic ?? '-';
@@ -415,7 +415,7 @@ public function update(Request $request, $id)
 
         // Format target_penyelesaian
         $form->target_penyelesaian = $form->target_penyelesaian
-            ? Carbon::parse($form->target_penyelesaian)->format('d-m-Y')
+            ? Carbon::parse($form->target_penyelesaian)->format('m-d-Y')
             : '-';
     }
 
@@ -527,7 +527,8 @@ foreach ($data as $riskregister) {
             'risk' => $resiko->risk,
             'before' => $resiko->before,
             'after' => $resiko->after,
-            'score' => $resiko->probability * $resiko->severity
+            'score' => $resiko->probability * $resiko->severity,
+            'scoreactual' => $resiko->probabilityrisk * $resiko->severityrisk
         ];
     });
 
@@ -545,6 +546,7 @@ foreach ($data as $riskregister) {
         'tingkatan' => $riskregister->resikos->pluck('tingkatan'),
         'status' => $riskregister->resikos->pluck('status'),
         'scores' => $resikoData->pluck('score'),
+        'scoreactual' => $resikoData->pluck('scoreactual'),
         'risk' => $resikoData->pluck('risk'),
         'before' => $resikoData->pluck('before'),
         'after' => $resikoData->pluck('after'),

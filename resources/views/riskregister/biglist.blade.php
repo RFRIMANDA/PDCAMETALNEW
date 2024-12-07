@@ -26,6 +26,27 @@
     </button>
 <br>
 
+<style>
+    .badge.bg-purple {
+background-color: #ADD8E6;
+
+color: rgb(0, 0, 0);
+}
+.table-wrapper {
+    position: relative;
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto;
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Optional: to make sure the header has a white background */
+    z-index: 1; /* Ensure the header is above the table rows */
+}
+
+</style>
+
 <!-- Modal for Filters -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -151,71 +172,96 @@
 </div>
 <br>
 
+    <!-- Small tables -->
     <div class="card">
         <div class="card-body">
             <div style="overflow-x: auto;">
                 <div class="table-wrapper">
-                <table class="table table-striped" style="width: 150%; font-size: 13px;">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Issue</th>
-                        <th>I/E</th>
-                        <th>Pihak Berkepentingan</th>
-                        <th>Risiko</th>
-                        <th>Peluang</th>
-                        <th>Tingkatan</th>
-                        <th>Tindakan Lanjut</th>
-                        <th>Skor</th>
-                        <th>Actual Risk</th>
-                        <th>Before</th>
-                        <th>After</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($formattedData as $data)
+                    <table class="table table-striped" style="width: 180%; font-size: 13px;">
+                    <thead>
                         <tr>
-                            <td>
-                                <a>
-                                    {{ $loop->iteration }}
-                                </a>
-                            </td>
-                            <td>{{ $data['issue'] }}</td>
-                            <td>{{ $data['inex'] }}</td>
-                            <td>{{ $data['pihak'] }}</td>
+                            <th>No</th>
+                            <th>Issue</th>
+                            <th>I/E</th>
+                            <th>Pihak Berkepentingan</th>
+                            <th>Risiko</th>
+                            <th>Peluang</th>
+                            <th>Tingkatan</th>
+                            <th>Skor Before</th>
+                            <th>Tindakan Lanjut</th>
+                            <th>Actual Risk</th>
+                            <th>Skor After</th>
+                            <th>Before</th>
+                            <th>After</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($formattedData as $data)
+                            <tr>
+                                <td>
+                                    <a>
+                                        {{ $loop->iteration }}
+                                    </a>
+                                </td>
+                                <td>{{ $data['issue'] }}</td>
+                                <td>{{ $data['inex'] }}</td>
+                                <td>{{ $data['pihak'] }}</td>
 
-                            <td>
-                                @foreach ($data['risiko'] as $risiko)
-                                    {{ $risiko }}<br>
-                                @endforeach
-                            </td>
-
-                            <td>{{ $data['peluang'] }}</td>
-
-                            <td>
-                                @foreach ($data['tingkatan'] as $tingkatan)
-                                    {{ $tingkatan }}<br>
-                                @endforeach
-                            </td>
-
-                            <td>
-                                <ul>
-                                    @foreach ($data['tindak'] as $index => $pihak)
-                                        {{-- <li> --}}
-                                            <strong>{{ $pihak }}</strong>
-                                            <ul>
-                                                <li>{{ $data['tindak_lanjut'][$index] }}</li>
-                                            </ul>
-                                        {{-- </li> --}}
-                                        <hr>
+                                <td>
+                                    @foreach ($data['risiko'] as $risiko)
+                                        {{ $risiko }}<br>
                                     @endforeach
-                                </ul>
-                            </td>
-                            <!-- Skor -->
-                            <td>
-                                @foreach ($data['scores'] as $score)
+                                </td>
+
+                                <td>{{ $data['peluang'] }}</td>
+
+                                <td>
+                                    @foreach ($data['tingkatan'] as $tingkatan)
+                                        {{ $tingkatan }}<br>
+                                    @endforeach
+                                </td>
+
+                                <td>
+                                    @foreach ($data['scores'] as $score)
+                                        @php
+                                            $colorClass = '';
+                                            if ($score >= 1 && $score <= 2) {
+                                                $colorClass = 'bg-success text-white'; // Hijau
+                                            } elseif ($score >= 3 && $score <= 4) {
+                                                $colorClass = 'bg-warning text-white'; // Kuning
+                                            } elseif ($score >= 5 && $score <= 25) {
+                                                $colorClass = 'bg-danger text-white'; // Merah
+                                            }
+                                        @endphp
+                                        <span class="badge {{ $colorClass }}">{{ $score }}</span><br>
+                                    @endforeach
+                                </td>
+
+                                <td>
+                                    <ul>
+                                        @foreach ($data['tindak'] as $index => $pihak)
+                                            {{-- <li> --}}
+                                                <strong>{{ $pihak }}</strong>
+                                                <ul>
+                                                    <li>{{ $data['tindak_lanjut'][$index] }}</li>
+                                                </ul>
+                                            {{-- </li> --}}
+                                            <hr>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <!-- Skor -->
+
+                                <td>
+                                    @foreach ($data['risk'] as $risiko)
+                                        {{ $risiko }}<br>
+                                    @endforeach
+                                </td>
+
+                                <td>
+                                    @foreach ($data['scoreactual'] as $score)
                                     @php
                                         $colorClass = '';
                                         if ($score >= 1 && $score <= 2) {
@@ -228,64 +274,61 @@
                                     @endphp
                                     <span class="badge {{ $colorClass }}">{{ $score }}</span><br>
                                 @endforeach
-                            </td>
 
+                                </td>
+
+                                <td>
+                                    @foreach ($data['before'] as $risiko)
+                                        {{ $risiko }}<br>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach ($data['after'] as $risiko)
+                                        {{ $risiko }}<br>
+                                    @endforeach
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+                                    @foreach ($data['status'] as $status)
+                                        <span class="badge
+                                            @if($status == 'OPEN')
+                                                bg-danger
+                                            @elseif($status == 'ON PROGRES')
+                                                bg-warning
+                                            @elseif($status == 'CLOSE')
+                                                bg-success
+                                            @endif">
+                                            {{ $status }}<br>
+                                            {{ $data['nilai_actual'] }}%
+                                        </span><br>
+                                    @endforeach
+                                </td>
+
+                            <!-- Action Buttons -->
                             <td>
-                                @foreach ($data['risk'] as $risiko)
-                                    {{ $risiko }}<br>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach ($data['before'] as $risiko)
-                                    {{ $risiko }}<br>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach ($data['after'] as $risiko)
-                                    {{ $risiko }}<br>
-                                @endforeach
-                            </td>
+                                <div class="btn-group" role="group">
+                                    <!-- Edit Button -->
+                                    <a href="{{ route('riskregister.edit', $data['id']) }}" title="Detail Risiko" class="btn btn-success btn-sm me-1">
+                                        <i class="bx bx-edit"></i>
+                                    </a>
 
-                            <!-- Status -->
-                            <td>
-                                @foreach ($data['status'] as $status)
-                                    <span class="badge
-                                        @if($status == 'OPEN')
-                                            bg-danger
-                                        @elseif($status == 'ON PROGRES')
-                                            bg-warning
-                                        @elseif($status == 'CLOSE')
-                                            bg-success
-                                        @endif">
-                                        {{ $status }}<br>
-                                        {{ $data['nilai_actual'] }}%
-                                    </span><br>
-                                @endforeach
+                                    <!-- Delete Button -->
+                                    <form action="{{ route('riskregister.destroy', $data['id']) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="ri ri-delete-bin-fill"></i>
+                                        </button>
+                                    </form>
+
+                                </div>
                             </td>
-
-                        <!-- Action Buttons -->
-                        <td>
-                            <div class="btn-group" role="group">
-                                <!-- Edit Button -->
-                                <a href="{{ route('riskregister.edit', $data['id']) }}" title="Detail Risiko" class="btn btn-success btn-sm me-1">
-                                    <i class="bx bx-edit"></i>
-                                </a>
-
-                                <!-- Delete Button -->
-                                <form action="{{ route('riskregister.destroy', $data['id']) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="ri ri-delete-bin-fill"></i>
-                                    </button>
-                                </form>
-
-                            </div>
-                        </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

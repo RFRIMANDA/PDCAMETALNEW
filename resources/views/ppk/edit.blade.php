@@ -17,6 +17,10 @@
                     <textarea name="judul" class="form-control" placeholder="Masukkan Judul PPK" rows="3">{{ old('judul', $ppk->judul) }}</textarea>
                 </div>
 
+                <div class="mb-3" id="pic1-other">
+                    <input type="hidden" name="signature" id="signature" class="form-control" value="{{ old('signature', $ppk->signature) }}">
+                </div>
+
                 <!-- Evidence -->
                 <div class="mb-3">
                     <label for="evidence" class="form-label fw-bold">Evidence</label>

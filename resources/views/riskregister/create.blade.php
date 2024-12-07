@@ -146,15 +146,69 @@
 </div>
 
 <script>
-    // Toggle the input field for 'Other' when checkbox is checked
-    document.getElementById('otherCheckbox').addEventListener('change', function() {
-        const otherInputContainer = document.getElementById('otherInputContainer');
+    document.addEventListener('DOMContentLoaded', function () {
+    const dropdownButton = document.getElementById('dropdownDivisiAkses');
+    const checkboxes = document.querySelectorAll('.form-check-input');
+    const otherCheckbox = document.getElementById('otherCheckbox');
+    const otherInput = document.getElementById('pihakOther');
+    const otherInputContainer = document.getElementById('otherInputContainer');
+    const selectAllCheckbox = document.getElementById('select-all');
+
+    // Toggle the input field for 'Other'
+    otherCheckbox.addEventListener('change', function () {
         if (this.checked) {
             otherInputContainer.style.display = 'block'; // Show the input field
         } else {
             otherInputContainer.style.display = 'none'; // Hide the input field
+            otherInput.value = ''; // Clear the input if unchecked
         }
+        updateDropdown();
     });
+
+    // Update dropdown text when checkboxes change
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateDropdown);
+    });
+
+    // Handle 'Select All' functionality
+    selectAllCheckbox.addEventListener('change', function () {
+        checkboxes.forEach(checkbox => {
+            if (checkbox !== selectAllCheckbox) {
+                checkbox.checked = this.checked; // Check/uncheck all
+            }
+        });
+        updateDropdown();
+    });
+
+    otherInput.addEventListener('input', updateDropdown); // Update on typing in "Other"
+
+    function updateDropdown() {
+        const selectedValues = [];
+
+        // Collect checked checkboxes
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked && checkbox !== selectAllCheckbox && checkbox !== otherCheckbox) {
+                const label = document.querySelector(`label[for="${checkbox.id}"]`);
+                if (label) {
+                    selectedValues.push(label.textContent.trim());
+                }
+            }
+        });
+
+        // Add 'Other' input value if applicable
+        if (otherCheckbox.checked && otherInput.value.trim() !== '') {
+            selectedValues.push(otherInput.value.trim());
+        }
+
+        // Update the dropdown button text
+        if (selectedValues.length > 0) {
+            dropdownButton.textContent = selectedValues.join(', '); // Join values with a comma
+        } else {
+            dropdownButton.textContent = 'Pilih Pihak Berkepentingan'; // Default text
+        }
+    }
+});
+
 </script>
 
 
@@ -175,7 +229,7 @@
 <div class="row mb-3">
     <label for="kriteria" class="col-sm-2 col-form-label"><strong>Kriteria</strong></label>
     <div class="col-sm-4">
-        <select name="kriteria" class="form-control" id="kriteriaSelect" required onchange="updateSeverityDropdown()">
+        <select name="kriteria" class="form-control" id="kriteriaSelect"  onchange="updateSeverityDropdown()">
             <option value="">--Pilih Kriteria--</option>
             @foreach($kriteria as $k)
                 <option value="{{ $k->nama_kriteria }}">{{ $k->nama_kriteria }}</option>
@@ -188,7 +242,7 @@
 <div class="row mb-3">
     <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
     <div class="col-sm-4">
-        <select class="form-select" name="severity" id="severity" required>
+        <select class="form-select" name="severity" id="severity">
             <option value="">--Pilih Severity--</option>
             <!-- Opsi severity akan diisi secara dinamis di sini -->
         </select>
@@ -248,7 +302,7 @@ document.getElementById('kriteriaSelect').addEventListener('change', updateSever
  <div class="row mb-3">
     <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak</strong></label>
     <div class="col-sm-4">
-        <select class="form-select" name="probability" id="probability" required onchange="calculateTingkatan()">
+        <select class="form-select" name="probability" id="probability" onchange="calculateTingkatan()">
             <option value="">--Silahkan Pilih Probability--</option>
             <option value="1" {{ old('probability') == 1 ? 'selected' : '' }}>1. Sangat jarang terjadi</option>
             <option value="2" {{ old('probability') == 2 ? 'selected' : '' }}>2. Jarang terjadi</option>
@@ -262,7 +316,7 @@ document.getElementById('kriteriaSelect').addEventListener('change', updateSever
     <div class="row mb-3">
         <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
         <div class="col-sm-4">
-            <input type="text" placeholder="Nilai Otomatis"class="form-control" readonly name="tingkatan" id="tingkatan" required>
+            <input type="text" placeholder="Nilai Otomatis"class="form-control" readonly name="tingkatan" id="tingkatan">
         </div>
     </div>
 

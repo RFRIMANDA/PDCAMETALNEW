@@ -21,7 +21,6 @@
     </div>
     @endif
 
-    <h1 class="card-title">Track Record: <br>{{$tindak}}</h1>
     <hr>
 
     <style>
@@ -36,8 +35,16 @@
         }
     </style>
 
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 400px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); padding: 20px; text-align: left; color: #333; line-height: 1.6;">
+    <h1 style="font-size: 16px; color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; margin-bottom: 15px;">Track Record</h1>
+    <p style="font-size: 12px; color: #555;">{{$tindak}}</p>
 
-    <h1 class="card-title">PIC: {{$pic}}<br><hr>Target Tanggal: {{$deadline}}</h1>
+    <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px;">
+        <h2 style="font-size: 18px; color: #2c3e50;">PIC: {{$pic}}</h2>
+        <p style="font-size: 16px; color: #555; margin-top: 8px;">Target Tanggal: <strong>{{$deadline}}</strong></p>
+    </div>
+</div>
+
 
 
     <!-- Tabel Data Realisasi -->

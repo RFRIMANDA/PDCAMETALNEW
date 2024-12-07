@@ -13,7 +13,6 @@
     <p>{{ $data['paragraf5'] }}</p>
     <p>{{ $data['sender_name'] }}</p>
     <br>
-    <p>{{ $data['paragraf6'] }}</p>
     <p>{{ $data['paragraf7'] }}</p>
     <p><a href="{{ $data['paragraf8'] }}">Klik di sini untuk akses</a></p>
 </body>

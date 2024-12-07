@@ -33,9 +33,10 @@ class Ppk extends Model
     }
 
     public function penerimaUser()
-    {
-        return $this->belongsTo(User::class, 'penerima', 'id');
-    }
+{
+    return $this->belongsTo(User::class, 'penerima', 'id');
+}
+
 
     public function formppk2()
     {

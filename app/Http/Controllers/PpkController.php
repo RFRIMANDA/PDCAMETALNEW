@@ -235,28 +235,34 @@ class PpkController extends Controller
                     'pembuat' => auth()->id(),
                     'emailpembuat' => $request->emailpembuat,
                     'divisipembuat' => $request->divisipembuat,
-                    'penerima' => $request->penerima,
+                    'penerima' => $request->penerima, // Pastikan ID User dikirim melalui request
                     'emailpenerima' => $request->emailpenerima,
                     'divisipenerima' => $request->divisipenerima,
                     'cc_email' => $ccEmails,
-                    'evidence' => json_encode($evidences),  // Store the evidence paths here
+                    'evidence' => json_encode($evidences), // Menyimpan evidence sebagai JSON
                     'nomor_surat' => $nomorSurat,
                     'signature' => $signatureFileName,
                 ]);
 
+                // Membuat Data Terkait di Tabel Lain
                 Ppkkedua::create(['id_formppk' => $buatppk->id]);
                 Ppkketiga::create(['id_formppk' => $buatppk->id]);
+
+                // Mendapatkan Data User untuk Email
+                $penerimaUser = User::find($request->penerima); // Ambil user berdasarkan ID penerima
+                if (!$penerimaUser) {
+                    return response()->json(['error' => 'Penerima tidak ditemukan'], 404);
+                }
 
                 // Kirim Email
                 $data_email = [
                     'subject' => "Penerbitan No PPK {$nomorSurat}",
                     'sender_name' => "{$request->emailpembuat}, {$request->divisipembuat}",
-                    'paragraf1' => "Dear {$request->emailpenerima}, {$divisi}",
+                    'paragraf1' => "Dear {$penerimaUser->nama_user}, {$request->divisipenerima}", // Menggunakan nama_user dari model User
                     'paragraf2' => "Berikut Terlampir PPK",
                     'paragraf3' => $nomorSurat,
                     'paragraf4' => $request->judul,
                     'paragraf5' => "yang diajukan oleh",
-                    'paragraf6' => "Video panduan copy link berikut->bit.ly/pengajuanppk",
                     'paragraf7' => "Untuk menambahkan Evidence dan update progress silahkan klik link di bawah ini",
                     'paragraf8' => route('ppk.index'),
                 ];
@@ -329,7 +335,6 @@ class PpkController extends Controller
             }
         }
 
-        // Perbarui data evidence di database
         $ppk->evidence = json_encode(array_values($evidences));
 
         // Proses CC Emails jika disediakan
@@ -436,52 +441,50 @@ class PpkController extends Controller
 }
 
     public function store2(Request $request)
-        {
-            // Validate data
-            $request->validate([
-                'identifikasi' => 'nullable|string|max:1000',
-                'penanggulangan' => 'nullable|string|max:1000',
-                'pencegahan' => 'nullable|string|max:1000',
-                'tgl_penanggulangan' => 'nullable|date',
-                'tgl_pencegahan' => 'nullable|date',
-                'pic1' => 'nullable|string',
-                'pic2' => 'nullable|string',
-                'pic1_other' => 'nullable|string|max:255',  // pic1_other as a regular string
-                'pic2_other' => 'nullable|string|max:255',  // pic2_other as a regular string
-                'signaturepenerima' => 'nullable|string',
-                'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            ]);
+    {
+        // Validate data
+        // dd($request->all);
+        $request->validate([
+            'identifikasi' => 'nullable|string|max:1000',
+            'penanggulangan' => 'nullable|string|max:1000',
+            'pencegahan' => 'nullable|string|max:1000',
+            'tgl_penanggulangan' => 'nullable|date',
+            'tgl_pencegahan' => 'nullable|date',
+            'pic1' => 'nullable|string',
+            'pic2' => 'nullable|string',
+            'pic1_other' => 'nullable|string|max:255',
+            'pic2_other' => 'nullable|string|max:255',
+            'signaturepenerima' => 'nullable|string',
+            'signaturepenerima_file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-            // Process the signature penerima
-            $signatureFile = $this->handleSignature2($request, 'signaturepenerima', 'signaturepenerima_file');
+        // Process the signature penerima
+        $signatureFile = $this->handleSignature2($request, 'signaturepenerima', 'signaturepenerima_file');
 
-            // Handle "other" options for pic1 and pic2
+        try {
+            // Data to be updated
+            $updateData = [
+                'identifikasi' => $request->identifikasi,
+                'penanggulangan' => $request->penanggulangan,
+                'pencegahan' => $request->pencegahan,
+                'tgl_penanggulangan' => $request->tgl_penanggulangan,
+                'tgl_pencegahan' => $request->tgl_pencegahan,
+                'pic1' => $request->pic1,  // Store the value for pic1 (either from dropdown or other)
+                'pic2' => $request->pic2,  // Store the value for pic2 (either from dropdown or other)
+                'pic1_other' => $request->pic1_other,  // Store the value for pic2 (either from dropdown or other)
+                'pic2_other' => $request->pic2_other,  // Store the value for pic2 (either from dropdown or other)
+                'signaturepenerima' => $signatureFile,  // Save signature penerima
+            ];
 
-            $pic1 = $request->filled('pic1_other') ? $request->pic1_other : $request->pic1;
-            $pic2 = $request->filled('pic2_other') ? $request->pic2_other : $request->pic2;
+            // Update data in Ppkkedua table
+            Ppkkedua::where('id_formppk', $request->id_formppk)->update($updateData);
 
-            try {
-                // Data to be updated
-                $updateData = [
-                    'identifikasi' => $request->identifikasi,
-                    'penanggulangan' => $request->penanggulangan,
-                    'pencegahan' => $request->pencegahan,
-                    'tgl_penanggulangan' => $request->tgl_penanggulangan,
-                    'tgl_pencegahan' => $request->tgl_pencegahan,
-                    'pic1' => $pic1,  // Store the value for pic1 (either from dropdown or other)
-                    'pic2' => $pic2,  // Store the value for pic2 (either from dropdown or other)
-                    'signaturepenerima' => $signatureFile,  // Save signature penerima
-                ];
-
-                // Update data in Ppkkedua table
-                Ppkkedua::where('id_formppk', $request->id_formppk)->update($updateData);
-
-                return redirect()->route('ppk.index')->with('success', 'Data berhasil diperbarui.✅');
-            } catch (\Exception $e) {
-                // Catch and display errors
-                return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
-            }
+            return redirect()->route('ppk.index')->with('success', 'Data berhasil diperbarui.✅');
+        } catch (\Exception $e) {
+            // Catch and display errors
+            return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
+    }
 
     public function edit2($id)
     {
@@ -527,10 +530,6 @@ class PpkController extends Controller
         // If a signature was drawn, capture the base64 data or uploaded file path
         $signature = $request->signaturepenerima ?: $filePath;
 
-        // Handle "other" options for pic1 and pic2
-        $pic1 = $request->pic1 === 'other' ? $request->pic1_other : $request->pic1;
-        $pic2 = $request->pic2 === 'other' ? $request->pic2_other : $request->pic2;
-
         // Data to update
         $updateData = [
             'identifikasi' => $request->identifikasi,
@@ -538,8 +537,10 @@ class PpkController extends Controller
             'pencegahan' => $request->pencegahan,
             'tgl_penanggulangan' => $request->tgl_penanggulangan,
             'tgl_pencegahan' => $request->tgl_pencegahan,
-            'pic1' => $pic1,  // Store the value for pic1 (either from dropdown or other)
-            'pic2' => $pic2,  // Store the value for pic2 (either from dropdown or other)
+            'pic1' => $request->pic1,  // Store the value for pic1 (either from dropdown or other)
+            'pic2' => $request->pic2,  // Store the value for pic2 (either from dropdown or other)
+            'pic1_other' => $request->pic1_other,  // Store the value for pic2 (either from dropdown or other)
+            'pic2_other' => $request->pic2_other,  // Store the value for pic2 (either from dropdown or other)
             'signaturepenerima' => $signature,  // Store signature penerima
         ];
 
@@ -567,9 +568,9 @@ class PpkController extends Controller
         // Validation
         $request->validate([
             'id_formppk' => 'required|exists:formppk,id',
-            'verifikasi' => 'nullable|string|max:1000',
+            'verifikasi' => 'required|string|max:1000',
             'verifikasi_img.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk setiap file dalam array
-            'tinjauan' => 'nullable|string|max:1000',
+            'tinjauan' => 'required|string|max:1000',
             'status' => 'required|in:TRUE,FALSE',
             'newppk' => 'nullable|string|max:255',
         ]);
@@ -608,9 +609,17 @@ class PpkController extends Controller
 
             // Send email notification
             $data_email = [
-                'subject' => 'Notifikasi Pembaruan Form Keempat',
+                'subject' => 'Notifikasi Pembaruan Form Verifikasi PPK',
                 'sender_name' => auth()->user()->email,
-                'isi' => "Form Keempat dengan ID {$request->id_formppk} telah diperbarui.",
+                'isi' => "Dear PIC Departemen Inisiator
+                Mohon segera memverifikasi & Close PPK
+                jika pencegahan & penanggulangan efektif,
+                link terlampir
+
+                jika tiak efektif bisa di terbitkan PPK baru
+
+
+                Mohon kerjasamanya terimakasih",
             ];
 
             $penerima = Ppk::find($request->id_formppk)->emailpenerima;
@@ -691,9 +700,17 @@ class PpkController extends Controller
 
         // Kirim email notifikasi
         $data_email = [
-            'subject' => 'Notifikasi Pembaruan Form Keempat',
-            'sender_name' => auth()->user()->email, // Pengirim dari email pengguna yang sedang login
-            'isi' => "Form Keempat dengan ID {$request->id_formppk} telah diperbarui.",
+            'subject' => 'VERIFIKASI',
+            'sender_name' => auth()->user()->email,
+            'isi' => "Dear PIC Departemen Inisiator
+            Mohon segera memverifikasi & Close PPK
+            jika pencegahan & penanggulangan efektif,
+            link terlampir
+
+            jika tiak efektif bisa di terbitkan PPK baru
+
+
+            Mohon kerjasamanya terimakasih",
         ];
 
         // Ambil email penerima dari Ppk berdasarkan id_formppk
@@ -775,24 +792,10 @@ class PpkController extends Controller
         $data['pencegahan'] = $ppkkedua->pencegahan;
         $data['tgl_penanggulangan'] = $ppkkedua->tgl_penanggulangan;
         $data['tgl_pencegahan'] = $ppkkedua->tgl_pencegahan;
-
-        // Handle pic1
-        if ($ppkkedua->pic1 === 'other' && !empty($ppkkedua->pic1_other)) {
-            $data['pic1'] = $ppkkedua->pic1_other; // Use pic1_other if pic1 is 'other'
-        } elseif (is_numeric($ppkkedua->pic1)) {
-            $data['pic1'] = $ppkkedua->pic1User->nama_user ?? 'Tidak ada PIC'; // Show pic1 user name if it's a user ID
-        } else {
-            $data['pic1'] = '-'; // Default message if no valid value
-        }
-
-        // Handle pic2
-        if ($ppkkedua->pic2 === 'other' && !empty($ppkkedua->pic2_other)) {
-            $data['pic2'] = $ppkkedua->pic2_other; // Use pic2_other if pic2 is 'other'
-        } elseif (is_numeric($ppkkedua->pic2)) {
-            $data['pic2'] = $ppkkedua->pic2User->nama_user ?? 'Tidak ada PIC'; // Show pic2 user name if it's a user ID
-        } else {
-            $data['pic2'] = '-'; // Default message if no valid value
-        }
+        $data['pic1'] = $ppkkedua->pic1;
+        $data['pic2'] = $ppkkedua->pic2;
+        $data['pic1_other'] = $ppkkedua->pic1_other;
+        $data['pic2_other'] = $ppkkedua->pic2_other;
         $data['signaturepenerima'] = $signaturePenerimaBase64;
         $data['created_at'] = $ppkkedua->updated_at;
     }
@@ -862,15 +865,8 @@ public function accept($id)
         $data['pencegahan'] = $ppkkedua->pencegahan;
         $data['tgl_penanggulangan'] = $ppkkedua->tgl_penanggulangan;
         $data['tgl_pencegahan'] = $ppkkedua->tgl_pencegahan;
-
-        // Check if pic1 is 'other' and pass pic1_other if available
-        if ($ppkkedua->pic1 == 'other' && !empty($ppkkedua->pic1_other)) {
-            $data['pic1'] = $ppkkedua->pic1; // Show pic1_other if pic1 is 'other'
-        } else {
-            $data['pic1'] = $ppkkedua->pic1User->nama_user ?? 'Tidak ada PIC'; // Default pic1 user name
-        }
-
-        $data['pic2'] = $ppkkedua->pic2User->nama_user ?? 'Tidak ada PIC';
+        $data['pic1'] = $ppkkedua->pic1User->nama_user ?? '-';
+        $data['pic2'] = $ppkkedua->pic2User->nama_user ?? '-';
         $data['signaturepenerima'] = $signaturePenerimaBase64;
         $data['created_at'] = $ppkkedua->updated_at;
     }

@@ -48,9 +48,11 @@
             <!-- Action Buttons -->
             <div class="d-flex justify-content-start gap-3 mt-3">
                 <!-- Filter Button (Trigger Modal) -->
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
-                    <i class="fa fa-filter" style="font-size: 14px;"></i> Filter Options
-                </button>
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manajemen' || auth()->user()->role === 'supervisor' || auth()->user()->role === 'manager')
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
+                        <i class="fa fa-filter" style="font-size: 14px;"></i> Filter Options
+                    </button>
+                @endif
                 <!-- New Issue Button -->
                 <a href="{{ route('riskregister.create', ['id' => $id]) }}" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
                     <i class="fa fa-plus" style="font-size: 14px;"></i> New Issue

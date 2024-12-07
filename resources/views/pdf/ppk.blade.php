@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Proses Peningkatan Kinerja</title>
+    <title>Report PPK {{$nomor_surat}}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -168,13 +168,18 @@
                         {{ $tgl_penanggulangan ? \Carbon\Carbon::parse($tgl_penanggulangan)->format('d M Y') : 'Tidak ada Tanggal Penanggulangan' }}
                 </td>
                 <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
-                    {{ $ppk->formppk2->pic1 ?? '-' }}
+                    @if($pic1)
+                        {{ \App\Models\User::find($pic1)->nama_user ?? '-' }} <!-- Get the name from User model -->
+                    @elseif($pic1_other)
+                        {{ $pic1_other}} <!-- Same for pic1_other -->
+                    @else
+                        -
+                    @endif
                 </td>
-
             </tr>
             <tr>
                 <!-- Sel kiri dengan rowspan 3 -->
-                <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
+                <td rowspan="1" style="border: 1px solid #3f3d3d; padding: 10px; vertical-align: middle;">
                     <strong>Pencegahan</strong>
                 </td>
                 <!-- Sel tengah di baris pertama -->
@@ -186,7 +191,13 @@
                         {{ $tgl_pencegahan ? \Carbon\Carbon::parse($tgl_pencegahan)->format('d M Y') : 'Tidak ada Tanggal Pencegahan' }}
                 </td>
                 <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
-                    {{ $pic2 ?? 'Tidak ada PIC' }}
+                    @if($pic2)
+                        {{ \App\Models\User::find($pic2)->nama_user ?? '-' }} <!-- Get the name from User model -->
+                    @elseif($pic2_other)
+                        {{$pic2_other}} <!-- Same for pic1_other -->
+                    @else
+                        -
+                    @endif
                 </td>
             </tr>
         </table>

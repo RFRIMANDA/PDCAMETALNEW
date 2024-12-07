@@ -32,7 +32,7 @@
             <!-- Identifikasi -->
             <div class="mb-3">
                 <label for="identifikasi" class="form-label fw-bold">2. Identifikasi, evaluasi & pastikan akar penyebab masalah/Root Cause</label>
-                <textarea placeholder="" name="identifikasi" class="form-control" id="identifikasi" rows="3">{{ old('identifikasi', $ppk->identifikasi ?? '') }}</textarea>
+                <textarea placeholder="" name="identifikasi" class="form-control" id="identifikasi" rows="7">{{ old('identifikasi', $ppk->identifikasi ?? '') }}</textarea>
                 <span style="font-size: 0.750em;">*Gunakan metode 5WHYS untuk menentukan Root Cause; Fish Bone; Diagram alir; Penilaian situasi; Kendali proses dan peningkatan.</span>
 
             </div>
@@ -45,8 +45,9 @@
                 <br>
                 <br>
                 <label for="penanggulangan" class="form-label fw-bold">Penanggulangan</label>
-                <textarea name="penanggulangan" class="form-control" placeholder="">{{ old('penanggulangan') }}</textarea>
+                <textarea name="penanggulangan" class="form-control" placeholder="" cols="50" rows="7">{{ old('penanggulangan') }}</textarea>
             </div>
+
 
             <!-- Target Tanggal Penanggulangan -->
             <div class="mb-3">
@@ -54,83 +55,231 @@
                 <input type="date" name="tgl_penanggulangan" class="form-control" value="{{ old('tgl_penanggulangan') }}">
             </div>
 
-             <!-- PIC Penanggulangan -->
+            <!-- PIC Penanggulangan -->
             <div class="mb-3">
-                <label for="pic1" class="form-label fw-bold">PIC Penanggulangan</label>
-                <select id="pic1" name="pic1" class="form-select" onchange="togglePic1Input()">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="pic1-option" onchange="togglePic1Input()">
+                    <label class="form-check-label" for="pic1-option">Pilih PIC dari Daftar</label>
+                </div>
+            </div>
+            <!-- Input teks untuk memilih PIC lainnya -->
+            <div class="mb-3" id="pic1-other">
+                <label for="pic1_other" class="form-label fw-bold">PIC OTHER</label>
+                <input type="text" name="pic1_other" id="pic1_other" class="form-control" value="{{ old('pic1_other') }}">
+            </div>
+
+            <!-- Dropdown untuk memilih PIC Pencegahan -->
+            <div class="mb-3" id="pic1-dropdown">
+                <label for="pic1" class="form-label fw-bold">PIC Pencegahan</label>
+                <select id="pic1" name="pic1" class="form-select">
                     <option value="">Pilih PIC</option>
                     @foreach($data as $user)
                         <option value="{{ $user->id }}" {{ old('pic1') == $user->id ? 'selected' : '' }}>
                             {{ $user->nama_user }}
                         </option>
                     @endforeach
-                    <option value="other" {{ old('pic1') == 'other' ? 'selected' : '' }}>Lainnya (Tuliskan di bawah)</option> <!-- Option for manual input -->
                 </select>
-
-                <!-- Manual input for PIC Penanggulangan -->
-                <input type="text" id="pic1_other" name="pic1_other" class="form-control mt-2" placeholder="Masukkan nama PIC Penanggulangan" style="display: none;" value="{{ old('pic1_other') }}">
             </div>
 
-            <hr>
-            <hr>
+            <script>
+                function togglePic1Input() {
+                    const pic1Option = document.getElementById('pic1-option');
+                    const pic1Dropdown = document.getElementById('pic1-dropdown');
+                    const pic1Other = document.getElementById('pic1-other');
 
-            <!-- Pencegahan -->
+                    // Jika checkbox dicentang, tampilkan dropdown dan sembunyikan input teks
+                    if (pic1Option.checked) {
+                        pic1Dropdown.style.display = 'block';
+                        pic1Other.style.display = 'none';
+                    } else {
+                        pic1Dropdown.style.display = 'none';
+                        pic1Other.style.display = 'block';
+                    }
+                }
+
+                // Inisialisasi tampilan berdasarkan status checkbox saat halaman pertama dimuat
+                window.onload = function() {
+                    togglePic1Input();
+                }
+            </script>
+
+                        <hr>
+                        <hr>
+                        <!-- Pencegahan -->
+                        <div class="mb-3">
+                            <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
+                            <textarea name="pencegahan" class="form-control" placeholder="" cols="50" rows="7">{{ old('pencegahan') }}</textarea>
+                        </div>
+
+                        <!-- Target Tanggal Pencegahan -->
+                        <div class="mb-3">
+                            <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan</label>
+                            <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
+                        </div>
+
+                    <!-- Pilihan PIC Pencegahan -->
             <div class="mb-3">
-                <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
-                <textarea name="pencegahan" class="form-control" placeholder="">{{ old('pencegahan') }}</textarea>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="pic2-option" onchange="togglePic2Input()">
+                    <label class="form-check-label" for="pic2-option">Pilih PIC dari Daftar</label>
+                </div>
             </div>
 
-            <!-- Target Tanggal Pencegahan -->
-            <div class="mb-3">
-                <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan</label>
-                <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
-            </div>
-
-            <!-- PIC Pencegahan -->
-            <div class="mb-3">
+            <!-- Dropdown untuk memilih PIC Pencegahan -->
+            <div class="mb-3" id="pic2-dropdown">
                 <label for="pic2" class="form-label fw-bold">PIC Pencegahan</label>
-                <select id="pic2" name="pic2" class="form-select" onchange="togglePic2Input()">
+                <select id="pic2" name="pic2" class="form-select">
                     <option value="">Pilih PIC</option>
                     @foreach($data as $user)
-                        <option value="{{ $user->id }}" {{ old('pic2') == $user->nama_user ? 'selected' : '' }}>
+                        <option value="{{ $user->id }}" {{ old('pic2') == $user->id ? 'selected' : '' }}>
                             {{ $user->nama_user }}
                         </option>
                     @endforeach
-                    <option value="other">Lainnya (Tuliskan di bawah)</option> <!-- Option for manual input -->
                 </select>
-                <input type="text" id="pic2_other" name="pic2_other" class="form-control mt-2" placeholder="Masukkan nama PIC Pencegahan" style="display: none;">
             </div>
 
+            <!-- Input teks untuk memilih PIC lainnya -->
+            <div class="mb-3" id="pic2-other">
+                <label for="pic2_other" class="form-label fw-bold">PIC OTHER</label>
+                <input type="text" name="pic2_other" id="pic2_other" class="form-control" value="{{ old('pic2_other') }}">
+            </div>
+
+            <script>
+                function togglePic2Input() {
+                    const pic2Option = document.getElementById('pic2-option');
+                    const pic2Dropdown = document.getElementById('pic2-dropdown');
+                    const pic2Other = document.getElementById('pic2-other');
+
+                    // Jika checkbox dicentang, tampilkan dropdown dan sembunyikan input teks
+                    if (pic2Option.checked) {
+                        pic2Dropdown.style.display = 'block';
+                        pic2Other.style.display = 'none';
+                    } else {
+                        pic2Dropdown.style.display = 'none';
+                        pic2Other.style.display = 'block';
+                    }
+                }
+
+                // Inisialisasi tampilan berdasarkan status checkbox saat halaman pertama dimuat
+                window.onload = function() {
+                    togglePic2Input();
+                }
+            </script>
 
              <!-- Tanda Tangan -->
-            <div class="row mb-3">
-                <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan</label>
+             <div class="row mb-3">
+                <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan (Pilih Opsi)</label>
                 <div class="col-sm-10">
-                    <!-- Opsi untuk Menggambar Tanda Tangan -->
-                    <div class="mb-3">
-                        <p class="fw-bold">Opsi 1: Tanda tangan langsung</p>
-                        <div class="border p-3 rounded" style="background-color: #f8f9fa;">
-                            <canvas id="signature-pad" style="border: 1px solid #ccc; width: 100%; height: 200px; display: block;"></canvas>
-                            <button id="clear" title="Clear" type="button" class="btn btn-secondary mt-2">
-                                <i class="bx bxs-eraser"></i> Clear
-                            </button>
-                            <input type="hidden" name="signaturepenerima" id="signature">
+                    <!-- Pilihan Opsi -->
+                    <div class="row mb-3 mt-1">
+                        <div class="form-check mb-2">
+                            <div class="col-sm-10">
+                                <input class="form-check-input" type="radio" name="signature_option" id="option1" value="1" checked>
+                                <label class="form-check-label" for="option1"><strong>1. Tanda tangan langsung</strong></label>
+                            </div>
                         </div>
+                        <div class="form-check">
+                            <div class="col-sm-10">
+                            <input class="form-check-input" type="radio" name="signature_option" id="option2" value="2">
+                            <label class="form-check-label" for="option2"><strong>2. Unggah file tanda tangan</strong></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opsi untuk Menggambar Tanda Tangan -->
+                    <div id="option1-container" class="mb-3 border p-3 rounded" style="background-color: #f8f9fa;">
+                        <p class="fw-bold">Opsi 1: Tanda tangan langsung</p>
+                        <canvas id="signature-pad" class="border rounded" style="width: 100%; height: 200px;"></canvas>
+                        <button id="clear" title="Clear" type="button" class="btn btn-outline-secondary mt-2">
+                            <i class="bx bxs-eraser"></i> Clear
+                        </button>
+                        <input type="hidden" name="signaturepenerima" id="signature">
                     </div>
 
                     <!-- Divider -->
                     <div class="border-top my-4"></div>
 
                     <!-- Opsi untuk Mengunggah Tanda Tangan -->
-                    <div class="mb-3">
+                    <div id="option2-container" class="mb-3 border p-3 rounded d-none" style="background-color: #f8f9fa;">
                         <p class="fw-bold">Opsi 2: Unggah file tanda tangan</p>
-                        <div class="border p-3 rounded" style="background-color: #f8f9fa;">
-                            <input type="file" name="signaturepenerima_file" id="signature-file" class="form-control" accept="image/*">
-                            <small class="text-muted d-block mt-2">Format file yang didukung: jpg, jpeg, png</small>
-                        </div>
+                        <input type="file" name="signaturepenerima_file" id="signaturepenerima-file" class="form-control">
+                        <small class="text-muted d-block mt-2">Format file yang didukung: jpg, jpeg, png</small>
                     </div>
                 </div>
             </div>
+
+            <script>
+                // Mengontrol visibilitas opsi berdasarkan pilihan checkbox
+                const option1Radio = document.getElementById('option1');
+                const option2Radio = document.getElementById('option2');
+                const option1Container = document.getElementById('option1-container');
+                const option2Container = document.getElementById('option2-container');
+
+                option1Radio.addEventListener('change', () => {
+                    if (option1Radio.checked) {
+                        option1Container.classList.remove('d-none');
+                        option2Container.classList.add('d-none');
+                    }
+                });
+
+                option2Radio.addEventListener('change', () => {
+                    if (option2Radio.checked) {
+                        option2Container.classList.remove('d-none');
+                        option1Container.classList.add('d-none');
+                    }
+                });
+            </script>
+
+
+            <script>
+                // JavaScript for handling the file preview
+                document.getElementById('evidence').addEventListener('change', function(event) {
+                    const previewContainer = document.getElementById('evidencePreviewContainer');
+                    previewContainer.innerHTML = ''; // Clear previous previews
+
+                    // Loop through selected files
+                    Array.from(event.target.files).forEach(file => {
+                        const fileReader = new FileReader();
+
+                        fileReader.onload = function(e) {
+                            const fileUrl = e.target.result;
+                            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                            // Create a container for each file preview
+                            const filePreview = document.createElement('div');
+                            filePreview.classList.add('file-preview', 'text-center');
+                            filePreview.style.width = '200px';
+
+                            if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+                                // For image files, show image preview
+                                const img = document.createElement('img');
+                                img.src = fileUrl;
+                                img.alt = file.name;
+                                img.style = 'max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 5px;';
+                                filePreview.appendChild(img);
+                            } else {
+                                // For other file types, show a download link
+                                const link = document.createElement('a');
+                                link.href = fileUrl;
+                                link.target = '_blank';
+                                link.textContent = file.name;
+                                link.classList.add('btn', 'btn-primary', 'btn-sm', 'w-100');
+                                filePreview.appendChild(link);
+                            }
+
+                            // Add file name below the preview
+                            const fileName = document.createElement('small');
+                            fileName.textContent = file.name;
+                            fileName.style = 'display: block; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+                            filePreview.appendChild(fileName);
+
+                            previewContainer.appendChild(filePreview);
+                        };
+
+                        fileReader.readAsDataURL(file); // Read the file as a data URL
+                    });
+                });
+            </script>
 
 
             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -184,28 +333,6 @@
     });
 </script>
 
-<script>
-    // Show input field for manual entry of pic2 if "other" is selected
-    function togglePic2Input() {
-        var pic2Select = document.getElementById('pic2');
-        var pic2OtherInput = document.getElementById('pic2_other');
-        if (pic2Select.value === 'other') {
-            pic2OtherInput.style.display = 'block';
-        } else {
-            pic2OtherInput.style.display = 'none';
-        }
-    }
 
-    // Show input field for manual entry of pic1 if "other" is selected
-    function togglePic1Input() {
-        var pic1Select = document.getElementById('pic1');
-        var pic1OtherInput = document.getElementById('pic1_other');
-        if (pic1Select.value === 'other') {
-            pic1OtherInput.style.display = 'block';
-        } else {
-            pic1OtherInput.style.display = 'none';
-        }
-    }
-</script>
 @endsection
 

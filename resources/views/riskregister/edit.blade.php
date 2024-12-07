@@ -176,7 +176,6 @@
                     </div>
                 </div>
 
-
                 <!-- Target Tanggal Penyelesaian -->
                 <div class="row mb-3">
                     <label for="tgl_penyelesaian_{{ $tindakan->id }}" class="col-sm-2 col-form-label"><strong>Target Tanggal</strong></label>

@@ -33,73 +33,7 @@
         </div>
     </form>
 
-    @if($sendingPpks->isEmpty() && $acceptingPpks->isEmpty())
-        <div class="alert alert-warning">Tidak ada data yang tersedia.</div>
-    @else
-
-    <div class="tables-container d-flex justify-content-between">
-        <!-- Table Sending -->
-        <div class="table-wrapper">
-            <h3 class="card-title" style="text-align: center;">Sending</h3>
-            @if($sendingPpks->isEmpty())
-                <div class="alert alert-warning">Tidak ada data yang dikirimkan.</div>
-            @else
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="text-align: center;">Nomor Surat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($sendingPpks as $ppk)
-                        <tr>
-                            <td style="text-align: center;">
-                                <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF">
-                                    {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}
-                                </a>
-                            </td>
-
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @endif
-        </div>
-
-        <!-- Spacer -->
-        <div style="width: 30px;"></div>
-
-        <!-- Table Accepting -->
-        <div class="table-wrapper">
-            <h3 class="card-title" style="text-align: center;">Accepting</h3>
-            @if($acceptingPpks->isEmpty())
-                <div class="alert alert-warning">Tidak ada data yang diterima.</div>
-            @else
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="text-align: center;">Nomor Surat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($acceptingPpks as $ppk)
-                        <tr>
-                            <td style="text-align: center;">
-                                <a href="{{ route('ppk.accept', $ppk->id) }}" title="Detail Accepting">
-                                    {{ $ppk->nomor_surat ?? 'Tidak ada nomor surat' }}
-                                </a>
-                            </td>
-
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @endif
-        </div>
-    </div>
-
-    @endif
-</div>
+    
 
 {{-- Modal --}}
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
