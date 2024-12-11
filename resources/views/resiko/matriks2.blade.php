@@ -4,16 +4,17 @@
 
 <div class="container">
     <h1 class="card-title">Matriks Risiko: <br>{{ $resiko_nama }}</h1>
-    <table class="table table-striped">
+    <hr>
+    <table class="table table-striped" style="display: none">
         <thead>
             <tr>
-                <th scope="col">Kriteria </th>
-                <th scope="col">Nilai </th>
+                <th scope="col">Kriteria</th>
+                <th scope="col">Nilai</th>
                 <th scope="col">Deskripsi Severity</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($kriteriaData as $k)  <!-- Loop through the filtered kriteriaData -->
+            @forelse($kriteriaData as $k) <!-- Loop through the filtered kriteriaData -->
                 <tr>
                     <td>{{ $k->nama_kriteria }}</td>
 
@@ -31,14 +32,12 @@
                                 @foreach ($descArray as $index => $desc)
                                     <tr>
                                         <td>{{ $nilaiArray[$index] ?? '' }}</td>
-
                                         <td>{{ $desc }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </td>
-
                 </tr>
             @empty
                 <tr>
@@ -48,13 +47,11 @@
         </tbody>
     </table>
 
-
     {{-- Matriks Before --}}
     <h4><strong>MATRIKS BEFORE</strong></h4>
     <table class="table table-bordered text-center">
         <thead>
             <tr>
-                {{-- <th rowspan="2">No</th> --}}
                 <th rowspan="2"></th>
                 <th rowspan="2">Severity / Keparahan<br><small>{{ $kategori }}</small></th>
                 <th colspan="5">Probability / Dampak (Likelihood)</th>
@@ -70,8 +67,8 @@
         <tbody>
             @foreach($matriks_used as $i => $row)
             <tr>
-                <td></td>
-                <td></td>
+                <td>{{ $nilaiArray[$i] ?? '' }}</td>
+                <td>{{ $descArray[$i] ?? '' }}</td>
                 @foreach($row as $j => $value)
                 <td style="background-color: {{ $colors_used[$i][$j] }}; color: black;">
                     @if(($i + 1) == $severity && ($j + 1) == $probability)
@@ -96,7 +93,6 @@
     <table class="table table-bordered text-center">
         <thead>
             <tr>
-                {{-- <th rowspan="2">No</th> --}}
                 <th rowspan="2"></th>
                 <th rowspan="2">Severity / Keparahan<br><small>{{ $kategori }}</small></th>
                 <th colspan="5">Probability / Dampak (Likelihood)</th>
@@ -112,8 +108,8 @@
         <tbody>
             @foreach($matriks_used as $i => $row)
             <tr>
-                <td></td>
-                <td></td>
+                <td>{{ $nilaiArray[$i] ?? '' }}</td>
+                <td>{{ $descArray[$i] ?? '' }}</td>
                 @foreach($row as $j => $value)
                 <td style="background-color: {{ $colors_used[$i][$j] }}; color: black;">
                     @if(($i + 1) == $severityrisk && ($j + 1) == $probabilityrisk)
@@ -132,6 +128,7 @@
             @endforeach
         </tbody>
     </table>
+
 
     <a class="btn btn-danger" href="{{ route('riskregister.tablerisk', ['id' => $three]) }}" title="Back">
         <i class="ri-arrow-go-back-line"></i>

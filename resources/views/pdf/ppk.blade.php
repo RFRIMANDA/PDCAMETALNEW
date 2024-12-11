@@ -53,10 +53,10 @@
 </head>
 <body>
     <div style="border: 1px solid #000; padding: 10px; height: 100%; box-sizing: border-box;">
-        <div style="border: 1px solid #000; padding: 10px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="text-align: center; flex-grow: 1;">
-                <strong style="font-size: 18px;">PROSES PENINGKATAN KINERJA</strong>
-            </div>
+        <div style="border: 1px solid #000; padding: 10px; display: flex; align-items: center;">
+            <img src="{{ asset('admin/img/TML3LOGO.png') }}" alt="Profile" class="rounded-circle"
+                 style="width: 100px; height: 100px; border: 2px solid #fff; transition: transform 0.3s; margin-right: 10px;">
+            <strong style="font-size: 20px; text-align: center; flex-grow: 1; margin-left: -100px;">PROSES PENINGKATAN KINERJA</strong>
         </div>
 
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -129,10 +129,10 @@
     <br>
     <br>
     <div style="page-break-before: always; border: 1px solid #000; padding: 10px; height: 100%; box-sizing: border-box;">
-        <div style="border: 1px solid #000; padding: 10px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="text-align: center; flex-grow: 1;">
-                <strong style="font-size: 18px;">PROSES PENINGKATAN KINERJA</strong>
-            </div>
+        <div style="border: 1px solid #000; padding: 10px; display: flex; align-items: center;">
+            <img src="{{ asset('admin/img/TML3LOGO.png') }}" alt="Profile" class="rounded-circle"
+                 style="width: 100px; height: 100px; border: 2px solid #fff; transition: transform 0.3s; margin-right: 10px;">
+            <strong style="font-size: 20px; text-align: center; flex-grow: 1; margin-left: -100px;">PROSES PENINGKATAN KINERJA</strong>
         </div>
         <p colspan="2" style="text-align: right;" text-align: left; border:none">PPK NO. {{ $nomor_surat }}</p>
         <p><strong>3. Usulan tindakan: Jelaskan apa, siapa dan kapan akan dilaksanakan dan siapa yang akan melakukan tindakan Penanggulangan/Pencegahan tersebut dan kapan akan diselesaikan.</strong></p>
@@ -167,15 +167,27 @@
                 <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
                         {{ $tgl_penanggulangan ? \Carbon\Carbon::parse($tgl_penanggulangan)->format('d M Y') : 'Tidak ada Tanggal Penanggulangan' }}
                 </td>
-                <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
-                    @if($pic1)
-                        {{ \App\Models\User::find($pic1)->nama_user ?? '-' }} <!-- Get the name from User model -->
-                    @elseif($pic1_other)
-                        {{ $pic1_other}} <!-- Same for pic1_other -->
+                <td>
+                    @if (!empty($pic1))
+                        @php
+                            $pic1Array = explode(',', $pic1); // Pisahkan berdasarkan koma
+                        @endphp
+
+                        @foreach ($pic1Array as $index => $pic)
+                            <p>{{ $index + 1 }}. {{ trim($pic) }}</p> <!-- Menampilkan nomor urut dan nama PIC -->
+                        @endforeach
                     @else
-                        -
+                        <!-- Jika pic1 kosong, gunakan pic1_other -->
+                        @if (!empty($pic1_other))
+                            <p>{{ $pic1_other }}</p> <!-- Menampilkan pic1_other -->
+                        @else
+                            <p>-</p> <!-- Jika pic1 dan pic1_other kosong -->
+                        @endif
                     @endif
                 </td>
+
+
+
             </tr>
             <tr>
                 <!-- Sel kiri dengan rowspan 3 -->
@@ -190,15 +202,25 @@
                 <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
                         {{ $tgl_pencegahan ? \Carbon\Carbon::parse($tgl_pencegahan)->format('d M Y') : 'Tidak ada Tanggal Pencegahan' }}
                 </td>
-                <td rowspan="1" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">
-                    @if($pic2)
-                        {{ \App\Models\User::find($pic2)->nama_user ?? '-' }} <!-- Get the name from User model -->
-                    @elseif($pic2_other)
-                        {{$pic2_other}} <!-- Same for pic1_other -->
+                <td>
+                    @if (!empty($pic2))
+                        @php
+                            $pic2Array = explode(',', $pic2); // Pisahkan berdasarkan koma
+                        @endphp
+
+                        @foreach ($pic2Array as $index => $pic)
+                            <p>{{ $index + 1 }}. {{ trim($pic) }}</p> <!-- Menampilkan nomor urut dan nama PIC -->
+                        @endforeach
                     @else
-                        -
+                        <!-- Jika pic1 kosong, gunakan pic1_other -->
+                        @if (!empty($pic2_other))
+                            <p>{{ $pic2_other }}</p> <!-- Menampilkan pic1_other -->
+                        @else
+                            <p>-</p> <!-- Jika pic1 dan pic1_other kosong -->
+                        @endif
                     @endif
                 </td>
+
             </tr>
         </table>
         <p>* Bila tidak cukup, dapat  menggunakan lampiran sesuai dengan format diatas </p>

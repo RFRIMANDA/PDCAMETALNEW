@@ -59,16 +59,39 @@ class RiskController extends Controller
     $divisiData = Divisi::findOrFail($id);
     $nama_divisi = $divisiData->nama_divisi;
 
-    // Filter users berdasarkan nama divisi yang sesuai
-    $users = User::where('divisi', $nama_divisi)->get();
+    $severityOptions = [];
+    foreach ($kriteria as $k) {
+        $nilaiArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria)); // Hapus simbol dan pecah nilai
+        $descArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria)); // Hapus simbol dan pecah deskripsi
 
-    return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users'));
+        $severityOptions[] = [
+            'nama_kriteria' => $k->nama_kriteria,
+            'options' => array_map(function ($nilai, $desc) {
+                return ['value' => trim($nilai), 'desc' => trim($desc)];
+            }, $nilaiArray, $descArray),
+        ];
+    }
+
+    $kriteriaList = $kriteria->map(function ($k) {
+        return [
+            'id' => $k->id,
+            'nama_kriteria' => $k->nama_kriteria,
+        ];
+    });
+
+    // Filter users berdasarkan nama divisi yang sesuai
+    $users = User::all();
+    // $users = User::where('divisi', $nama_divisi)->get();
+
+    return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users','severityOptions','kriteriaList'));
 }
 
-    public function store(Request $request)
+public function store(Request $request)
 {
+    DB::beginTransaction(); // Mulai transaksi database
+
     try {
-        // Validasi input
+        // Validasi data input
         // dd($request->all());
         $validated = $request->validate([
             'id_divisi' => 'required|exists:divisi,id',
@@ -76,13 +99,14 @@ class RiskController extends Controller
             'inex' => 'nullable|in:I,E',
             'nama_resiko' => 'nullable|required_without:peluang|string',
             'peluang' => 'nullable|required_without:nama_resiko|string',
-            'kriteria' => 'nullable|in:Unsur Keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',
+            'kriteria' => 'required|string',  // Validasi untuk hanya menerima satu kriteria
             'probability' => 'nullable|integer|min:1|max:5',
-            'severity' => 'nullable|integer|min:1|max:5',
+            'severity' => 'nullable|array',
+            'severity.*' => 'integer|min:1|max:5',
             'nama_tindakan' => 'required|array',
             'nama_tindakan.*' => 'required|string',
-            'pihak' => 'nullable|array', // Pastikan pihak berupa array jika memilih beberapa divisi
-            'pihak.*' => 'string', // Validasi pihak sebagai string (nama divisi)
+            'pihak' => 'nullable|array',
+            'pihak.*' => 'string',
             'targetpic' => 'required|array',
             'targetpic.*' => 'required|string',
             'tgl_penyelesaian' => 'required|array',
@@ -90,46 +114,55 @@ class RiskController extends Controller
             'target_penyelesaian' => 'required|date',
             'status' => 'nullable|in:OPEN,ON PROGRES,CLOSE',
             'before' => 'nullable|string',
-            'pihak_other' => 'nullable|string' // Validasi untuk pihak lainnya jika ada input
+            'pihak_other' => 'nullable|string',
         ]);
 
-        // Cek apakah kedua field 'risiko' dan 'peluang' diisi, dan jika iya, kembalikan error
+        // Simpan kriteria sebagai string, bukan array
+        $kriteria = $validated['kriteria'];  // Kriteria sudah berupa string
+
+        // Validasi tambahan untuk memastikan ID valid
+        if (!Kriteria::find($kriteria)) {
+            return back()->withErrors(['error' => 'Kriteria tidak valid.']);
+        }
+
+        $severity = is_array($validated['severity']) ? max($validated['severity']) : $validated['severity'];
+
+        // Validasi tambahan untuk mencegah pengisian 'nama_resiko' dan 'peluang' bersamaan
         if ($request->filled('nama_resiko') && $request->filled('peluang')) {
             return back()->withErrors(['error' => 'Anda hanya bisa mengisi salah satu dari Risiko atau Peluang, tidak keduanya.']);
         }
 
         // Hitung tingkatan berdasarkan probability dan severity
-        $tingkatan = $this->calculateTingkatan($validated['probability'], $validated['severity']);
+        $tingkatan = $this->calculateTingkatan($validated['probability'], $severity);
 
-        // Tambahkan pihak_other ke array pihak jika ada
+        // Gabungkan 'pihak_other' ke dalam array 'pihak' jika tersedia
         if ($request->has('pihak_other') && $request->filled('pihak_other')) {
-            $validated['pihak'][] = $validated['pihak_other']; // Tambahkan ke array pihak
+            $validated['pihak'][] = $validated['pihak_other'];
         }
 
-        // Simpan data ke tabel riskregister
+        // Simpan ke tabel riskregister
         $riskregister = Riskregister::create([
             'id_divisi' => $validated['id_divisi'],
             'issue' => $validated['issue'],
             'inex' => $validated['inex'],
-            'pihak' => $validated['pihak'] ? implode(',', $validated['pihak']) : null, // Simpan nama divisi
+            'pihak' => $validated['pihak'] ? implode(',', $validated['pihak']) : null,
             'target_penyelesaian' => $validated['target_penyelesaian'],
-            'peluang' => $validated['peluang'] ?? null, // Simpan peluang, jika ada
+            'peluang' => $validated['peluang'] ?? null,
         ]);
 
-        // Simpan data ke tabel resiko, jika ada risiko yang diisi
-        $status = $validated['status'] ?? 'OPEN'; // Set status ke 'OPEN' jika tidak diberikan
+        // Simpan ke tabel resiko
         Resiko::create([
             'id_riskregister' => $riskregister->id,
-            'nama_resiko' => $validated['nama_resiko'] ?? null, // Simpan risiko, jika ada
-            'kriteria' => $validated['kriteria'],
+            'nama_resiko' => $validated['nama_resiko'] ?? null,
+            'kriteria' => $kriteria, // Simpan kriteria sebagai string
             'probability' => $validated['probability'],
-            'severity' => $validated['severity'],
-            'tingkatan' => $tingkatan, // Simpan tingkatan dinamis
-            'status' => $status,
-            'before' => $validated['before'] ?? null
+            'severity' => $severity,
+            'tingkatan' => $tingkatan,
+            'status' => $validated['status'] ?? 'OPEN', // Default ke 'OPEN'
+            'before' => $validated['before'] ?? null,
         ]);
 
-        // Simpan data ke tabel tindakan dan realisasi
+        // Simpan ke tabel tindakan dan realisasi
         foreach ($validated['nama_tindakan'] as $key => $nama_tindakan) {
             $tindakan = Tindakan::create([
                 'id_riskregister' => $riskregister->id,
@@ -138,22 +171,27 @@ class RiskController extends Controller
                 'tgl_penyelesaian' => $validated['tgl_penyelesaian'][$key],
             ]);
 
-            // Simpan data ke tabel realisasi dengan status otomatis ON PROGRES
             Realisasi::create([
                 'id_riskregister' => $riskregister->id,
                 'id_tindakan' => $tindakan->id,
-                'nama_realisasi' => null, // Realisasi baru, jadi nama_realisasi belum diisi
-                'presentase' => 0, // Realisasi baru dimulai dari 0
-                'status' => 'ON PROGRES', // Status default ON PROGRES
+                'nama_realisasi' => null,
+                'presentase' => 0,
+                'status' => 'ON PROGRES', // Default ke 'ON PROGRES'
             ]);
         }
 
+        DB::commit(); // Komit transaksi jika semua berhasil
+
+        // Redirect ke halaman sukses
         return redirect()->route('riskregister.tablerisk', ['id' => $riskregister->id_divisi])
-            ->with('success', 'Data berhasil disimpan!.✅');
+            ->with('success', 'Data berhasil disimpan! ✅');
     } catch (\Exception $e) {
+        DB::rollBack(); // Rollback jika ada kesalahan
         return back()->withErrors(['error' => 'Data gagal disimpan: ' . $e->getMessage()]);
     }
 }
+
+
 
 public function edit($id)
 {
@@ -162,6 +200,10 @@ public function edit($id)
 
     // Ambil semua data divisi
     $divisi = Divisi::all();
+
+    $one = Resiko::findOrFail($id);
+    $two = Riskregister::where('id', $one->id_riskregister)->first();
+    $three = $two->id_divisi;
 
     // Ambil tindakan yang terkait dengan Riskregister
     $tindakanList = Tindakan::where('id_riskregister', $id)->get();
@@ -175,13 +217,12 @@ public function edit($id)
     $users = User::all(); // Ambil semua pengguna untuk dropdown select
 
     // Kembalikan tampilan edit dengan data yang diperlukan
-    return view('riskregister.edit', compact('riskregister', 'divisi', 'tindakanList','resikoList', 'selectedDivisi', 'users'));
+    return view('riskregister.edit', compact('riskregister', 'divisi', 'tindakanList','resikoList', 'selectedDivisi', 'users','three'));
 }
 
 public function update(Request $request, $id)
 {
-    // Update validation to accept 'nama_resiko', 'before', and 'after' as arrays
-    // dd($request->all());
+    // Validasi data
     $validated = $request->validate([
         'id_divisi' => 'required|exists:divisi,id',
         'issue' => 'required|string',
@@ -189,6 +230,8 @@ public function update(Request $request, $id)
         'peluang' => 'nullable|string',
         'tindakan' => 'nullable|array',
         'tindakan.*' => 'nullable|string',
+        'tindakan_to_delete' => 'nullable|array',
+        'tindakan_to_delete.*' => 'boolean',
         'pihak' => 'nullable|array',
         'pihak.*' => 'exists:divisi,id',
         'targetpic' => 'nullable|array',
@@ -202,17 +245,16 @@ public function update(Request $request, $id)
         'pihak_other' => 'nullable|string',
     ]);
 
-
-    // Process pihak and pihak_other
+    // Proses pihak dan pihak_other
     $pihak = $validated['pihak'] ?? [];
     if (!empty($validated['pihak_other'])) {
         $pihak[] = $validated['pihak_other'];
     }
 
-    // Find the Riskregister by ID
+    // Temukan Riskregister berdasarkan ID
     $riskregister = Riskregister::findOrFail($id);
 
-    // Update riskregister
+    // Update Riskregister
     $riskregister->update([
         'id_divisi' => $validated['id_divisi'],
         'issue' => $validated['issue'],
@@ -225,10 +267,23 @@ public function update(Request $request, $id)
     // Ambil tindakan yang ada
     $existingTindakan = Tindakan::where('id_riskregister', $riskregister->id)->get()->keyBy('id');
 
-    // Flag untuk cek apakah semua realisasi selesai
-    $isAllRealisasiComplete = true;
+    // Hapus tindakan yang perlu dihapus
+    if (!empty($validated['tindakan_to_delete'])) {
+        foreach ($validated['tindakan_to_delete'] as $tindakanId => $deleteFlag) {
+            if ($deleteFlag) {
+                // Hapus data Tindakan jika di-flag untuk dihapus
+                $tindakanToDelete = $existingTindakan->get($tindakanId);
+                if ($tindakanToDelete) {
+                    // Hapus Realisasi terkait Tindakan
+                    Realisasi::where('id_tindakan', $tindakanToDelete->id)->delete();
+                    // Hapus Tindakan
+                    $tindakanToDelete->delete();
+                }
+            }
+        }
+    }
 
-    // Update atau buat data tindakan baru
+    // Update atau buat tindakan baru
     foreach ($validated['tindakan'] as $key => $tindakan) {
         $tglPenyelesaian = isset($validated['tgl_penyelesaian'][$key]) ? $validated['tgl_penyelesaian'][$key] : null;
 
@@ -249,11 +304,11 @@ public function update(Request $request, $id)
                     'tgl_penyelesaian' => $tglPenyelesaian
                 ]);
 
-                // Simpan data ke tabel realisasi untuk tindakan baru
+                // Simpan data ke tabel Realisasi untuk tindakan baru
                 Realisasi::create([
                     'id_riskregister' => $riskregister->id,
                     'id_tindakan' => $newTindakan->id,
-                    'nama_realisasi' => null, // Realisasi baru, jadi nama_realisasi belum diisi
+                    'nama_realisasi' => null, // Realisasi baru, nama_realisasi belum diisi
                     'presentase' => 0, // Realisasi baru dimulai dari 0
                     'status' => 'ON PROGRES', // Status default ON PROGRES
                 ]);
@@ -271,12 +326,12 @@ public function update(Request $request, $id)
         }
     }
 
-    // Get the first value from 'nama_resiko', 'before', and 'after' arrays
+    // Ambil nilai pertama dari array 'nama_resiko', 'before', dan 'after'
     $nama_resiko = !empty($validated['nama_resiko']) ? array_shift($validated['nama_resiko']) : null;
     $before = !empty($validated['before']) ? array_shift($validated['before']) : null;
     $after = !empty($validated['after']) ? array_shift($validated['after']) : null;
 
-    // Update or create Resiko record
+    // Update atau buat Resiko record
     $resiko = Resiko::firstOrNew(['id_riskregister' => $riskregister->id]);
     $resiko->fill([
         'nama_resiko' => $nama_resiko,
@@ -284,24 +339,39 @@ public function update(Request $request, $id)
         'after' => $after,
     ])->save();
 
+    // Redirect setelah update
     return redirect()->route('riskregister.tablerisk', ['id' => $validated['id_divisi']])
         ->with('success', 'Data berhasil diperbarui!.✅');
 }
 
-    private function calculateTingkatan($probability, $severity)
-    {
-        $scorerisk = $probability * $severity;
+private function calculateTingkatan($probability, $severity)
+{
+    // Pastikan $probability adalah angka
+    $probability = (int) $probability;
 
-        if ($scorerisk >= 1 && $scorerisk <= 2) {
-            return 'LOW'; // HIJAU
-        } elseif ($scorerisk >= 3 && $scorerisk <= 4) {
-            return 'MEDIUM'; // BIRU
-        } elseif ($scorerisk >= 5 && $scorerisk <= 25) {
-            return 'HIGH'; // KUNING
-        }
-
-        return 'UNKNOWN'; // Untuk menangani kasus tidak terduga
+    // Jika $severity adalah array, ambil nilai terbesar dari array tersebut
+    if (is_array($severity)) {
+        $severity = max($severity);
     }
+
+    // Pastikan $severity adalah angka
+    $severity = (int) $severity;
+
+    // Hitung skor resiko
+    $scorerisk = $probability * $severity;
+
+    // Tentukan tingkatan berdasarkan skor
+    if ($scorerisk >= 1 && $scorerisk <= 2) {
+        return 'LOW'; // HIJAU
+    } elseif ($scorerisk >= 3 && $scorerisk <= 4) {
+        return 'MEDIUM'; // BIRU
+    } elseif ($scorerisk >= 5 && $scorerisk <= 25) {
+        return 'HIGH'; // KUNING
+    }
+
+    return 'UNKNOWN'; // Untuk menangani kasus tidak terduga
+}
+
 
     public function tablerisk(Request $request, $id)
 {
@@ -379,6 +449,7 @@ public function update(Request $request, $id)
 
     // Get tindakan list filtered by targetpic search
     $tindakanList = Tindakan::whereIn('id_riskregister', $forms->pluck('id'));
+
 
     // Apply filter for targetpic if provided
     if ($targetPicSearch) {
@@ -839,4 +910,21 @@ public function exportFilteredPDF(Request $request)
         // Redirect dengan pesan sukses
         return redirect()->route('riskregister.biglist')->with('success', 'Data berhasil dihapus!. ✅');
     }
+
+    public function destroytindakan($id)
+    {
+        // Find the Tindakan by ID
+        $tindakan = Tindakan::findOrFail($id);
+
+        // Find related Realisasi records and delete them
+        Realisasi::where('id_tindakan', $tindakan->id)->delete();
+
+        // Delete the Tindakan
+        $tindakan->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('riskregister.tablerisk', ['id' => $tindakan->id_riskregister])
+            ->with('success', 'Tindakan berhasil dihapus!');
+    }
+
 }

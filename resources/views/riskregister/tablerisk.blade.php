@@ -247,12 +247,14 @@
                                                                         $btnClass = 'btn-success';
                                                                     }
                                                                 @endphp
-                                                                <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}"
-                                                                    title="Matriks Before"
-                                                                    class="btn {{ $btnClass }}"
-                                                                    style="font-size: 9px; padding: 2px; color: white;">
-                                                                     <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
-                                                                 </a>
+
+                                                                    <a href="{{ route('resiko.matriks', ['id' => $form->id, 'tingkatan' => $resiko->tingkatan]) }}"
+                                                                        title="Matriks Before"
+                                                                        class="btn {{ $btnClass }}"
+                                                                        style="font-size: 9px; padding: 2px; color: white;">
+                                                                        <strong>{{ $resiko->tingkatan }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                    </a>
+
                                                                  <br>
                                                                  <a class="btn btn-success mt-2" href="{{ route('resiko.edit', ['id' => $form]) }}" title="Edit Matriks" style="font-size: 10px; padding: 3px; color: white;">
                                                                      <strong>Edit</strong><i class="bx bx-edit" style="font-size: 13px;"></i>

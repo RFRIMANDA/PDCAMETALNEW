@@ -29,15 +29,15 @@ class KirimEmail extends Mailable
      * @return $this
      */
     public function build()
-    {
-        // Memecah sender_name untuk email dan nama
-        $fromDetails = explode(',', $this->data_email['sender_name']);
-        $fromEmail = $fromDetails[0] ?? config('mail.from.address'); // Ambil email
-        $fromName = $fromDetails[1] ?? config('mail.from.name'); // Ambil nama pengirim
+{
+    // Memecah sender_name untuk email
+    $fromDetails = explode(',', $this->data_email['sender_name']);
+    $fromEmail = $fromDetails[0] ?? config('mail.from.address'); // Ambil email
 
-        return $this
-            ->from(trim($fromEmail), trim($fromName)) // Menentukan pengirim email
-            ->subject($this->data_email['subject']) // Subjek email
-            ->view('mail.kirimemail', ['data' => $this->data_email]); // View untuk email
-    }
+    return $this
+        ->from(trim($fromEmail)) // Menentukan pengirim email tanpa nama
+        ->subject($this->data_email['subject']) // Subjek email
+        ->view('mail.kirimemail', ['data' => $this->data_email]); // View untuk email
+}
+
 }

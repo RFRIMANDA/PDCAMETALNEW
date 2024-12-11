@@ -151,7 +151,7 @@
 
     <!-- Button to Show/Hide Form -->
     <button type="button" id="toggleFormButton" class="btn btn-info mb-3">
-        <i class="fa fa-eye"></i> Show Form
+        <i class="fa fa-eye"></i> Show
     </button>
 
     <!-- Form for Adding New Realisasi -->
@@ -203,7 +203,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <button type="submit" class="btn btn-success">
-                    <i class="fa fa-plus"></i> Add Activity
+                    <i class="fa fa-plus"></i> Tambahkan Aktivitas
                 </button>
             </div>
         </div>

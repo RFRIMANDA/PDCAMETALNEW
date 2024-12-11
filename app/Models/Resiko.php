@@ -103,4 +103,11 @@ class Resiko extends Model
     {
         return $this->belongsTo(Riskregister::class, 'id_riskregister', 'id');
     }
+
+    // Dalam model Resiko
+public function kriteria()
+{
+    return $this->belongsTo(Kriteria::class, 'id'); // pastikan 'kriteria_id' adalah foreign key yang benar
+}
+
 }

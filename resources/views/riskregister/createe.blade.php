@@ -123,7 +123,7 @@
             <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownDivisiAkses" data-bs-toggle="dropdown" aria-expanded="false">
                 Pilih Pihak Berkepentingan
             </button>
-            <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownDivisiAkses" style="max-height: 200px; overflow-y: auto;">
+            <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownDivisiAkses">
                 <li>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="select-all">
@@ -135,7 +135,9 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="pihak[]" value="{{ $d->nama_divisi }}" id="divisi{{ $d->id }}"
                                 @if(is_array(old('pihak', $selectedDivisi ?? [])) && in_array($d->nama_divisi, old('pihak', $selectedDivisi ?? []))) checked @endif>
-                            <label class="form-check-label" for="divisi{{ $d->id }}">{{ $d->nama_divisi }}</label>
+                            <label class="form-check-label" for="divisi{{ $d->id }}">
+                                {{ $d->nama_divisi }}
+                            </label>
                         </div>
                     </li>
                 @endforeach
@@ -156,7 +158,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
     const dropdownButton = document.getElementById('dropdownDivisiAkses');
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('.form-check-input');
     const otherCheckbox = document.getElementById('otherCheckbox');
     const otherInput = document.getElementById('pihakOther');
     const otherInputContainer = document.getElementById('otherInputContainer');
@@ -173,6 +175,11 @@
         updateDropdown();
     });
 
+    // Update dropdown text when checkboxes change
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateDropdown);
+    });
+
     // Handle 'Select All' functionality
     selectAllCheckbox.addEventListener('change', function () {
         checkboxes.forEach(checkbox => {
@@ -183,18 +190,12 @@
         updateDropdown();
     });
 
-    // Update dropdown text when checkboxes change
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateDropdown);
-    });
-
-    // Update dropdown text when "Other" input changes
-    otherInput.addEventListener('input', updateDropdown);
+    otherInput.addEventListener('input', updateDropdown); // Update on typing in "Other"
 
     function updateDropdown() {
         const selectedValues = [];
 
-        // Collect checked checkboxes except 'Select All' and 'Other'
+        // Collect checked checkboxes
         checkboxes.forEach(checkbox => {
             if (checkbox.checked && checkbox !== selectAllCheckbox && checkbox !== otherCheckbox) {
                 const label = document.querySelector(`label[for="${checkbox.id}"]`);
@@ -210,12 +211,13 @@
         }
 
         // Update the dropdown button text
-        dropdownButton.textContent = selectedValues.length > 0
-            ? selectedValues.join(', ') // Join selected items with a comma
-            : 'Pilih Pihak Berkepentingan'; // Default text
+        if (selectedValues.length > 0) {
+            dropdownButton.textContent = selectedValues.join(', '); // Join values with a comma
+        } else {
+            dropdownButton.textContent = 'Pilih Pihak Berkepentingan'; // Default text
+        }
     }
 });
-
 
 </script>
 
@@ -233,29 +235,34 @@
 <br>
 <div class="row mb-3">
     <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
-    <div class="col-sm-10">
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownMenuSeverityButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Pilih Severity
-            </button>
-            <ul class="dropdown-menu dropdown-menu-severity p-3 w-100" aria-labelledby="dropdownMenuSeverityButton" style="max-height: 200px; overflow-y: auto;">
-                @foreach ($severityOptions as $group)
-                    <div class="mb-2">
-                        <strong>{{ $group['nama_kriteria'] }}</strong>
-                        <div>
-                            @foreach ($group['options'] as $option)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="severity[]" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-nama_kriteria="{{ $group['nama_kriteria'] }}" data-desc="{{ $option['desc'] }}">
-                                    <label style="font-size: 0.9rem;" class="form-check-label" for="severity-{{ $option['value'] }}">{{ Str::limit($option['desc'], 200) }}</label>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </ul>
-        </div>
+    <div class="col-sm-4">
+        <select class="form-select" name="severity" id="severitySelect" onchange="updateKriteriaDropdown(); updateDescription();">
+            <option value="">--Pilih Severity--</option>
+            @foreach ($severityOptions as $group)
+                <optgroup label="{{ $group['nama_kriteria'] }}">
+                    @foreach ($group['options'] as $option)
+                        <option value="{{ $option['value'] }}" data-desc="{{ $option['desc'] }}" title="{{ $option['desc'] }}">
+                            {{ Str::limit($option['desc'], 30) }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endforeach
+        </select>
     </div>
 </div>
+
+<style>
+
+</style>
+
+<!-- Deskripsi Lengkap -->
+<div class="row mb-3">
+    <label class="col-sm-2 col-form-label"><strong></strong></label>
+    <div class="col-sm-4">
+        <textarea class="form-control" id="descOutput" readonly style="height: 100px;"></textarea>
+    </div>
+</div>
+
 
 <!-- Probability Dropdown -->
 <div class="row mb-3">
@@ -272,113 +279,84 @@
     </div>
 </div>
 
-<ul class="dropdown-menu dropdown-menu-severity p-3 w-100" aria-labelledby="dropdownMenuSeverityButton" style="max-height: 200px; overflow-y: auto;">
-    @foreach ($severityOptions as $group)
-        <div class="mb-2">
-            <strong>{{ $group['nama_kriteria'] }}</strong>
-            <div>
-                @foreach ($group['options'] as $option)
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="severity" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-nama_kriteria="{{ $group['nama_kriteria'] }}" data-desc="{{ $option['desc'] }}">
-                        <label style="font-size: 0.9rem;" class="form-check-label" for="severity-{{ $option['value'] }}">{{ Str::limit($option['desc'], 200) }}</label>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endforeach
-</ul>
-
-
-<!-- Input hidden untuk menyimpan kriteria yang dipilih -->
-<input type="hidden" name="kriteria" id="kriteriaHidden">
-
-<!-- Tingkatan Display -->
+<!-- Kriteria Dropdown (Editable) -->
 <div class="row mb-3">
-    <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
+    <label for="kriteria" class="col-sm-2 col-form-label"><strong>Kriteria</strong></label>
     <div class="col-sm-4">
-        <input type="text" placeholder="Nilai Otomatis" class="form-control" readonly name="tingkatan" id="tingkatan">
+        <input type="text" class="form-control" id="kriteriaDisplay" value="--Pilih Kriteria--" readonly>
+        <input type="hidden" name="kriteria" id="kriteriaHidden">
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const severityCheckboxes = document.querySelectorAll('.dropdown-menu-severity input[type="checkbox"]');
-    const dropdownSeverityButton = document.getElementById('dropdownMenuSeverityButton');
-    const kriteriaHidden = document.getElementById('kriteriaHidden');
-    const tingkatanInput = document.getElementById('tingkatan');
-    const probabilityDropdown = document.getElementById('probability');
+    const kriteriaData = @json($kriteria);
 
-    // Fungsi untuk memperbarui tampilan dropdown dan input hidden berdasarkan severity yang dipilih
-    function updateKriteria() {
-    const selectedCheckbox = Array.from(severityCheckboxes).find(checkbox => checkbox.checked);
+    function updateKriteriaDropdown() {
+        const selectedSeverity = document.getElementById('severitySelect').value;
+        const kriteriaDisplay = document.getElementById('kriteriaDisplay');
+        const kriteriaHidden = document.getElementById('kriteriaHidden');
 
-    if (selectedCheckbox) {
-        // Hanya satu checkbox yang boleh dipilih, jadi deselect semua checkbox lainnya
-        severityCheckboxes.forEach(checkbox => {
-            if (checkbox !== selectedCheckbox) {
-                checkbox.checked = false; // Hapus centang
+        if (selectedSeverity) {
+            const filteredKriteria = kriteriaData.filter(k => {
+                const nilaiArray = k.nilai_kriteria.replace(/[\[\]"]+/g, '').split(',');
+                return nilaiArray.includes(selectedSeverity);
+            });
+
+            if (filteredKriteria.length > 0) {
+                kriteriaDisplay.value = filteredKriteria[0].nama_kriteria;
+                kriteriaHidden.value = filteredKriteria[0].nama_kriteria;
+            } else {
+                kriteriaDisplay.value = '--Pilih Kriteria--';
+                kriteriaHidden.value = '';
             }
-        });
-
-        // Ambil ID dan nama kriteria dari checkbox yang dipilih
-        const kriteriaId = selectedCheckbox.id.replace('severity-', ''); // ID Severity
-        const namaKriteria = selectedCheckbox.dataset.nama_kriteria; // Nama kriteria dari data-atribut
-
-        // Update input hidden
-        kriteriaHidden.value = kriteriaId;
-
-        // Perbarui tombol dropdown
-        dropdownSeverityButton.innerHTML = `Terpilih: <br>${namaKriteria}`;
-    } else {
-        // Jika tidak ada checkbox yang dipilih, reset semuanya
-        kriteriaHidden.value = ''; // Kosongkan jika tidak ada pilihan
-        dropdownSeverityButton.textContent = 'Pilih Severity'; // Reset label dropdown
+        } else {
+            kriteriaDisplay.value = '--Pilih Kriteria--';
+            kriteriaHidden.value = '';
+        }
     }
+ // Function untuk update deskripsi lengkap
+ function updateDescription() {
+    const severitySelect = document.getElementById('severitySelect');
+    const selectedOption = severitySelect.options[severitySelect.selectedIndex];
+    const desc = selectedOption.getAttribute('data-desc') || ''; // Ambil deskripsi
+    document.getElementById('descOutput').value = desc; // Tampilkan deskripsi
 }
 
-
-    // Fungsi untuk menghitung tingkatan berdasarkan severity dan probability
-    function calculateTingkatan() {
-        const probability = parseInt(probabilityDropdown.value, 10); // Ambil nilai probability
-        const severityValues = Array.from(severityCheckboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => parseInt(checkbox.value)); // Ambil nilai severity dari value
-
-        let tingkatan = ''; // Default kosong
-
-        if (probability && severityValues.length > 0) {
-            // Hitung nilai severity terbesar
-            const maxSeverity = Math.max(...severityValues);
-            const score = probability * maxSeverity;
-
-            // Tentukan tingkatan berdasarkan score
-            if (score >= 1 && score <= 2) {
-                tingkatan = 'LOW';
-            } else if (score >= 3 && score <= 4) {
-                tingkatan = 'MEDIUM';
-            } else if (score >= 5 && score <= 25) {
-                tingkatan = 'HIGH';
-            }
-        }
-
-        // Update input tingkatan
-        tingkatanInput.value = tingkatan;
-    }
-
-    // Event listener untuk setiap checkbox severity
-    severityCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            updateKriteria(); // Perbarui input kriteria
-            calculateTingkatan(); // Hitung tingkatan
-        });
-    });
-
-    // Event listener untuk dropdown probability
-    probabilityDropdown.addEventListener('change', calculateTingkatan);
-});
-
+    // Call the function when needed, such as when the page loads
+    updateKriteriaDropdown();
 </script>
 
+    <div class="row mb-3">
+        <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
+        <div class="col-sm-4">
+            <input type="text" placeholder="Nilai Otomatis"class="form-control" readonly name="tingkatan" id="tingkatan">
+        </div>
+    </div>
+
+    <script>
+        function calculateTingkatan() {
+            const probability = parseInt(document.getElementById('probability').value, 10);
+            const severity = parseInt(document.getElementById('severitySelect').value, 10);
+            let tingkatan = '';
+
+            if (probability && severity) {
+                const score = probability * severity;
+
+                if (score >= 1 && score <= 2) {
+                    tingkatan = 'LOW';
+                } else if (score >= 3 && score <= 4) {
+                    tingkatan = 'MEDIUM';
+                } else if (score >= 5 && score <= 25) {
+                    tingkatan = 'HIGH';
+                }
+            }
+            document.getElementById('tingkatan').value = tingkatan;
+        }
+
+        document.getElementById('severitySelect').addEventListener('change', updateKriteriaDropdown);
+        document.getElementById('severitySelect').addEventListener('change', updateDescription);
+        document.getElementById('probability').addEventListener('change', calculateTingkatan);
+    </script>
 
     <hr>
     <h5 class="card-title">Tindakan Lanjut </h5>

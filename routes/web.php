@@ -8,7 +8,10 @@ use App\Http\Controllers\RiskController;
 use App\Http\Controllers\ResikoController;
 use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\PpkController;
+use App\Http\Controllers\StatusPpkController;
 use App\Http\Controllers\KriteriaController;
+use App\Models\Riskregister;
+use App\Models\StatusPpk;
 use Illuminate\Support\Facades\Route;
 
 //Dashboard PIECHART
@@ -65,6 +68,7 @@ Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(funct
     Route::get('/riskregister/export-filtered/{id}', [RiskController::class, 'exportFilteredExcel'])->name('riskregister.exportFilteredExcel');
     Route::get('/export-pdf/{id}', [RiskController::class, 'exportFilteredPDF'])->name('riskregister.export-pdf');
     Route::delete('/riskregister/{id}', [RiskController::class, 'destroy'])->name('riskregister.destroy');
+    // Route::delete('/tindakan/{id}', [RiskController::class, 'destroytindakan'])->name('tindakan.delete');
 });
 Route::get('/riskregister', [RiskController::class, 'index'])->name('riskregister.index');
 Route::get('/riskregister/{id}', [RiskController::class, 'tablerisk'])->name('riskregister.tablerisk');
@@ -75,7 +79,8 @@ Route::middleware('manager','manajemen','supervisor','admin')->group(function ()
     Route::post('/resiko/store', [ResikoController::class, 'store'])->name('resiko.store');
     Route::get('/resiko/{id}/edit', [ResikoController::class, 'edit'])->name('resiko.edit');
     Route::post('/resiko/{id}/update', [ResikoController::class, 'update'])->name('resiko.update');
-    Route::get('/resiko/matriks/{id}', [ResikoController::class, 'matriks'])->name('resiko.matriks');
+    Route::get('/resiko-matriks/{id}/{tingkatan}', [ResikoController::class, 'matriks'])->name('resiko.matriks');
+
     Route::get('/resiko/matriks2/{id}', [ResikoController::class, 'matriks2'])->name('resiko.matriks2');
     Route::get('/matriks-risiko/{id}', [ResikoController::class, 'show'])->name('matriks-risiko.show');
 });
@@ -113,11 +118,15 @@ Route::middleware('auth')->group(function () {
     Route::put('/ppk/{id}/update3', [PpkController::class, 'update3'])->name('ppk.update3');
     Route::get('/ppk/{id}/pdf', [PpkController::class, 'generatePdf'])->name('ppk.pdf');
     Route::get('/ppk/accept/{id}', [PpkController::class, 'accept'])->name('ppk.accept');
-
-Route::middleware('admin')->group(function () {
     Route::get('/adminppk', [PpkController::class, 'index2'])->name('ppk.index2');
-});
+    Route::delete('/admin/ppk/{id}', [PpkController::class, 'destroy'])->name('ppk.destroy');
+
 // });
+// STATUS PPK
+Route::get('admin/statusppk', [StatusPpkController::class, 'index'])->name('admin.statusppk');
+Route::post('statusppk', [StatusPpkController::class, 'store'])->name('admin.statusppk.store');
+Route::put('statusppk/{id}', [StatusPpkController::class, 'update'])->name('statusppk.update');
+Route::delete('statusppk/{id}', [StatusPpkController::class, 'destroy'])->name('statusppk.destroy');
 
 // });
 

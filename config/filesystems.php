@@ -37,12 +37,20 @@ return [
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
-        ],
+        'driver' => 'local',
+        'root' => storage_path('app/public'), // Ini akan diubah menjadi:
+        'root' => 'C:/laragon/www/PDCAMETALNEWW/public/storage',
+        'url' => env('APP_URL').'/storage',
+        'visibility' => 'public',
+    ],
+
+        // 'public' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public'),
+        //     'url' => env('APP_URL').'/storage',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        // ],
 
         's3' => [
             'driver' => 's3',

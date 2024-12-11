@@ -170,23 +170,21 @@
                         value="{{ old('divisipenerima', $ppk->divisipenerima) }}" readonly>
                 </div>
 
-                <script>
-                // Mengisi data pembuat
-                document.getElementById("pembuat").addEventListener("change", function () {
-                    const selectedOption = this.options[this.selectedIndex];
-                    document.getElementById("emailpembuat").value = selectedOption.getAttribute("data-email");
-                    document.getElementById("divisipembuat").value = selectedOption.getAttribute("data-divisi");
-                });
+                    <script>
+                        // Mengisi data pembuat
+                        document.getElementById("pembuat").addEventListener("change", function () {
+                            const selectedOption = this.options[this.selectedIndex];
+                            document.getElementById("emailpembuat").value = selectedOption.getAttribute("data-email");
+                            document.getElementById("divisipembuat").value = selectedOption.getAttribute("data-divisi");
+                        });
 
-                // Mengisi data penerima
-                document.getElementById("penerima").addEventListener("change", function () {
-                    const selectedOption = this.options[this.selectedIndex];
-                    document.getElementById("emailpenerima").value = selectedOption.getAttribute("data-email");
-                    document.getElementById("divisipenerima").value = selectedOption.getAttribute("data-divisi");
-                });
-                </script>
-
-
+                        // Mengisi data penerima
+                        document.getElementById("penerima").addEventListener("change", function () {
+                            const selectedOption = this.options[this.selectedIndex];
+                            document.getElementById("emailpenerima").value = selectedOption.getAttribute("data-email");
+                            document.getElementById("divisipenerima").value = selectedOption.getAttribute("data-divisi");
+                        });
+                    </script>
 
                         <!-- CC Email -->
                         <div class="mb-3">
@@ -203,9 +201,23 @@
                                         </div>
                                     @endif
                                 @endforeach
-
                             </div>
-                            <button type="button" class="btn btn-outline-primary add-cc-email">+ CC Email</button>
+                            <div style="text-align: right;">
+                                <button type="button" class="btn btn-outline-primary add-cc-email"><i class="fa fa-plus"></i></button>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="statusppk" class="form-label"><strong>Status PPK</strong></label>
+                                <select name="statusppk" class="form-select" required>
+                                    <option value="">--Pilih Status--</option>
+                                    @foreach ($status as $s)
+                                        <option value="{{ $s->nama_statusppk }}"
+                                            {{ (old('statusppk') == $s->nama_statusppk || $ppk->statusppk == $s->nama_statusppk) ? 'selected' : '' }}>
+                                            {{ $s->nama_statusppk }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <a href="{{ route('ppk.index') }}" class="btn btn-secondary">Kembali</a>

@@ -242,8 +242,18 @@
                     </div>
                 </div>
             </div>
-
-
+{{-- 
+            <div class="mb-3">
+                <label for="statusppk" class="form-label"><strong>Status PPK</strong></label>
+                <select name="statusppk" class="form-select">
+                    <option value="">--Pilih Status--</option>
+                    @foreach ($status as $s)
+                        <option value="{{ $s->nama_statusppk }}" {{ old('statusppk') == $s->nama_statusppk ? 'selected' : '' }}>
+                            {{ $s->nama_statusppk }}
+                        </option>
+                    @endforeach
+                </select>
+            </div> --}}
 
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <a href="{{ route('ppk.index') }}" class="btn btn-secondary">Kembali</a>
@@ -279,7 +289,7 @@
         $('.add-cc-email').click(function () {
             $('#cc-email-container').append(`
                 <div class="input-group mb-2">
-                    <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email" required>
+                    <input type="email" name="cc_email[]" class="form-control" placeholder="Masukkan CC Email">
                     <button type="button" class="btn btn-outline-warning remove-cc-email">-</button>
                 </div>
             `);

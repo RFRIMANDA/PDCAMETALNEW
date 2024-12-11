@@ -55,117 +55,193 @@
                 <input type="date" name="tgl_penanggulangan" class="form-control" value="{{ old('tgl_penanggulangan') }}">
             </div>
 
-            <!-- PIC Penanggulangan -->
-            <div class="mb-3">
+            <div class="mb-3" id="pic1-dropdown">
+                <label class="form-label fw-bold">Pilih PIC</label>
+
+                <!-- Checkbox untuk memilih antara PIC 1 atau PIC Other -->
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="pic1-option" onchange="togglePic1Input()">
-                    <label class="form-check-label" for="pic1-option">Pilih PIC dari Daftar</label>
+                    <input type="checkbox" class="form-check-input" id="use-pic1" name="use_pic1" value="1"
+                           {{ old('use_pic1', $ppk->use_pic1) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="use-pic1">Opsi</label>
+                </div>
+
+                <!-- Dropdown PIC 1 -->
+                <div id="pic1-container" class="pic1-dropdown">
+                    @php
+                        $oldPic1 = old('pic1', explode(',', $ppk->pic1));
+                    @endphp
+
+                    @foreach($oldPic1 as $selectedPic1)
+                        <div class="input-group mb-2">
+                            <select name="pic1[]" class="form-select">
+                                <option value="">Pilih PIC</option>
+                                @foreach($data as $user)
+                                    <option value="{{ $user->id }}" {{ $selectedPic1 == $user->id ? 'selected' : '' }}>
+                                        {{ $user->nama_user }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-outline-danger remove-pic">-</button>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Textarea PIC Other -->
+                <div id="pic1-other" class="pic1other" style="display: none;">
+                    <textarea name="pic1_other" id="pic1_other" class="form-control" placeholder="Silahkan masukan PIC diluar option">{{ old('pic1_other', $ppk->pic1_other) }}</textarea>
                 </div>
             </div>
-            <!-- Input teks untuk memilih PIC lainnya -->
-            <div class="mb-3" id="pic1-other">
-                <label for="pic1_other" class="form-label fw-bold">PIC OTHER</label>
-                <input type="text" name="pic1_other" id="pic1_other" class="form-control" value="{{ old('pic1_other') }}">
-            </div>
 
-            <!-- Dropdown untuk memilih PIC Pencegahan -->
-            <div class="mb-3" id="pic1-dropdown">
-                <label for="pic1" class="form-label fw-bold">PIC Pencegahan</label>
-                <select id="pic1" name="pic1" class="form-select">
-                    <option value="">Pilih PIC</option>
-                    @foreach($data as $user)
-                        <option value="{{ $user->id }}" {{ old('pic1') == $user->id ? 'selected' : '' }}>
-                            {{ $user->nama_user }}
-                        </option>
-                    @endforeach
-                </select>
+            <div style="text-align: right;">
+                <button type="button" class="btn btn-outline-primary add-pic" data-target="pic1-container">
+                    <i class="fa fa-plus"></i> Tambah PIC
+                </button>
             </div>
 
             <script>
-                function togglePic1Input() {
-                    const pic1Option = document.getElementById('pic1-option');
-                    const pic1Dropdown = document.getElementById('pic1-dropdown');
-                    const pic1Other = document.getElementById('pic1-other');
+                // Menambahkan event listener untuk checkbox
+                document.getElementById('use-pic1').addEventListener('change', function() {
+                    var pic1Container = document.getElementById('pic1-container');
+                    var pic1Other = document.getElementById('pic1-other');
 
-                    // Jika checkbox dicentang, tampilkan dropdown dan sembunyikan input teks
-                    if (pic1Option.checked) {
-                        pic1Dropdown.style.display = 'block';
+                    if (this.checked) {
+                        pic1Container.style.display = 'block';
                         pic1Other.style.display = 'none';
                     } else {
-                        pic1Dropdown.style.display = 'none';
+                        pic1Container.style.display = 'none';
                         pic1Other.style.display = 'block';
                     }
-                }
-
-                // Inisialisasi tampilan berdasarkan status checkbox saat halaman pertama dimuat
-                window.onload = function() {
-                    togglePic1Input();
-                }
+                });
             </script>
 
-                        <hr>
-                        <hr>
-                        <!-- Pencegahan -->
-                        <div class="mb-3">
-                            <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
-                            <textarea name="pencegahan" class="form-control" placeholder="" cols="50" rows="7">{{ old('pencegahan') }}</textarea>
-                        </div>
+            <hr>
 
-                        <!-- Target Tanggal Pencegahan -->
-                        <div class="mb-3">
-                            <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan</label>
-                            <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
-                        </div>
-
-                    <!-- Pilihan PIC Pencegahan -->
+            <!-- Pencegahan -->
             <div class="mb-3">
+                <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
+                <textarea name="pencegahan" class="form-control" placeholder="" cols="50" rows="7">{{ old('pencegahan') }}</textarea>
+            </div>
+
+            <!-- Target Tanggal Pencegahan -->
+            <div class="mb-3">
+                <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan</label>
+                <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
+            </div>
+
+            <!-- PIC 2 -->
+            <div class="mb-3" id="pic2-dropdown">
+                <label class="form-label fw-bold">Pilih PIC 2</label>
+
+                <!-- Checkbox untuk memilih antara PIC 2 atau PIC Other -->
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="pic2-option" onchange="togglePic2Input()">
-                    <label class="form-check-label" for="pic2-option">Pilih PIC dari Daftar</label>
+                    <input type="checkbox" class="form-check-input" id="use-pic2" name="use_pic2" value="1"
+                           {{ old('use_pic2', $ppk->use_pic2) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="use-pic2">Pilih PIC 2</label>
+                </div>
+
+                <!-- Dropdown PIC 2 -->
+                <div id="pic2-container" class="pic2-dropdown">
+                    @php
+                        $oldPic2 = old('pic2', explode(',', $ppk->pic2));
+                    @endphp
+
+                    @foreach($oldPic2 as $selectedPic2)
+                        <div class="input-group mb-2">
+                            <select name="pic2[]" class="form-select">
+                                <option value="">Pilih PIC</option>
+                                @foreach($data as $user)
+                                    <option value="{{ $user->id }}" {{ $selectedPic2 == $user->id ? 'selected' : '' }}>
+                                        {{ $user->nama_user }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-outline-danger remove-pic">-</button>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Textarea PIC Other -->
+                <div id="pic2-other" class="pic2-other" style="display: none;">
+                    <textarea name="pic2_other" id="pic2_other" class="form-control" placeholder="Silahkan masukan PIC diluar option">{{ old('pic2_other', $ppk->pic2_other) }}</textarea>
                 </div>
             </div>
 
-            <!-- Dropdown untuk memilih PIC Pencegahan -->
-            <div class="mb-3" id="pic2-dropdown">
-                <label for="pic2" class="form-label fw-bold">PIC Pencegahan</label>
-                <select id="pic2" name="pic2" class="form-select">
-                    <option value="">Pilih PIC</option>
-                    @foreach($data as $user)
-                        <option value="{{ $user->id }}" {{ old('pic2') == $user->id ? 'selected' : '' }}>
-                            {{ $user->nama_user }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Input teks untuk memilih PIC lainnya -->
-            <div class="mb-3" id="pic2-other">
-                <label for="pic2_other" class="form-label fw-bold">PIC OTHER</label>
-                <input type="text" name="pic2_other" id="pic2_other" class="form-control" value="{{ old('pic2_other') }}">
+            <div style="text-align: right;">
+                <button type="button" class="btn btn-outline-primary add-pic" data-target="pic2-container">
+                    <i class="fa fa-plus"></i> Tambah PIC
+                </button>
             </div>
 
             <script>
-                function togglePic2Input() {
-                    const pic2Option = document.getElementById('pic2-option');
-                    const pic2Dropdown = document.getElementById('pic2-dropdown');
-                    const pic2Other = document.getElementById('pic2-other');
+                // Menambahkan event listener untuk checkbox PIC 2
+                document.getElementById('use-pic2').addEventListener('change', function() {
+                    var pic2Container = document.getElementById('pic2-container');
+                    var pic2Other = document.getElementById('pic2-other');
 
-                    // Jika checkbox dicentang, tampilkan dropdown dan sembunyikan input teks
-                    if (pic2Option.checked) {
-                        pic2Dropdown.style.display = 'block';
+                    if (this.checked) {
+                        pic2Container.style.display = 'block';
                         pic2Other.style.display = 'none';
                     } else {
-                        pic2Dropdown.style.display = 'none';
+                        pic2Container.style.display = 'none';
                         pic2Other.style.display = 'block';
                     }
-                }
-
-                // Inisialisasi tampilan berdasarkan status checkbox saat halaman pertama dimuat
-                window.onload = function() {
-                    togglePic2Input();
-                }
+                });
             </script>
 
+
+            <hr>
+
+            <script>
+                // Menambahkan dropdown PIC 1 baru
+                document.querySelectorAll('.add-pic[data-target="pic1-container"]').forEach(button => {
+                    button.addEventListener('click', function() {
+                        var newPic = document.createElement('div');
+                        newPic.classList.add('input-group', 'mb-2');
+                        newPic.innerHTML = `
+                            <select name="pic1[]" class="form-select">
+                                <option value="">Pilih PIC</option>
+                                @foreach($data as $user)
+                                    <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-outline-danger remove-pic">-</button>
+                        `;
+                        document.getElementById('pic1-container').appendChild(newPic);
+                    });
+                });
+
+                // Menghapus dropdown PIC 1
+                document.getElementById('pic1-container').addEventListener('click', function(e) {
+                    if (e.target && e.target.classList.contains('remove-pic')) {
+                        e.target.closest('.input-group').remove();
+                    }
+                });
+
+                // Menambahkan dropdown PIC 2 baru
+                document.querySelectorAll('.add-pic[data-target="pic2-container"]').forEach(button => {
+                    button.addEventListener('click', function() {
+                        var newPic = document.createElement('div');
+                        newPic.classList.add('input-group', 'mb-2');
+                        newPic.innerHTML = `
+                            <select name="pic2[]" class="form-select">
+                                <option value="">Pilih PIC</option>
+                                @foreach($data as $user)
+                                    <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-outline-danger remove-pic">-</button>
+                        `;
+                        document.getElementById('pic2-container').appendChild(newPic);
+                    });
+                });
+
+                // Menghapus dropdown PIC 2
+                document.getElementById('pic2-container').addEventListener('click', function(e) {
+                    if (e.target && e.target.classList.contains('remove-pic')) {
+                        e.target.closest('.input-group').remove();
+                    }
+                });
+            </script>
              <!-- Tanda Tangan -->
              <div class="row mb-3">
                 <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan (Pilih Opsi)</label>
@@ -174,13 +250,13 @@
                     <div class="row mb-3 mt-1">
                         <div class="form-check mb-2">
                             <div class="col-sm-10">
-                                <input class="form-check-input" type="radio" name="signature_option" id="option1" value="1" checked>
+                                <input class="form-check-input" type="radio" name="signature_option" id="option1" required value="1" checked>
                                 <label class="form-check-label" for="option1"><strong>1. Tanda tangan langsung</strong></label>
                             </div>
                         </div>
                         <div class="form-check">
                             <div class="col-sm-10">
-                            <input class="form-check-input" type="radio" name="signature_option" id="option2" value="2">
+                            <input class="form-check-input" type="radio" name="signature_option" id="option2" required value="2">
                             <label class="form-check-label" for="option2"><strong>2. Unggah file tanda tangan</strong></label>
                             </div>
                         </div>
@@ -295,42 +371,51 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/dist/signature_pad.umd.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Inisialisasi Signature Pad
-        const canvas = document.getElementById('signature-pad');
-        const signaturePad = new SignaturePad(canvas);
-        const ctx = canvas.getContext('2d');
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    // Inisialisasi Signature Pad
+    const canvas = document.getElementById('signature-pad');
+    const signaturePad = new SignaturePad(canvas);
+    const ctx = canvas.getContext('2d');
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
 
-        // Set canvas size
+    // Set canvas size
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    ctx.scale(ratio, ratio);
+
+    // Clear signature pad
+    document.getElementById('clear').addEventListener('click', function () {
+        signaturePad.clear();
+    });
+
+    // Menyimpan tanda tangan ke input hidden saat form disubmit
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const signatureInput = document.getElementById('signature');
+        const fileInput = document.getElementById('signaturepenerima-file');
+
+        // Check apakah salah satu opsi sudah diisi
+        const isCanvasSigned = !signaturePad.isEmpty();
+        const isFileUploaded = fileInput.files.length > 0;
+
+        if (isCanvasSigned) {
+            // Jika ada tanda tangan di canvas, simpan datanya
+            signatureInput.value = signaturePad.toDataURL();
+        }
+
+        if (!isCanvasSigned && !isFileUploaded) {
+            // Jika keduanya kosong, tampilkan pesan kesalahan
+            alert("Silakan buat tanda tangan di canvas atau unggah file tanda tangan.");
+            e.preventDefault(); // Mencegah pengiriman form
+        }
+    });
+
+    // Resize canvas saat jendela diubah ukurannya
+    window.addEventListener('resize', function () {
         canvas.width = canvas.offsetWidth * ratio;
         canvas.height = canvas.offsetHeight * ratio;
         ctx.scale(ratio, ratio);
-
-        // Clear signature pad
-        document.getElementById('clear').addEventListener('click', function () {
-            signaturePad.clear();
-        });
-
-        // Menyimpan tanda tangan sebagai data URL dalam input hidden saat form disubmit
-        document.querySelector('form').addEventListener('submit', function (e) {
-            if (!signaturePad.isEmpty()) {
-                // Jika pengguna menggambar di canvas, simpan hasilnya ke input hidden
-                const signatureDataUrl = signaturePad.toDataURL();
-                document.getElementById('signature').value = signatureDataUrl;
-            } else if (document.getElementById("signature-file").files.length === 0) {
-                // Jika tidak ada tanda tangan di canvas dan tidak ada file diunggah, tampilkan peringatan
-                alert("Silakan buat tanda tangan di canvas atau unggah file tanda tangan.");
-                e.preventDefault();
-            }
-        });
-
-        // Resize event
-        window.addEventListener('resize', function () {
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            ctx.scale(ratio, ratio);
-        });
     });
+});
+
 </script>
 
 

@@ -14,50 +14,72 @@
         </div>
     </div>
 
-
-    <table class="table table-striped">
+    <table class="table table-striped" style="display: none;">
         <thead>
             <tr>
-                <th scope="col">Kriteria </th>
-                <th scope="col">Nilai </th>
-                <th scope="col">Deskripsi Severity</th>
+                <th scope="col">Kriteria</th>
+                <th scope="col">Detail</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($kriteriaData as $k)  <!-- Loop through the filtered kriteriaData -->
+            @forelse($kriteriaData as $k)
                 <tr>
-                    <td>{{ $k->nama_kriteria }}</td>
-
-                    <!-- Tampilkan Deskripsi dan Nilai Kriteria Secara Berpasangan -->
-                    <td colspan="2">
+                    <td rowspan="{{ count(json_decode($k->desc_kriteria, true) ?? []) }}">{{ $k->nama_kriteria }}</td>
+                    <td>
                         <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nilai</th>
+                                    <th>Deskripsi</th>
+                                    <th>Matriks</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 @php
-                                    // Decode JSON menjadi array
                                     $descArray = json_decode($k->desc_kriteria, true) ?? [];
                                     $nilaiArray = json_decode($k->nilai_kriteria, true) ?? [];
                                 @endphp
-
-                                <!-- Iterasi dan tampilkan setiap pasangan deskripsi dan nilai -->
                                 @foreach ($descArray as $index => $desc)
                                     <tr>
+                                        <!-- Nilai dan Deskripsi -->
                                         <td>{{ $nilaiArray[$index] ?? '' }}</td>
-
                                         <td>{{ $desc }}</td>
+
+                                        <!-- Matriks pada baris yang relevan -->
+                                        <td>
+                                            <table class="table table-bordered text-center mb-0">
+                                                <tr>
+                                                    @foreach($matriks_used[$index] as $j => $value)
+                                                        <td style="background-color: {{ $colors_used[$index][$j] }}; color: black;">
+                                                            @if(($index + 1) == $severity && ($j + 1) == $probability)
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="spinner-grow text-info" role="status" style="width: 1.5rem; height: 1.5rem;">
+                                                                        <span class="visually-hidden">Loading...</span>
+                                                                    </div>
+                                                                    <span class="ms-2">{{ $value }}</span>
+                                                                </div>
+                                                            @else
+                                                                {{ $value }}
+                                                            @endif
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+                                            </table>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </td>
-
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center">Tidak ada data kriteria</td>
+                    <td colspan="2" class="text-center">Tidak ada data kriteria</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
+
 
 
     {{-- Matriks Before --}}
@@ -80,22 +102,18 @@
         </thead>
         <tbody>
             @foreach($matriks_used as $i => $row)
+            @php
+                // Ambil deskripsi dan pastikan validitasnya
+                $description = $descArray[$i] ?? '';
+            @endphp
             <tr>
-                {{-- <td>{{ $i + 1 }}</td> --}}
-                <td></td>
-                <td>
-                    {{-- Tampilkan nama_kriteria dan desc_kriteria yang sudah disaring --}}
-                    {{-- <strong>{{ $kriteriaData[$i]['nama_kriteria'] ?? 'none' }}</strong>
-                    @if(isset($kriteriaData[$i]['desc_kriteria']))
-                        <ul>
-                            @foreach($kriteriaData[$i]['desc_kriteria'] as $desc)
-                                <li>{{ $desc }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <span>none</span>
-                    @endif --}}
-                </td>
+                <!-- Kolom Nilai -->
+                <td rowspan="2">{{ $nilaiArray[$i] ?? '' }}</td>
+
+                <!-- Kolom Deskripsi -->
+                <td>{{ $description }}</td>
+
+                <!-- Matriks -->
                 @foreach($row as $j => $value)
                 <td style="background-color: {{ $colors_used[$i][$j] }}; color: black;">
                     @if(($i + 1) == $severity && ($j + 1) == $probability)
@@ -111,17 +129,23 @@
                 </td>
                 @endforeach
             </tr>
+            <!-- Baris tambahan untuk deskripsi -->
+            <tr>
+
+            </tr>
             @endforeach
         </tbody>
+
     </table>
 
     <a class="btn btn-danger" href="{{ route('riskregister.tablerisk', ['id' => $three]) }}" title="Back">
         <i class="ri-arrow-go-back-line"></i>
     </a>
 
-    <a class="btn btn-success" href="{{ route('resiko.edit', ['id' => $same]) }}" title="Back">
+    <a class="btn btn-success" href="{{ route('resiko.edit', ['id' => $lol]) }}" title="Back">
         <i class="bx bx-edit"></i>
     </a>
+
 </div>
 
 @endsection

@@ -33,7 +33,7 @@
             <div class="row mb-3">
                 <label for="verifikasi" class="col-sm-2 col-form-label"><strong>Catatan</strong></label>
                 <div class="col-sm-10">
-                    <textarea name="verifikasi" class="form-control" placeholder="Masukkan Catatan jika ada" required>{{ old('verifikasi') }}</textarea>
+                    <textarea name="verifikasi" class="form-control" placeholder="Masukkan Catatan jika ada" rows="7" required>{{ old('verifikasi') }}</textarea>
                 </div>
             </div>
 
@@ -49,7 +49,7 @@
             <div class="row mb-3">
                 <label for="tinjauan" class="col-sm-2 col-form-label"><strong>Catatan</strong></label>
                 <div class="col-sm-10">
-                    <textarea name="tinjauan" class="form-control" placeholder="Masukkan Catatan jika ada" required>{{ old('tinjauan') }}</textarea>
+                    <textarea name="tinjauan" class="form-control" placeholder="Masukkan Catatan jika ada" rows="7" required>{{ old('tinjauan') }}</textarea>
                 </div>
             </div>
 

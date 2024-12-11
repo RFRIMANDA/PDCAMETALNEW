@@ -75,32 +75,41 @@
                 </a>
             @elseif ($ppk->formppk2 && !is_null($ppk->formppk2->signaturepenerima))
 
-            @if ((empty($ppk->formppk2->pencegahan) || empty($ppk->formppk2->penanggulangan)) && !is_null($ppk->formppk2->signaturepenerima))
-                <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Identifikasi">
-                    <i class="bi bi-bell"></i>
-                </a>
-            @endif
-
+                @if ((empty($ppk->formppk2->pencegahan) || empty($ppk->formppk2->penanggulangan))
+                    && !is_null($ppk->formppk2->signaturepenerima)
+                    || empty($ppk->formppk2->tgl_penanggulangan)
+                    || empty($ppk->formppk2->tgl_pencegahan))
+                    <a href="{{ route('ppk.edit2', $ppk->id) }}" class="btn btn-danger btn-sm" title="Edit Identifikasi">
+                        <i class="bi bi-bell"></i>
+                    </a>
+                @endif
 
                 <!-- Verifikasi -->
-            @if ($ppk->formppk3)
-                @if (is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->pencegahan) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->identifikasi))
+                @if ($ppk->formppk3)
+                    @if (is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->pencegahan) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->identifikasi))
                     @if ($ppk->pembuat == auth()->id())
-                        <!-- Show Create3 button for pembuat when all fields in formppk2 are filled -->
+                    <!-- Show Create3 button for pembuat when all fields in formppk2 are filled -->
+                    @if ($ppk->formppk2->identifikasi && $ppk->formppk2->penanggulangan && $ppk->formppk2->pencegahan)
                         <a href="{{ route('ppk.create3', $ppk->id) }}" class="btn btn-success btn-sm" title="Form PPK Verifikasi">
                             <i class="bi bi-bell"></i>
                         </a>
                     @else
-                        <!-- Show WAITING for penerima if verifikasi is null -->
+                        <!-- Show WAITING message if formppk2 fields are not complete -->
                         <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
                     @endif
-                        @elseif (!is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->pencegahan))
-                            <!-- Show VERIFIED if verifikasi is not null and other fields are filled -->
-                            <span class="text-success fw-bold">VERIFIED <i class="bi bi-check-circle-fill"></i></span>
-                        @endif
+                @else
+                    <!-- Show WAITING for penerima if verifikasi is null -->
+                    <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
+                @endif
+
+                    @elseif (!is_null($ppk->formppk3->verifikasi) && !empty($ppk->formppk2->penanggulangan) && !empty($ppk->formppk2->pencegahan))
+                        <!-- Show VERIFIED if verifikasi is not null and other fields are filled -->
+                        <span class="text-success fw-bold">VERIFIED <i class="bi bi-check-circle-fill"></i></span>
+                    @endif
                 @endif
             @endif
         </td>
+
 
         <td>
             @if(auth()->id() == $ppk->pembuat)
@@ -123,10 +132,22 @@
             @endif
 
             @if(auth()->id() == $ppk->pembuat)
-                <a href="{{ route('ppk.edit3', $ppk->id) }}" class="btn btn-success btn-sm" title="Edit Verifikasi">
-                    <i class="bi bi-pencil-fill"></i>
-                </a>
+                @php
+                    $updated_at = \Carbon\Carbon::parse($ppk->formppk3->updated_at);
+                    $isExpired = $updated_at->diffInMinutes(now()) >= 1;
+                    // $isExpired = $updated_at->diffInDays(now()) >= 25;
+                @endphp
+
+                @if ($isExpired)
+                    <a href="{{ route('ppk.edit3', $ppk->id) }}" class="btn btn-success btn-sm" title="Edit Verifikasi">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+                @else
+                    <!-- Show WAITING message if less than 1 minute -->
+                    <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
+                @endif
             @endif
+
         </td>
     </tr>
 @endforeach
@@ -174,12 +195,13 @@
                             <label for="start_date" class="form-label"><strong>Tanggal Awal</strong></label>
                             <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request('start_date') }}">
                         </div>
+
                         <div class="col-md-4">
                             <label for="end_date" class="form-label"><strong>Tanggal Akhir</strong></label>
                             <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                         </div>
 
-                        <!-- Filter Divisi -->
+                        <!-- Filter Semester -->
                         <div class="col-md-4">
                             <label for="semester" class="form-label"><strong>Semester</strong></label>
                             <select id="semester" name="semester" class="form-select">
@@ -188,13 +210,18 @@
                                 <option value="SEM 2" {{ request('semester') == 'SEM 2' ? 'selected' : '' }}>SEM 2</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <!-- Filter Nomor PPK -->
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Cari Nomor PPK</label>
-                                <textarea name="keyword" class="form-control" placeholder="Masukkan nomor PPK" rows="3">{{ request('keyword') }}</textarea>
+                                <label for="keyword" class="form-label fw-bold">Cari Nomor PPK</label>
+                                <textarea name="keyword" id="keyword" class="form-control" placeholder="Masukkan nomor PPK" rows="3">{{ request('keyword') }}</textarea>
                             </div>
                         </div>
 
+                        <!-- Filter Status -->
                         <div class="col-md-4">
                             <label for="status" class="form-label"><strong>Status</strong></label>
                             <select id="status" name="status" class="form-select">
@@ -203,8 +230,8 @@
                                 <option value="WAITING" {{ request('status') == 'WAITING' ? 'selected' : '' }}>WAITING</option>
                             </select>
                         </div>
-
                     </div>
+
 
                     <div class="row">
                         <div class="col-md-12 d-flex justify-content-between">

@@ -42,6 +42,10 @@ public function pic2User()
 {
     return $this->belongsTo(User::class, 'pic2','id');
 }
+public function ppk() {
+    return $this->belongsTo(Ppk::class, 'id_formppk');
+}
+
  // Pastikan kolom target_tgl di-cast sebagai tanggal
  protected $dates = ['target_tgl'];
 

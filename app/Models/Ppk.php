@@ -13,6 +13,7 @@ class Ppk extends Model
 
     protected $fillable = [
         'judul',
+        'statusppk',
         'jenisketidaksesuaian',
         'pembuat',
         'emailpembuat',
@@ -55,6 +56,11 @@ public function divisi1()
 public function divisi2()
 {
     return $this->belongsTo(Divisi::class, 'divisipenerima');
+}
+
+public function statusPpk()
+{
+    return $this->belongsTo(StatusPpk::class, 'statusppk'); // Sesuaikan foreign key jika berbeda
 }
 
 }

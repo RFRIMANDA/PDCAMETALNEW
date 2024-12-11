@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="card-title">Edit Risk Register</h2>
+    {{-- <h2 class="card-title">Edit Risk Register</h2> --}}
 
     <!-- Alert untuk menampilkan error -->
     @if ($errors->any())
@@ -29,92 +29,152 @@
          <div class="card p-3 my-3">
             <h4 class="card-title mb-3">Edit Risk & Opportunity Register</h4>
 
-            <!-- Issue -->
-            <div class="mb-3">
-                <label for="issue" class="form-label"><strong>Issue</strong></label>
+        <!-- Issue -->
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label mt-1"><strong>Issue</strong></label>
+            <div class="col-sm-10">
                 <textarea name="issue" id="issue" class="form-control">{{ old('issue', $riskregister->issue) }}</textarea>
             </div>
+        </div>
 
-            <!-- Ext/Int -->
-            <div class="mb-3">
-                <label for="inex" class="form-label"><strong>Internal/External</strong></label>
+        <!-- Ext/Int -->
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label mt-1"><strong>I/E</strong></label>
+            <div class="col-sm-10">
                 <select name="inex" id="inex" class="form-select">
                     <option value="I" {{ old('inex', $riskregister->inex) == 'I' ? 'selected' : '' }}>Internal</option>
                     <option value="E" {{ old('inex', $riskregister->inex) == 'E' ? 'selected' : '' }}>External</option>
                 </select>
             </div>
+        </div>
 
-            <!-- Opportunity -->
-            <div class="mb-3">
-                <label for="peluang" class="form-label"><strong>Peluang</strong></label>
+        <!-- Opportunity -->
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label mt-1"><strong>Peluang</strong></label>
+            <div class="col-sm-10">
                 <textarea placeholder="Masukkan Peluang jika ada" name="peluang" id="peluang" class="form-control">{{ old('peluang', $riskregister->peluang) }}</textarea>
             </div>
+        </div>
+
 
             <!-- Interested Parties -->
-            <div class="mb-3">
-                <label for="pihak" class="form-label"><strong>Pihak Yang Berkepentingan</strong></label>
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownPihak" data-bs-toggle="dropdown" aria-expanded="false">
-                        --Pilih Pihak Yang Berkepentingan--
-                    </button>
-                    <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownPihak">
-                        <li>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="select-all-pihak">
-                                <label class="form-check-label" for="select-all-pihak">Select All</label>
-                            </div>
-                        </li>
-                        @foreach ($divisi as $d)
+            <div class="row mb-3 align-items-center">
+                <label class="col-sm-2 col-form-label mt-2"><strong>Pihak yang Berkepentingan</strong></label> <!-- Menambahkan margin-top -->
+                <div class="col-sm-10">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownDivisiAkses" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(old('pihak') || $selectedDivisi)
+                                {{ implode(', ', old('pihak', $selectedDivisi ?? [])) }}
+                            @else
+                                Pilih Pihak Berkepentingan
+                            @endif
+                        </button>
+                        <ul class="dropdown-menu checkbox-group" aria-labelledby="dropdownDivisiAkses">
                             <li>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="pihak[]" value="{{ $d->id }}" id="divisi{{ $d->id }}"
-                                    @if(in_array($d->nama_divisi, old('pihak', $selectedDivisi))) checked @endif>
-                                    <label class="form-check-label" for="divisi{{ $d->id }}">{{ $d->nama_divisi }}</label>
+                                    <input class="form-check-input" type="checkbox" id="select-all">
+                                    <label class="form-check-label" for="select-all">Pilih Semua</label>
                                 </div>
                             </li>
-                        @endforeach
-                        <li>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="otherCheckbox">
-                                <label class="form-check-label" for="otherCheckbox">Other</label>
-                            </div>
-                            <div class="mt-2" id="otherInputContainer" style="display: none;">
-                                <input type="text" class="form-control" name="pihak_other" id="pihakOther" placeholder="Enter Other Interested Parties">
-                            </div>
-                        </li>
-                    </ul>
+                            @foreach ($divisi as $d)
+                                <li>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="pihak[]" value="{{ $d->nama_divisi }}" id="divisi{{ $d->id }}"
+                                            @if(in_array($d->nama_divisi, old('pihak', $selectedDivisi ?? []))) checked @endif>
+                                        <label class="form-check-label" for="divisi{{ $d->id }}">
+                                            {{ $d->nama_divisi }}
+                                        </label>
+                                    </div>
+                                </li>
+                            @endforeach
+                            <li>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="otherCheckbox"
+                                           @if(old('pihak_other') || in_array('Other', old('pihak', []))) checked @endif>
+                                    <label class="form-check-label" for="otherCheckbox">Other</label>
+                                </div>
+                                <div class="mt-2" id="otherInputContainer" style="display: @if(old('pihak_other') || in_array('Other', old('pihak', []))) block @else none @endif;">
+                                    <input type="text" class="form-control" name="pihak_other" id="pihakOther" placeholder="Masukkan Pihak Berkepentingan Lainnya"
+                                           value="{{ old('pihak_other') }}">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        <script>
-            // Toggle the input field for 'Other' when checkbox is checked
-            document.getElementById('otherCheckbox').addEventListener('change', function() {
-                const otherInputContainer = document.getElementById('otherInputContainer');
-                if (this.checked) {
-                    otherInputContainer.style.display = 'block'; // Show the input field
-                } else {
-                    otherInputContainer.style.display = 'none'; // Hide the input field
-                }
-            });
-        </script>
 
-        <!-- JavaScript for "select all" functionality -->
-        <script>
-            document.getElementById('select-all-pihak').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                if (checkbox.id !== 'select-all-pihak') { // Mengecualikan checkbox utama
-                    checkbox.checked = this.checked;
-                }
-            });
-        });
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const dropdownButton = document.getElementById('dropdownDivisiAkses');
+                    const checkboxes = document.querySelectorAll('.form-check-input');
+                    const otherCheckbox = document.getElementById('otherCheckbox');
+                    const otherInput = document.getElementById('pihakOther');
+                    const otherInputContainer = document.getElementById('otherInputContainer');
+                    const selectAllCheckbox = document.getElementById('select-all');
 
-        </script>
+                    // Toggle the input field for 'Other'
+                    otherCheckbox.addEventListener('change', function () {
+                        if (this.checked) {
+                            otherInputContainer.style.display = 'block'; // Show the input field
+                        } else {
+                            otherInputContainer.style.display = 'none'; // Hide the input field
+                            otherInput.value = ''; // Clear the input if unchecked
+                        }
+                        updateDropdown();
+                    });
 
+                    // Update dropdown text when checkboxes change
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', updateDropdown);
+                    });
+
+                    // Handle 'Select All' functionality
+                    selectAllCheckbox.addEventListener('change', function () {
+                        checkboxes.forEach(checkbox => {
+                            if (checkbox !== selectAllCheckbox) {
+                                checkbox.checked = this.checked; // Check/uncheck all
+                            }
+                        });
+                        updateDropdown();
+                    });
+
+                    otherInput.addEventListener('input', updateDropdown); // Update on typing in "Other"
+
+                    function updateDropdown() {
+                        const selectedValues = [];
+
+                        // Collect checked checkboxes
+                        checkboxes.forEach(checkbox => {
+                            if (checkbox.checked && checkbox !== selectAllCheckbox && checkbox !== otherCheckbox) {
+                                const label = document.querySelector(`label[for="${checkbox.id}"]`);
+                                if (label) {
+                                    selectedValues.push(label.textContent.trim());
+                                }
+                            }
+                        });
+
+                        // Add 'Other' input value if applicable
+                        if (otherCheckbox.checked && otherInput.value.trim() !== '') {
+                            selectedValues.push(otherInput.value.trim());
+                        }
+
+                        // Update the dropdown button text
+                        if (selectedValues.length > 0) {
+                            dropdownButton.textContent = selectedValues.join(', '); // Join values with a comma
+                        } else {
+                            dropdownButton.textContent = 'Pilih Pihak Berkepentingan'; // Default text
+                        }
+                    }
+
+                    // Call updateDropdown when the page is loaded to handle old data
+                    updateDropdown();
+                });
+            </script>
 
         <!-- Target Penyelesaian -->
-        <div class="row mb-3">
-            <label for="target_penyelesaian" class="col-sm-2 col-form-label"><strong>Target Penyelesaian</strong></label>
-            <div class="col-sm-7">
+        <div class="row mb-3 align-items-center">
+            <label class="col-sm-2 col-form-label mt-2"><strong>Target Penyelesaian</strong></label> <!-- Menambahkan margin-top -->
+            <div class="col-sm-10">
                 <input type="date" name="target_penyelesaian" id="target_penyelesaian" class="form-control" value="{{ old('target_penyelesaian', $riskregister->target_penyelesaian) }}">
             </div>
         </div>
@@ -183,13 +243,30 @@
                         <input type="date" name="tgl_penyelesaian[{{ $tindakan->id }}]" id="tgl_penyelesaian_{{ $tindakan->id }}" class="form-control" value="{{ old('tgl_penyelesaian.' . $tindakan->id, $tindakan->tgl_penyelesaian) }}" required>
                     </div>
                 </div>
+
+                <!-- Checkbox for Deleting -->
+                <div class="row mb-3">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-7">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="tindakan_to_delete[{{ $tindakan->id }}]" value="1">
+                            <label class="form-check-label" for="tindakan_to_delete_{{ $tindakan->id }}">
+                                Hapus Tindakan ini
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <hr>
             </div>
             @endforeach
         </div>
 
+
         <!-- Tombol untuk menambah lebih banyak -->
-        <button type="button" class="btn btn-secondary" id="addMore">Add More</button>
+        <div class="mt-2 d-flex">
+            <button type="button" class="btn btn-secondary me-auto" id="addMore">Add More</button>
+        </div>
 
         <!-- Tombol untuk menyimpan -->
         <div class="mt-3">
@@ -206,33 +283,56 @@
 <script>
     document.getElementById('addMore').addEventListener('click', function() {
     var newInputSection = `
-        <hr>
-        <div class="row mb-3">
-            <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
-            <div class="col-sm-7">
-                <textarea placeholder="Masukkan Tindakan Lanjut" name="tindakan[]" class="form-control" rows="3" required></textarea>
+        <div class="input-section">
+            <hr>
+            <div class="row mb-3">
+                <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
+                <div class="col-sm-7">
+                    <textarea placeholder="Masukkan Tindakan Lanjut" name="tindakan[]" class="form-control" rows="3" required></textarea>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
-            <div class="col-sm-7">
-                <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+            <div class="row mb-3">
+                <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
+                <div class="col-sm-7">
+                    <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
-            <div class="col-sm-7">
-                <select name="targetpic[]" class="form-select" required>
-                    <option value="">Pilih PIC</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
-                    @endforeach
-                </select>
+            <div class="row mb-3">
+                <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
+                <div class="col-sm-7">
+                    <select name="targetpic[]" class="form-select" required>
+                        <option value="">Pilih PIC</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <!-- Tombol Delete -->
+            <div class="mt-2 d-flex">
+                <button type="button" class="btn btn-danger btn-sm delete-section ms-auto" title="Hapus">
+                    <i class="ri-delete-bin-6-line"></i> Delete
+                </button>
             </div>
         </div>
     `;
     document.getElementById('inputContainer').insertAdjacentHTML('beforeend', newInputSection);
+
+    // Tambahkan event listener ke tombol delete baru
+    attachDeleteListeners();
 });
+
+// Fungsi untuk menambahkan event listener pada tombol delete
+function attachDeleteListeners() {
+    document.querySelectorAll('.delete-section').forEach(button => {
+        button.addEventListener('click', function() {
+            button.closest('.input-section').remove(); // Hapus bagian input terkait
+        });
+    });
+}
+
+// Panggil fungsi untuk inisialisasi pertama kali
+attachDeleteListeners();
 
 </script>
 
