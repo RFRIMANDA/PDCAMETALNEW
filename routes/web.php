@@ -108,7 +108,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/formverifikasi/{id}', [PpkController::class, 'create4'])->name('ppk.create4');
     Route::post('/ppk/store-3', [PpkController::class, 'store3'])->name('ppk.store3');
     Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');
-    // Route::get('/kirimemail', [PpkController::class, 'email'])->name('ppk.email');
+    Route::get('/kirimemail', [PpkController::class, 'email'])->name('ppk.email');
     Route::get('/ppk/{id}/detail', [PpkController::class, 'detail'])->name('ppk.detail');
     Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
     Route::get('/ppk/{id}/edit2', [PpkController::class, 'edit2'])->name('ppk.edit2');

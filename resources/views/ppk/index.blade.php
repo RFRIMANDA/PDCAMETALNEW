@@ -146,12 +146,11 @@
                     <!-- Show WAITING message if less than 1 minute -->
                     <span class="text-warning fw-bold">WAITING <i class="bi bi-hourglass-split"></i></span>
                 @endif
-            @endif
+                @endif
 
-        </td>
-    </tr>
-@endforeach
-
+                    </td>
+                    </tr>
+                @endforeach
 
                 <script>
                     @foreach ($ppks as $ppk)

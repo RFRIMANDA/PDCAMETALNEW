@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Exports\PpkExport;
 use App\Mail\KirimEmail;
 use App\Mail\KirimEmail2;
+use Illuminate\Support\Facades\Queue;
+use App\Mail\KirimEmail3;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -458,6 +460,24 @@ class PpkController extends Controller
                 Ppk::where('id', $request->id_formppk)->update(['statusppk' => 'OPEN']);
             }
 
+            // Tambahkan sebelum pengiriman email
+            if ($ppkkedua->identifikasi &&
+            $ppkkedua->penanggulangan &&
+            $ppkkedua->pencegahan &&
+            $ppkkedua->tgl_penanggulangan &&
+            $ppkkedua->tgl_pencegahan) {
+
+            // Kirim email jika semua field memiliki data
+            $data_email = [
+                'subject' => 'VERIFIKASI',
+                'sender_name' => "{$request->emailpembuat}, {$request->divisipembuat}",
+                'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+            ];
+
+            $penerima = Ppk::find($request->id_formppk)->emailpenerima;
+            Mail::to($penerima)->send(new KirimEmail2($data_email));
+            }
+
             return redirect()->route('ppk.index')->with('success', 'Data berhasil diperbarui.✅');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
@@ -517,23 +537,6 @@ class PpkController extends Controller
         // Perbarui data Ppkkedua
         $ppk->update($updateData);
 
-        // Mengecek apakah sudah lebih dari 1 menit sejak updated_at
-        $updatedAt = \Carbon\Carbon::parse($ppk->updated_at);
-        $isExpired = $updatedAt->diffInMinutes(now()) >= 1;
-
-        // Kirim email jika sudah lebih dari 1 menit
-        if ($isExpired) {
-            // Kirim email notifikasi
-            $data_email = [
-                'subject' => 'VERIFIKASI',
-                'sender_name' => auth()->user()->email,
-                'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
-            ];
-
-            $penerima = Ppk::find($request->id_formppk)->emailpenerima;
-            Mail::to($penerima)->send(new KirimEmail2($data_email));
-        }
-
         // Cek apakah penanggulangan dan pencegahan sudah terisi
         if ($ppk->penanggulangan && $ppk->pencegahan && $ppk->signaturepenerima && $ppk->signaturepenerima_file) {
             // Update status Ppk terkait menjadi 'OPEN'
@@ -544,13 +547,40 @@ class PpkController extends Controller
             }
         }
 
+        // Hitung selisih waktu dengan Carbon
+// $updatedAt = \Carbon\Carbon::parse($ppk->updated_at);
+// $isExpired = $updatedAt->diffInMinutes(now()) >= 1; // Cek apakah lebih dari 1 menit
+
+// Kirim email jika semua field memiliki data dan sudah lebih dari 1 menit
+if (
+    $ppk->identifikasi &&
+    $ppk->penanggulangan &&
+    $ppk->pencegahan &&
+    $ppk->tgl_penanggulangan &&
+    $ppk->tgl_pencegahan
+    // $isExpired
+) {
+    $data_email = [
+        'subject' => "VERIFIKASI",
+        'sender_name' => "",
+        'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+    ];
+
+    $pembuat = Ppk::find($ppk->id_formppk)->emailpembuat;
+
+    if ($pembuat) {
+        // Delay pengiriman 1 menit setelah update terakhir
+        Mail::to($pembuat)->later(now()->addMinute(), new KirimEmail2($data_email));
+    }
+}
+
+
         return redirect()->route('ppk.index')->with('success', 'Data berhasil diperbarui.✅');
     } catch (\Exception $e) {
         // Tangkap dan tampilkan error
         return back()->withErrors(['error' => 'Gagal memperbarui data: ' . $e->getMessage()]);
     }
 }
-
 
     public function create3($id)
     {
@@ -618,15 +648,15 @@ class PpkController extends Controller
 
             DB::commit(); // Commit the transaction
 
-            // Kirim email notifikasi
-            $data_email = [
-                'subject' => 'Notifikasi Pembaruan Form Verifikasi PPK',
-                'sender_name' => auth()->user()->email,
-                'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
-            ];
+            // // Kirim email notifikasi
+            // $data_email = [
+            //     'subject' => 'Pembaruan Verifikasi PPK',
+            //     'sender_name' => auth()->user()->email,
+            //     'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+            // ];
 
-            $penerima = Ppk::find($request->id_formppk)->emailpenerima;
-            Mail::to($penerima)->send(new KirimEmail2($data_email));
+            // $penerima = Ppk::find($request->id_formppk)->emailpenerima;
+            // Mail::to($penerima)->send(new KirimEmail2($data_email));
 
             return redirect()->route('ppk.index')->with('success', 'Form keempat berhasil disimpan.✅');
         } catch (\Exception $e) {
@@ -700,15 +730,15 @@ class PpkController extends Controller
                 $formketiga->save();
             }
 
-            // Kirim email notifikasi
-            $data_email = [
-                'subject' => 'VERIFIKASI',
-                'sender_name' => auth()->user()->email,
-                'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
-            ];
+            // // Kirim email notifikasi
+            // $data_email = [
+            //     'subject' => 'VERIFIKASI',
+            //     'sender_name' => auth()->user()->email,
+            //     'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+            // ];
 
-            $penerima = Ppk::find($request->id_formppk)->emailpenerima;
-            Mail::to($penerima)->send(new KirimEmail2($data_email));
+            // $penerima = Ppk::find($request->id_formppk)->emailpenerima;
+            // Mail::to($penerima)->send(new KirimEmail2($data_email));
 
             return redirect()->route('ppk.index')->with('success', 'Form keempat berhasil diperbarui.✅');
         } catch (\Exception $e) {
@@ -895,16 +925,16 @@ class PpkController extends Controller
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('ppk.index2')->with('success', 'Data PPK berhasil dihapus.');
     }
-        // public function email()
-        // {
-        //     $pesan= "<b>HALLO IKY</b>";
-        //     $pesan .= "assalamualaikum";
-        //     $data_email=[
-        //         'subject' => 'test',
-        //         'sender_name' => 'rifkyfrimanda@gmail.com',
-        //         'isi' => $pesan
-        //     ];
-        //     Mail::to("odanuartha@gmail.com")->send(new kirimemail($data_email));
-        //     return '<h1>SUCCESS MENGIRIM EMAIL</h1>';
-        // }
+        public function email()
+        {
+            $pesan= "HMM";
+            $pesan .= "pengacoan";
+            $data_email=[
+                'subject' => '',
+                'sender_name' => '',
+                'isi' => $pesan
+            ];
+            Mail::to("ps315475@gmail.com")->send(new kirimemail2($data_email));
+            return '<h1>SUCCESS MENGIRIM EMAIL</h1>';
+        }
 }
