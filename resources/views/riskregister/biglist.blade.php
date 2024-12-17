@@ -21,9 +21,16 @@
             </h5>
         </div>
     </div>
-    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
-        <i class="fa fa-filter" style="font-size: 14px;"></i> Filter Options
-    </button>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
+            <i class="fa fa-filter" style="font-size: 14px;"></i> Filter Options
+        </button>
+
+        <a href="{{ route('admin.kriteria') }}" class="btn btn-primary" title="Setting Kriteria" style="font-weight: 500; font-size: 12px; padding: 6px 12px;">
+            <i class="ri-settings-5-line"></i>
+        </a>
+    </div>
+
 <br>
 
 <style>

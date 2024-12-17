@@ -23,25 +23,32 @@
                 <textarea name="nama_resiko" class="form-control" rows="3">{{ old('nama_resiko', $resiko->nama_resiko) }}</textarea>
             </div>
         </div>
-        <!-- Severity Dropdown -->
         <div class="row mb-3">
             <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
-            <div class="col-sm-4">
-                <select class="form-select" name="severity" id="severitySelect" onchange="updateDescription();">
-                    <option value="">--Pilih Severity--</option>
-                    @foreach ($severityOptions as $group)
-                        <optgroup label="{{ $group['nama_kriteria'] }}">
-                            @foreach ($group['options'] as $option)
-                                <option value="{{ $option['value'] }}" data-desc="{{ $option['desc'] }}" title="{{ $option['desc'] }}"
-                                    {{ old('severity', $resiko->severity) == $option['value'] ? 'selected' : '' }}>
-                                    {{ Str::limit($option['desc'], 30) }}
-                                </option>
-                            @endforeach
-                        </optgroup>
-                    @endforeach
+            <div class="col-sm-10">
+                <select class="form-select" name="severity" id="severity">
+                    <option style="font-size: 15px;" value="">--Pilih Severity--</option>
+                    @if(old('kriteria', $resiko->kriteria))
+                        @foreach($kriteria as $k)
+                            @if($k->nama_kriteria == old('kriteria', $resiko->kriteria))
+                                @php
+                                    // Get the severity values and descriptions for the selected kriteria
+                                    $nilaiKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria));
+                                    $descKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria));
+                                @endphp
+                                @foreach($nilaiKriteriaArray as $index => $nilai)
+                                    <option style="font-size: 15px;" value="{{ $nilai }}" {{ old('severity', $resiko->severity) == $nilai ? 'selected' : '' }}>
+                                        {{ $nilai }} - {{ $descKriteriaArray[$index] ?? '' }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        @endforeach
+                    @endif
                 </select>
             </div>
         </div>
+
+
         <style>
             /* CSS untuk memaksimalkan ruang dan menampilkan deskripsi di bawah nilai */
             #severity option {
@@ -122,35 +129,37 @@
 <script>
     // Function to update Severity Dropdown for Actual Risk dynamically based on selected kriteria
     function updateSeverityDropdown() {
-        const selectedKriteria = document.getElementById('kriteriaInput').value; // Make sure to use correct ID
-        const severitySelect = document.getElementById('severityrisk');
+    const selectedKriteria = document.getElementById('kriteriaInput').value;
+    const severitySelect = document.getElementById('severityrisk');
 
-        // Clear existing options
-        severitySelect.innerHTML = '<option value="">--Pilih Severity--</option>';
+    // Clear existing options
+    severitySelect.innerHTML = '<option value="">--Pilih Severity--</option>';
 
-        // Find the corresponding kriteria data based on selected kriteria
-        const kriteriaData = @json($kriteria);
-        const selectedKriteriaData = kriteriaData.find(k => k.nama_kriteria === selectedKriteria);
+    // Find the corresponding kriteria data based on selected kriteria
+    const kriteriaData = @json($kriteria);
+    const selectedKriteriaData = kriteriaData.find(k => k.nama_kriteria === selectedKriteria);
 
-        if (selectedKriteriaData) {
-            const nilaiKriteriaArray = selectedKriteriaData.nilai_kriteria.replace(/[\[\]"]+/g, '').split(',');
-            const descKriteriaArray = selectedKriteriaData.desc_kriteria.replace(/[\[\]"]+/g, '').split(',');
+    if (selectedKriteriaData) {
+        const nilaiKriteriaArray = selectedKriteriaData.nilai_kriteria.replace(/[\[\]"]+/g, '').split(',');
+        const descKriteriaArray = selectedKriteriaData.desc_kriteria.replace(/[\[\]"]+/g, '').split(',');
 
-            // Add severity options dynamically
-            nilaiKriteriaArray.forEach((nilai, index) => {
-                const option = document.createElement('option');
-                option.value = nilai;
-                option.textContent = `${nilai} - ${descKriteriaArray[index] || ''}`;
-                severitySelect.appendChild(option);
-            });
-        }
+        // Add severity options dynamically
+        nilaiKriteriaArray.forEach((nilai, index) => {
+            const option = document.createElement('option');
+            option.value = nilai;
+            option.textContent = `${nilai} - ${descKriteriaArray[index] || ''}`;
+            option.selected = nilai === '{{ old('severityrisk', $resiko->severityrisk) }}'; // Maintain old selected value
+            severitySelect.appendChild(option);
+        });
     }
+}
 
-    // Event listener to update severityrisk dropdown when kriteria is selected
-    document.getElementById('kriteriaInput').addEventListener('change', updateSeverityDropdown);
+// Event listener to update severityrisk dropdown when kriteria is selected
+document.getElementById('kriteriaInput').addEventListener('change', updateSeverityDropdown);
 
-    // Initialize severity dropdown when page loads
-    document.addEventListener('DOMContentLoaded', updateSeverityDropdown);
+// Initialize severity dropdown when page loads
+document.addEventListener('DOMContentLoaded', updateSeverityDropdown);
+
 </script>
 
 <!-- Probability Risk -->

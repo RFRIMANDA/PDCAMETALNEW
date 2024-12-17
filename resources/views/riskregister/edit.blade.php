@@ -7,7 +7,7 @@
     <!-- Alert untuk menampilkan error -->
     @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Terjadi kesalahan!</strong> Target tanggal tidak boleh melebih target penyelesaian:
+        <strong>Terjadi kesalahan!</strong>
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -181,7 +181,7 @@
 
          <!-- Risk Edit Section -->
          <div class="card p-3 my-3">
-            <h4 class="card-title">Edit Resiko</h4>
+            <h4 class="card-title">Edit Risiko</h4>
 
             <div id="riskInputContainer">
                 @foreach($resikoList as $resiko)
@@ -191,15 +191,17 @@
                         <textarea name="nama_resiko[{{ $resiko->id }}]" id="nama_resiko_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->nama_resiko) }}</textarea>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="before_{{ $resiko->id }}" class="form-label"><strong>Before</strong></label>
-                        <textarea placeholder="Masukkan kondisi saat ini sebelum mitigasi atau tindakan lanjut dilakukan" name="before[{{ $resiko->id }}]" id="before_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->before) }}</textarea>
-                    </div>
+                    <!-- Before Textarea -->
+        <div class="mb-3">
+            <label for="before_{{ $resiko->id }}" class="form-label"><strong>Before</strong></label>
+            <textarea placeholder="Masukkan kondisi saat ini sebelum mitigasi atau tindakan lanjut dilakukan" name="before[{{ $resiko->id }}]" id="before_{{ $resiko->id }}" class="form-control">{{ old('before.' . $resiko->id, $resiko->before) }}</textarea>
+        </div>
 
-                    <div class="mb-3">
-                        <label for="after_{{ $resiko->id }}" class="form-label"><strong>After</strong></label>
-                        <textarea placeholder="Masukkan setelah mitigasi atau tindakan lanjut dilakukan" name="after[{{ $resiko->id }}]" id="after_{{ $resiko->id }}" class="form-control">{{ old('resiko.' . $resiko->id, $resiko->after) }}</textarea>
-                    </div>
+        <!-- After Textarea -->
+        <div class="mb-3">
+            <label for="after_{{ $resiko->id }}" class="form-label"><strong>After</strong></label>
+            <textarea placeholder="Masukkan setelah mitigasi atau tindakan lanjut dilakukan" name="after[{{ $resiko->id }}]" id="after_{{ $resiko->id }}" class="form-control">{{ old('after.' . $resiko->id, $resiko->after) }}</textarea>
+        </div>
                 </div>
                 @endforeach
             </div>
@@ -244,18 +246,23 @@
                     </div>
                 </div>
 
-                <!-- Checkbox for Deleting -->
-                <div class="row mb-3">
-                    <div class="col-sm-2"></div>
-                    <div class="col-sm-7">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="tindakan_to_delete[{{ $tindakan->id }}]" value="1">
-                            <label class="form-check-label" for="tindakan_to_delete_{{ $tindakan->id }}">
-                                Hapus Tindakan ini
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                @if(isset($tindakan))
+    <div class="row mb-3">
+        <div class="col-sm-8 offset-sm-2">
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="tindakan_to_delete_{{ $tindakan->id }}"
+                       name="tindakan_to_delete[{{ $tindakan->id }}]"
+                       value="1">
+                <label class="form-check-label" for="tindakan_to_delete_{{ $tindakan->id }}">
+                    <span class="badge bg-danger">Hapus</span> Tindakan ini
+                </label>
+            </div>
+        </div>
+    </div>
+@endif
+
 
                 <hr>
             </div>

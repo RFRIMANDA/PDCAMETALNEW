@@ -125,6 +125,8 @@ class ResikoController extends Controller
             }, $nilaiArray, $descArray),
         ];
     }
+    // dd($severityOptions);
+
 
     // Pass the data to the view
     return view('resiko.edit', compact('resiko', 'kriteria', 'divisionId','three','severityOptions'));
@@ -133,6 +135,7 @@ class ResikoController extends Controller
 public function update(Request $request, $id)
 {
     // Validasi input
+    // dd($request->all());
     $request->validate([
         'nama_resiko' => 'nullable|string|max:255',
         'kriteria' => 'nullable|in:Unsur keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',

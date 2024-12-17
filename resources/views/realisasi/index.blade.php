@@ -42,6 +42,8 @@
     <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px;">
         <h2 style="font-size: 18px; color: #2c3e50;">PIC: {{$pic}}</h2>
         <p style="font-size: 16px; color: #555; margin-top: 8px;">Target Tanggal: <strong>{{$deadline}}</strong></p>
+        <label for="nilai_akhir"><strong> Persentase Tindakan Lanjut: {{ number_format($realisasiList->first()->nilai_akhir ?? 0, 0) }}%</strong></label>
+
     </div>
 </div>
 
@@ -134,6 +136,10 @@
                                         <label for="presentase" class="form-label"><strong>Presentase</strong></label>
                                         <input type="number" name="presentase" class="form-control" value="{{ $realisasi->presentase }}">
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label"><strong></strong></label>
+                                        <input type="hidden" name="status" class="form-control" value="ON PROGRES">
+                                    </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -198,6 +204,7 @@
                 <label for="presentase"><strong>Persentase</strong></label>
                 <input type="number" name="presentase[]" class="form-control" placeholder="%" step="0.01">
             </div>
+
         </div>
 
         <div class="row mt-3">
@@ -228,8 +235,6 @@
     <form action="{{ route('realisasi.update', $realisasiList->first()->id ?? 0) }}" method="POST" class="mt-4">
         @csrf
         @method('PUT')
-
-        <label for="nilai_akhir"><strong> Persentase Tindakan Lanjut: {{ number_format($realisasiList->first()->nilai_akhir ?? 0, 0) }}%</strong></label>
 
         <div class="row">
             <div class="col-md-4">

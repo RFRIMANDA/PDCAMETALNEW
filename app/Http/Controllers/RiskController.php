@@ -191,8 +191,6 @@ public function store(Request $request)
     }
 }
 
-
-
 public function edit($id)
 {
     // Ambil data Riskregister berdasarkan ID
@@ -200,6 +198,7 @@ public function edit($id)
 
     // Ambil semua data divisi
     $divisi = Divisi::all();
+    $kriteria = Kriteria::all();
 
     $one = Resiko::findOrFail($id);
     $two = Riskregister::where('id', $one->id_riskregister)->first();
@@ -217,12 +216,12 @@ public function edit($id)
     $users = User::all(); // Ambil semua pengguna untuk dropdown select
 
     // Kembalikan tampilan edit dengan data yang diperlukan
-    return view('riskregister.edit', compact('riskregister', 'divisi', 'tindakanList','resikoList', 'selectedDivisi', 'users','three'));
+    return view('riskregister.edit', compact('riskregister', 'divisi', 'tindakanList','resikoList', 'selectedDivisi', 'users','three','kriteria'));
 }
 
 public function update(Request $request, $id)
 {
-    // Validasi data
+    // dd($request->all());
     $validated = $request->validate([
         'id_divisi' => 'required|exists:divisi,id',
         'issue' => 'required|string',
@@ -233,7 +232,7 @@ public function update(Request $request, $id)
         'tindakan_to_delete' => 'nullable|array',
         'tindakan_to_delete.*' => 'boolean',
         'pihak' => 'nullable|array',
-        'pihak.*' => 'exists:divisi,id',
+        'pihak.*' => 'exists:divisi,nama_divisi',
         'targetpic' => 'nullable|array',
         'targetpic.*' => 'nullable|string',
         'tgl_penyelesaian' => 'nullable|array',
@@ -261,7 +260,7 @@ public function update(Request $request, $id)
         'inex' => $validated['inex'],
         'peluang' => $validated['peluang'],
         'target_penyelesaian' => $validated['target_penyelesaian'],
-        'pihak' => $pihak ? implode(',', Divisi::whereIn('id', $pihak)->pluck('nama_divisi')->toArray()) : null,
+        'pihak' => !empty($pihak) ? implode(',', $pihak) : null, // Gabungkan array menjadi string
     ]);
 
     // Ambil tindakan yang ada
@@ -326,18 +325,20 @@ public function update(Request $request, $id)
         }
     }
 
-    // Ambil nilai pertama dari array 'nama_resiko', 'before', dan 'after'
-    $nama_resiko = !empty($validated['nama_resiko']) ? array_shift($validated['nama_resiko']) : null;
-    $before = !empty($validated['before']) ? array_shift($validated['before']) : null;
-    $after = !empty($validated['after']) ? array_shift($validated['after']) : null;
+   // Ambil nilai pertama dari array 'nama_resiko', 'before', 'after', dan lainnya
+$nama_resiko = !empty($validated['nama_resiko']) ? array_shift($validated['nama_resiko']) : null;
+$before = !empty($validated['before']) ? array_shift($validated['before']) : null;
+$after = !empty($validated['after']) ? array_shift($validated['after']) : null;
 
-    // Update atau buat Resiko record
-    $resiko = Resiko::firstOrNew(['id_riskregister' => $riskregister->id]);
-    $resiko->fill([
-        'nama_resiko' => $nama_resiko,
-        'before' => $before,
-        'after' => $after,
-    ])->save();
+
+// Update atau buat Resiko record
+$resiko = Resiko::firstOrNew(['id_riskregister' => $riskregister->id]);
+$resiko->fill([
+    'nama_resiko' => $nama_resiko,
+    'before' => $before,
+    'after' => $after,
+])->save();
+
 
     // Redirect setelah update
     return redirect()->route('riskregister.tablerisk', ['id' => $validated['id_divisi']])
