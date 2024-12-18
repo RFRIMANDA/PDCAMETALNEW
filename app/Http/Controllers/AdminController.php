@@ -26,7 +26,7 @@ class AdminController extends Controller
 
         // Filter berdasarkan divisi
         if ($request->filled('divisi')) {
-            $query->where('divisi', $request->divisi); // Ganti dengan nama kolom yang sesuai di tabel User
+            $query->where('divisi', 'like', '%' . $request->divisi . '%');
         }
 
         // Ambil semua data user setelah difilter

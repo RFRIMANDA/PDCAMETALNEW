@@ -37,7 +37,7 @@
                         <select name="divisi" class="form-control">
                             <option value="">--Semua Divisi--</option>
                             @foreach($divisi as $div)
-                                <option value="{{ $div->id }}" {{ request('divisi') == $div->id ? 'selected' : '' }}>{{ $div->nama_divisi }}</option>
+                                <option value="{{ $div->nama_divisi }}" {{ request('divisi') == $div->nama_divisi ? 'selected' : '' }}>{{ $div->nama_divisi }}</option>
                             @endforeach
                         </select>
                     </div>
