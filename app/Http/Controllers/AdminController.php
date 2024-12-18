@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $query = User::query();
-        $divisi = Divisi::all();
+        $divisi = Divisi::all(); // Ambil semua data divisi
 
         // Filter berdasarkan nama_user
         if ($request->filled('nama_user')) {
@@ -26,13 +26,13 @@ class AdminController extends Controller
 
         // Filter berdasarkan divisi
         if ($request->filled('divisi')) {
-            $query->where('divisi', $request->divisi);
+            $query->where('divisi', $request->divisi); // Ganti dengan nama kolom yang sesuai di tabel User
         }
 
         // Ambil semua data user setelah difilter
         $users = $query->get();
 
-        return view('admin.index', compact('users','divisi'));
+        return view('admin.index', compact('users', 'divisi'));
     }
 
     public function create()

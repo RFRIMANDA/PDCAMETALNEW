@@ -293,7 +293,7 @@
                 labels: @json($statusCounts->keys()),
                 datasets: [{
                     data: @json($statusCounts->values()),
-                    backgroundColor: ['#FFD700', '#32CD32','#FF6347']
+                    backgroundColor: ['#FFD700','#FF6347','#32CD32']
                 }]
             },
             options: {

@@ -21,7 +21,10 @@
     white-space: normal;  /* Memungkinkan teks untuk membungkus ke baris baru */
     word-wrap: break-word; /* Membungkus kata jika panjangnya melebihi lebar dropdown */
 }
-
+#dropdownMenuSeverityButton {
+    min-width: 200px; /* Menentukan lebar minimal agar teks bisa lebih leluasa */
+    font-size: 0.9rem;
+}
 </style>
 
 <form action="{{ route('riskregister.store') }}" method="POST">
@@ -30,7 +33,7 @@
 
     <!-- Bagian untuk mengisi Issue -->
     <div class="row mb-3">
-        <label for="inputIssue" class="col-sm-2 col-form-label" ><strong>Issue</strong></label>
+        <label for="inputIssue" class="col-sm-2 col-form-label" ><strong>Issue*</strong></label>
         <div class="col-sm-7">
             <textarea name="issue" class="form-control" rows="3" placeholder="Masukkan Issue" required></textarea>
         </div>
@@ -39,7 +42,7 @@
     <br>
 
     <div class="row mb-3">
-        <label for="inex" class="col-sm-2 col-form-label"><strong>I/E</strong></label>
+        <label for="inex" class="col-sm-2 col-form-label"><strong>I/E*</strong></label>
         <div class="col-sm-4">
             <select name="inex" class="form-control" required>
                 <option value="">--Silahkan Pilih--</option>
@@ -117,7 +120,7 @@
 
   <br>
   <div class="row mb-3">
-    <label class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan:</strong></label>
+    <label class="col-sm-2 col-form-label"><strong>Pihak Berkepentingan*</strong></label>
     <div class="col-sm-10">
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="dropdownDivisiAkses" data-bs-toggle="dropdown" aria-expanded="false">
@@ -231,8 +234,9 @@
 </script>
 
 <br>
+<!-- Severity Dropdown -->
 <div class="row mb-3">
-    <label for="severity" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
+    <label for="severity" class="col-sm-2 col-form-label"><strong>Severity*</strong></label>
     <div class="col-sm-10">
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownMenuSeverityButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -245,7 +249,8 @@
                         <div>
                             @foreach ($group['options'] as $option)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="severity[]" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-nama_kriteria="{{ $group['nama_kriteria'] }}" data-desc="{{ $option['desc'] }}">
+                                    <input class="form-check-input" type="checkbox" name="severity[]" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-id="{{ $option['kriteria_id'] }}" data-nama_kriteria="{{ $option['desc'] }}" data-desc="{{ $option['desc'] }}">
+
                                     <label style="font-size: 0.9rem;" class="form-check-label" for="severity-{{ $option['value'] }}">{{ Str::limit($option['desc'], 200) }}</label>
                                 </div>
                             @endforeach
@@ -257,9 +262,27 @@
     </div>
 </div>
 
+
+<ul class="dropdown-menu dropdown-menu-severity p-3 w-100" aria-labelledby="dropdownMenuSeverityButton" style="max-height: 200px; overflow-y: auto;">
+    @foreach ($severityOptions as $group)
+    <div class="mb-2">
+        <strong>{{ $group['nama_kriteria'] }}</strong>
+        <div>
+            @foreach ($group['options'] as $option)
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="severity" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-nama_kriteria="{{ $group['nama_kriteria'] }}" data-desc="{{ $option['desc'] }}">
+                    <label style="font-size: 0.9rem;" class="form-check-label" for="severity-{{ $option['value'] }}">{{ Str::limit($option['desc'], 200) }}</label>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endforeach
+</ul>
+<input type="hidden" name="kriteria" id="kriteriaHidden">
+
 <!-- Probability Dropdown -->
 <div class="row mb-3">
-    <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak</strong></label>
+    <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak*</strong></label>
     <div class="col-sm-4">
         <select class="form-select" name="probability" id="probability" onchange="calculateTingkatan();">
             <option value="">--Silahkan Pilih Probability--</option>
@@ -272,26 +295,6 @@
     </div>
 </div>
 
-<ul class="dropdown-menu dropdown-menu-severity p-3 w-100" aria-labelledby="dropdownMenuSeverityButton" style="max-height: 200px; overflow-y: auto;">
-    @foreach ($severityOptions as $group)
-        <div class="mb-2">
-            <strong>{{ $group['nama_kriteria'] }}</strong>
-            <div>
-                @foreach ($group['options'] as $option)
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="severity" id="severity-{{ $option['value'] }}" value="{{ $option['value'] }}" data-nama_kriteria="{{ $group['nama_kriteria'] }}" data-desc="{{ $option['desc'] }}">
-                        <label style="font-size: 0.9rem;" class="form-check-label" for="severity-{{ $option['value'] }}">{{ Str::limit($option['desc'], 200) }}</label>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endforeach
-</ul>
-
-
-<!-- Input hidden untuk menyimpan kriteria yang dipilih -->
-<input type="hidden" name="kriteria" id="kriteriaHidden">
-
 <!-- Tingkatan Display -->
 <div class="row mb-3">
     <label for="tingkatan" class="col-sm-2 col-form-label"><strong>Tingkatan</strong></label>
@@ -301,14 +304,12 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     const severityCheckboxes = document.querySelectorAll('.dropdown-menu-severity input[type="checkbox"]');
     const dropdownSeverityButton = document.getElementById('dropdownMenuSeverityButton');
     const kriteriaHidden = document.getElementById('kriteriaHidden');
-    const tingkatanInput = document.getElementById('tingkatan');
-    const probabilityDropdown = document.getElementById('probability');
-
-    // Fungsi untuk memperbarui tampilan dropdown dan input hidden berdasarkan severity yang dipilih
+    const tingkatanInput = document.getElementById('tingkatan'); // Ensure you have an input with id "tingkatan"
+    const probabilityDropdown = document.getElementById('probability'); // Ensure you have a dropdown with id "probability"
     function updateKriteria() {
     const selectedCheckbox = Array.from(severityCheckboxes).find(checkbox => checkbox.checked);
 
@@ -320,15 +321,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Ambil ID dan nama kriteria dari checkbox yang dipilih
-        const kriteriaId = selectedCheckbox.id.replace('severity-', ''); // ID Severity
-        const namaKriteria = selectedCheckbox.dataset.nama_kriteria; // Nama kriteria dari data-atribut
+        // Ambil ID Kriteria dari data-id
+        const kriteriaId = selectedCheckbox.dataset.id; // ID Kriteria dari data-id
 
         // Update input hidden
         kriteriaHidden.value = kriteriaId;
 
         // Perbarui tombol dropdown
-        dropdownSeverityButton.innerHTML = `Terpilih: <br>${namaKriteria}`;
+        dropdownSeverityButton.innerHTML = `Terpilih: <br>${selectedCheckbox.dataset.desc}`;
     } else {
         // Jika tidak ada checkbox yang dipilih, reset semuanya
         kriteriaHidden.value = ''; // Kosongkan jika tidak ada pilihan
@@ -336,6 +336,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 }
 
+
+    // Perbarui kriteria saat checkbox dipilih atau diubah
+    severityCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateKriteria);
+    });
 
     // Fungsi untuk menghitung tingkatan berdasarkan severity dan probability
     function calculateTingkatan() {
@@ -376,8 +381,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listener untuk dropdown probability
     probabilityDropdown.addEventListener('change', calculateTingkatan);
 });
-
-</script>
+    </script>
 
 
     <hr>
@@ -388,19 +392,19 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- Input sections yang bisa ditambahkan oleh user -->
         <div class="dynamic-inputs">
             <div class="row mb-3">
-                <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut</strong></label>
+                <label for="inputTindakan" class="col-sm-2 col-form-label"><strong>Tindakan Lanjut*</strong></label>
                 <div class="col-sm-7">
                     <textarea placeholder="Masukkan Tindakan" name="nama_tindakan[]" class="form-control" placeholder="Masukkan Tindakan Lanjut" rows="3" required></textarea>
                 </div>
             </div>
             <div class="row mb-3">
-                <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut</strong></label>
+                <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Tindakan Lanjut*</strong></label>
                 <div class="col-sm-7">
                     <input type="date" name="tgl_penyelesaian[]" class="form-control" required>
                 </div>
             </div>
             <div class="row mb-3">
-                <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC</strong></label>
+                <label for="inputPIC" class="col-sm-2 col-form-label"><strong>PIC*</strong></label>
                 <div class="col-sm-7">
                     <select name="targetpic[]" class="form-select" required>
                         <option value="">Pilih PIC</option>
@@ -426,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 <div class="row mb-3">
-    <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Besar Penyelesaian Issue</strong></label>
+    <label for="inputTarget" class="col-sm-2 col-form-label"><strong>Target Tanggal Besar Penyelesaian Issue*</strong></label>
     <div class="col-sm-7">
         <input type="date" name="target_penyelesaian" class="form-control" required>
     </div>
@@ -466,6 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </select>
                     </div>
                 </div>
+                <hr>
                 <button type="button" class="btn btn-danger btn-sm deleteSection" style="margin-top: 10px;">Delete</button>
             </div>
         `;

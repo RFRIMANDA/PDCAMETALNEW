@@ -19,17 +19,6 @@
                     <input type="text" name="nama_user" class="form-control" placeholder="Cari berdasarkan Nama" value="{{ request('nama_user') }}">
                 </div>
 
-                <div class="col-md-4">
-                    <select name="divisi" class="form-control" >
-                        <option value="" disabled selected>--Pilih Divisi--</option>
-                        @foreach ($divisi as $d)
-                            <option value="{{ $d->id }}" {{ request('divisi') == $d->id ? 'selected' : '' }}>
-                                {{ $d->nama_divisi }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
                 <div class="col-md-3">
                     <div class="input-group">
                         <select name="role" class="form-control">
@@ -40,9 +29,20 @@
                             <option value="manager" {{ request('role') == 'manager' ? 'selected' : '' }}>Manager</option>
                             <option value="supervisor" {{ request('role') == 'supervisor' ? 'selected' : '' }}>Supervisor</option>
                         </select>
-
                     </div>
                 </div>
+
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <select name="divisi" class="form-control">
+                            <option value="">--Semua Divisi--</option>
+                            @foreach($divisi as $div)
+                                <option value="{{ $div->id }}" {{ request('divisi') == $div->id ? 'selected' : '' }}>{{ $div->nama_divisi }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
             </div><br>
           <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button> <!-- Added 'ms-2' for margin -->
             <a href="{{ route('admin.kelolaakun') }}" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></a>

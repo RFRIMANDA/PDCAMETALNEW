@@ -8,6 +8,7 @@ use App\Models\Divisi;
 use App\Models\Kriteria;
 use App\Models\Riskregister; // Pastikan untuk mengimpor model Riskregister
 use App\Models\Tindakan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ResikoController extends Controller
@@ -114,17 +115,20 @@ class ResikoController extends Controller
     $three = $two->id_divisi; // Division ID for the current Riskregister
 
     $severityOptions = [];
-    foreach ($kriteria as $k) {
-        $nilaiArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria)); // Hapus simbol dan pecah nilai
-        $descArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria)); // Hapus simbol dan pecah deskripsi
+        foreach ($kriteria as $k) {
+            // Pecah nilai dan deskripsi berdasarkan koma
+            $nilaiArray = explode(',', $k->nilai_kriteria); // Tidak perlu hapus simbol lagi
+            $descArray = explode(',', $k->desc_kriteria); // Tidak perlu hapus simbol lagi
 
-        $severityOptions[] = [
-            'nama_kriteria' => $k->nama_kriteria,
-            'options' => array_map(function ($nilai, $desc) {
-                return ['value' => trim($nilai), 'desc' => trim($desc)];
-            }, $nilaiArray, $descArray),
-        ];
-    }
+            // Menyusun array dengan masing-masing pasangan nilai dan deskripsi
+            $severityOptions[] = [
+                'nama_kriteria' => $k->nama_kriteria,
+                'options' => array_map(function ($nilai, $desc) {
+                    return ['value' => trim($nilai), 'desc' => trim($desc)];
+                }, $nilaiArray, $descArray),
+            ];
+        }
+
     // dd($severityOptions);
 
 
@@ -242,7 +246,11 @@ private function calculateTingkatan($probability, $severity)
             ['red', 'red', 'red', 'red', 'red'],
         ];
 
-        $lol = Tindakan::where('id', $id)->value('id');
+        $lol = Resiko::where('id_riskregister', $id)->value('id');
+        if (!$lol) {
+            return back()->withErrors(['error' => 'Data resiko tidak ditemukan untuk ID riskregister: ' . $id]);
+        }
+
 
         // Fetch the riskregister, resiko, and divisi based on the id
         $riskregister = Riskregister::findOrFail($id);
@@ -257,24 +265,25 @@ private function calculateTingkatan($probability, $severity)
 
         // Initialize kriteriaData based on the 'kategori'
         $kriteriaData = [];
-        if ($kategori) {
-            $kriteria = Kriteria::where('nama_kriteria', $kategori)->first();
-            if ($kriteria) {
-                // Decode or parse 'desc_kriteria' to handle it as an array
-                $descArray = is_string($kriteria->desc_kriteria) ? json_decode($kriteria->desc_kriteria, true) : $kriteria->desc_kriteria;
-                $descArray = is_array($descArray) ? $descArray : explode(',', $kriteria->desc_kriteria);
+            if ($kategori) {
+                $kriteria = Kriteria::where('nama_kriteria', $kategori)->first();
+                if ($kriteria) {
+                    // Mengonversi string 'desc_kriteria' yang sudah di-implode menjadi array
+                    $descArray = explode(',', $kriteria->desc_kriteria);
 
-                // Filter out empty descriptions
-                $filteredDesc = array_filter($descArray);
-                if (!empty($filteredDesc)) {
-                    $kriteriaData[] = [
-                        'nama_kriteria' => $kriteria->nama_kriteria,
-                        'desc_kriteria' => array_values($filteredDesc),
-                        'nilai_kriteria' => $kriteria->nilai_kriteria,
-                    ];
+                    // Menghilangkan elemen kosong dari array
+                    $filteredDesc = array_filter($descArray);
+
+                    // Pastikan ada data sebelum dimasukkan ke dalam $kriteriaData
+                    if (!empty($filteredDesc)) {
+                        $kriteriaData[] = [
+                            'nama_kriteria' => $kriteria->nama_kriteria,
+                            'desc_kriteria' => array_values($filteredDesc), // Reset indeks array
+                            'nilai_kriteria' => $kriteria->nilai_kriteria,
+                        ];
+                    }
                 }
             }
-        }
 
         // Calculate actual progress based on 'realisasi' data
         $totalNilaiAkhir = Realisasi::where('id_riskregister', $id)->sum('nilai_akhir');

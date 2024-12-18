@@ -24,8 +24,8 @@
                             <tbody>
                                 @php
                                     // Decode JSON menjadi array
-                                    $descArray = json_decode($k->desc_kriteria, true) ?? [];
-                                    $nilaiArray = json_decode($k->nilai_kriteria, true) ?? [];
+                                    $descArray = explode(',', $k->desc_kriteria);
+                                    $nilaiArray = explode(',', $k->nilai_kriteria);
                                 @endphp
 
                                 <!-- Iterasi dan tampilkan setiap pasangan deskripsi dan nilai -->

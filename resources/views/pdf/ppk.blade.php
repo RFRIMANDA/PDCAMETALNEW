@@ -186,8 +186,6 @@
                     @endif
                 </td>
 
-
-
             </tr>
             <tr>
                 <!-- Sel kiri dengan rowspan 3 -->
@@ -263,7 +261,7 @@
             <!-- Teks Auditor dan Signature -->
             <p style="margin-top: 20px; text-align: right; display: flex; align-items: center;">
                 Auditor,
-                <img src="{{ $signaturepenerima }}" alt="" width="100" style="margin-left: 10px;">
+                <img src="{{ $signature }}" alt="" width="100" style="margin-left: 10px;">
             </p>
         </div>
 
@@ -322,7 +320,7 @@
                 <!-- Tanda Tangan di tengah dan sedikit ke kanan -->
                 <div style="flex-grow: 1; text-align: center; margin-left: 250px;">
                     <p style="margin: 0;">Tanda Tangan: <img src="{{ $signature }}" alt="Signature" width="100"></p>
-                    <p style="margin: 0;">Inisiator/Auditor: <strong>{{ $ppk->pembuatUser->nama_user }}</strong></p>
+                    <p style="margin: 0;">Pembuat/Inisiator: <strong>{{ $ppk->pembuatUser->nama_user }}</strong></p>
                 </div>
                 <!-- Inisiator/Auditor dan Date di kanan -->
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">

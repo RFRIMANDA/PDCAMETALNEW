@@ -36,8 +36,8 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $descArray = json_decode($k->desc_kriteria, true) ?? [];
-                                    $nilaiArray = json_decode($k->nilai_kriteria, true) ?? [];
+                                    $descArray = explode(',', $k->desc_kriteria);
+                                    $nilaiArray = explode(',', $k->nilai_kriteria);
                                 @endphp
                                 @foreach ($descArray as $index => $desc)
                                     <tr>
@@ -135,7 +135,6 @@
             </tr>
             @endforeach
         </tbody>
-
     </table>
 
     <a class="btn btn-danger" href="{{ route('riskregister.tablerisk', ['id' => $three]) }}" title="Back">

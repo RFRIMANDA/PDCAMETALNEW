@@ -16,8 +16,8 @@
                     <form method="GET" action="{{ route('admin.kriteria') }}" class="mb-4">
                         <div class="row">
                             <!-- Dropdown untuk Nama Kriteria -->
-                            <div class="col-md-4">
-                                <select name="nama_kriteria" class="form-control">
+                            <div class="col-md-4 mb-2">
+                                <select name="nama_kriteria" class="form-select">
                                     <option value="">-- Pilih Nama Kriteria --</option>
                                     @foreach ($namaKriteriaList as $nama)
                                         <option value="{{ $nama }}" {{ request('nama_kriteria') == $nama ? 'selected' : '' }}>
@@ -28,12 +28,16 @@
                             </div>
 
                             <!-- Input Text untuk Deskripsi -->
-                            <div class="col-md-4 d-flex align-items-center">
+                            <div class="col-md-4 mb-2">
                                 <input type="text" name="desc_kriteria" class="form-control" placeholder="Cari berdasarkan Deskripsi" value="{{ request('desc_kriteria') }}">
-                                <button type="submit" class="btn btn-primary ms-2">
+                            </div>
+
+                            <!-- Tombol Filter -->
+                            <div class="col-md-4 d-flex align-items-center">
+                                <button type="submit" class="btn btn-primary me-2">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <a href="" class="btn btn-secondary ms-2">
+                                <a href="{{ route('admin.kriteria') }}" class="btn btn-secondary">
                                     <i class="bi bi-arrow-clockwise"></i>
                                 </a>
                             </div>
@@ -41,7 +45,7 @@
                     </form>
                     <!-- End Filter Form -->
 
-                    <!-- Tampilkan pesan sukses jika ada -->
+                    <!-- Tampilkan pesan sukses atau error -->
                     @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -55,14 +59,13 @@
                     @endif
 
                     <!-- Kriteria Data Table -->
-                    <table class="table table-striped" style="font-size: 15px;">
+                    <table class="table table-striped table-bordered" style="font-size: 15px;">
                         <thead>
                             <tr>
                                 <th scope="col" style="width: 80px;">No</th>
                                 <th scope="col">Nama Kriteria</th>
-                                <th scope="col">Deskripsi Kriteria</th>
-                                <th scope="col">Nilai Kriteria</th>
-                                <th scope="col" style="width: 150px;">Action</th>
+                                <th scope="col">Deskripsi & Nilai</th>
+                                <th scope="col" style="width: 150px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,44 +74,52 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $k->nama_kriteria }}</td>
 
-                                    <!-- Tampilkan Deskripsi dan Nilai Kriteria Secara Berpasangan -->
-                                    <td colspan="2">
-                                        <table class="table table-bordered">
+                                    <!-- Tampilkan Deskripsi dan Nilai -->
+                                    <td>
+                                        <table class="table table-bordered table-sm">
                                             <tbody>
                                                 @php
-                                                    // Decode JSON menjadi array
-                                                    $descArray = json_decode($k->desc_kriteria, true) ?? [];
-                                                    $nilaiArray = json_decode($k->nilai_kriteria, true) ?? [];
+                                                    // Pisahkan string menggunakan tanda koma
+                                                    $descArray = explode(',', $k->desc_kriteria);
+                                                    $nilaiArray = explode(',', $k->nilai_kriteria);
                                                 @endphp
 
-                                                <!-- Iterasi dan tampilkan setiap pasangan deskripsi dan nilai -->
                                                 @foreach ($descArray as $index => $desc)
                                                     <tr>
-                                                        <td>{{ $desc }}</td>
-                                                        <td>{{ $nilaiArray[$index] ?? '' }}</td>
+                                                        <td style="width: 70%;">{{ $desc }}</td>
+                                                        <td style="width: 30%;  text-align: center;">{{ $nilaiArray[$index] ?? 'N/A' }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </td>
 
-                                    <td>
-                                        <a href="{{ route('admin.kriteriaedit', $k->id) }}" class="btn btn-sm btn-success" title="Edit">
+                                    <td style="display: flex; align-items: center; gap: 5px;">
+                                        <!-- Tombol Edit -->
+                                        <a href="{{ route('admin.kriteriaedit', $k->id) }}"
+                                           class="btn btn-sm btn-success"
+                                           title="Edit">
                                             <i class="bx bx-edit"></i>
                                         </a>
 
-                                        <form action="{{ route('admin.kriteriadestroy', $k->id) }}" method="POST" style="display:inline;" title="Delete" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kriteria ini?');">
+                                        <!-- Form Hapus -->
+                                        <form action="{{ route('admin.kriteriadestroy', $k->id) }}"
+                                              method="POST"
+                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus kriteria ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    title="Delete">
                                                 <i class="ri ri-delete-bin-fill"></i>
                                             </button>
                                         </form>
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">Tidak ada data kriteria</td>
+                                    <td colspan="4" class="text-center">Tidak ada data kriteria</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -119,4 +130,6 @@
         </div>
     </div>
 </section>
+
+
 @endsection

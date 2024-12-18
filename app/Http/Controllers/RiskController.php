@@ -52,7 +52,7 @@ class RiskController extends Controller
    public function create($id)
 {
     $enchan = $id;
-    $divisi = Divisi::all();
+    $divisi = Divisi::all()->sortBy('nama_divisi');
     $kriteria = Kriteria::all();
 
     // Ambil nama divisi berdasarkan id yang diberikan
@@ -60,30 +60,30 @@ class RiskController extends Controller
     $nama_divisi = $divisiData->nama_divisi;
 
     $severityOptions = [];
-    foreach ($kriteria as $k) {
-        $nilaiArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria)); // Hapus simbol dan pecah nilai
-        $descArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria)); // Hapus simbol dan pecah deskripsi
+foreach ($kriteria as $k) {
+    // Pecah nilai_kriteria dan desc_kriteria berdasarkan koma
+    $nilaiArray = explode(',', $k->nilai_kriteria);  // Pecah nilai
+    $descArray = explode(',', $k->desc_kriteria);   // Pecah deskripsi
 
-        $severityOptions[] = [
-            'nama_kriteria' => $k->nama_kriteria,
-            'options' => array_map(function ($nilai, $desc) {
-                return ['value' => trim($nilai), 'desc' => trim($desc)];
-            }, $nilaiArray, $descArray),
-        ];
-    }
+    $severityOptions[] = [
+        'id_kriteria' => $k->id, // Tambahkan ID Kriteria di sini
+        'nama_kriteria' => $k->nama_kriteria,
+        'options' => array_map(function ($nilai, $desc) use ($k) {
+            return [
+                'value' => trim($nilai),
+                'desc' => trim($desc),
+                'kriteria_id' => $k->id,  // Sertakan ID Kriteria di setiap option
+            ];
+        }, $nilaiArray, $descArray),
+    ];
+}
 
-    $kriteriaList = $kriteria->map(function ($k) {
-        return [
-            'id' => $k->id,
-            'nama_kriteria' => $k->nama_kriteria,
-        ];
-    });
 
     // Filter users berdasarkan nama divisi yang sesuai
     $users = User::all();
     // $users = User::where('divisi', $nama_divisi)->get();
 
-    return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users','severityOptions','kriteriaList'));
+    return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users','severityOptions'));
 }
 
 public function store(Request $request)
@@ -197,7 +197,7 @@ public function edit($id)
     $riskregister = Riskregister::findOrFail($id);
 
     // Ambil semua data divisi
-    $divisi = Divisi::all();
+    $divisi = Divisi::all()->sortBy('nama_divisi');
     $kriteria = Kriteria::all();
 
     $one = Resiko::findOrFail($id);

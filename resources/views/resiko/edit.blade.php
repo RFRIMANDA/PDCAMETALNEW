@@ -28,25 +28,20 @@
             <div class="col-sm-10">
                 <select class="form-select" name="severity" id="severity">
                     <option style="font-size: 15px;" value="">--Pilih Severity--</option>
-                    @if(old('kriteria', $resiko->kriteria))
-                        @foreach($kriteria as $k)
-                            @if($k->nama_kriteria == old('kriteria', $resiko->kriteria))
-                                @php
-                                    // Get the severity values and descriptions for the selected kriteria
-                                    $nilaiKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria));
-                                    $descKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria));
-                                @endphp
-                                @foreach($nilaiKriteriaArray as $index => $nilai)
-                                    <option style="font-size: 15px;" value="{{ $nilai }}" {{ old('severity', $resiko->severity) == $nilai ? 'selected' : '' }}>
-                                        {{ $nilai }} - {{ $descKriteriaArray[$index] ?? '' }}
-                                    </option>
-                                @endforeach
-                            @endif
-                        @endforeach
-                    @endif
+                    @foreach($severityOptions as $group)
+                        <optgroup label="{{ $group['nama_kriteria'] }}">
+                            @foreach($group['options'] as $option)
+                                <option style="font-size: 15px;" value="{{ $option['value'] }}"
+                                        @if(old('severity', $resiko->severity) == $option['value']) selected @endif>
+                                    {{ $option['value'] }} - {{ $option['desc'] }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
                 </select>
             </div>
         </div>
+
 
 
         <style>
@@ -103,16 +98,16 @@
 <!-- Severity Dropdown for Actual Risk -->
 <div class="row mb-3">
     <label for="severityrisk" class="col-sm-2 col-form-label"><strong>Severity</strong></label>
-    <div class="col-sm-4">
+    <div class="col-sm-10">
         <select class="form-select" name="severityrisk" id="severityrisk">
             <option value="">--Pilih Severity--</option>
             @if(old('kriteria', $resiko->kriteria))
                 @foreach($kriteria as $k)
                     @if($k->nama_kriteria == old('kriteria', $resiko->kriteria))
                         @php
-                            // Get the severity values and descriptions for the selected kriteria
-                            $nilaiKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->nilai_kriteria));
-                            $descKriteriaArray = explode(',', str_replace(['[', ']', '"'], '', $k->desc_kriteria));
+                            // Pecah nilai dan deskripsi berdasarkan koma
+                            $nilaiKriteriaArray = explode(',', $k->nilai_kriteria); // Tidak perlu hapus simbol lagi
+                            $descKriteriaArray = explode(',', $k->desc_kriteria); // Tidak perlu hapus simbol lagi
                         @endphp
                         @foreach($nilaiKriteriaArray as $index => $nilai)
                             <option value="{{ $nilai }}" {{ old('severityrisk', $resiko->severityrisk) == $nilai ? 'selected' : '' }}>
@@ -127,39 +122,45 @@
 </div>
 
 <script>
-    // Function to update Severity Dropdown for Actual Risk dynamically based on selected kriteria
     function updateSeverityDropdown() {
     const selectedKriteria = document.getElementById('kriteriaInput').value;
     const severitySelect = document.getElementById('severityrisk');
+    const severitysSelect = document.getElementById('severity');
 
-    // Clear existing options
+    // Clear existing options for both severity dropdowns
     severitySelect.innerHTML = '<option value="">--Pilih Severity--</option>';
+    severitysSelect.innerHTML = '<option value="">--Pilih Severity--</option>';
 
     // Find the corresponding kriteria data based on selected kriteria
     const kriteriaData = @json($kriteria);
     const selectedKriteriaData = kriteriaData.find(k => k.nama_kriteria === selectedKriteria);
 
     if (selectedKriteriaData) {
-        const nilaiKriteriaArray = selectedKriteriaData.nilai_kriteria.replace(/[\[\]"]+/g, '').split(',');
-        const descKriteriaArray = selectedKriteriaData.desc_kriteria.replace(/[\[\]"]+/g, '').split(',');
+        // Pecah nilai_kriteria dan desc_kriteria berdasarkan koma
+        const nilaiKriteriaArray = selectedKriteriaData.nilai_kriteria.split(',');
+        const descKriteriaArray = selectedKriteriaData.desc_kriteria.split(',');
+
+        // Add severityrisk options dynamically
+        nilaiKriteriaArray.forEach((nilai, index) => {
+            const optionRisk = document.createElement('option');
+            optionRisk.value = nilai.trim(); // Trim any extra spaces
+            optionRisk.textContent = `${nilai.trim()} - ${descKriteriaArray[index]?.trim() || ''}`;
+            optionRisk.selected = nilai.trim() === '{{ old('severityrisk', $resiko->severityrisk) }}'; // Maintain old selected value
+            severitySelect.appendChild(optionRisk);
+        });
 
         // Add severity options dynamically
         nilaiKriteriaArray.forEach((nilai, index) => {
             const option = document.createElement('option');
-            option.value = nilai;
-            option.textContent = `${nilai} - ${descKriteriaArray[index] || ''}`;
-            option.selected = nilai === '{{ old('severityrisk', $resiko->severityrisk) }}'; // Maintain old selected value
-            severitySelect.appendChild(option);
+            option.value = nilai.trim(); // Trim any extra spaces
+            option.textContent = `${nilai.trim()} - ${descKriteriaArray[index]?.trim() || ''}`;
+            option.selected = nilai.trim() === '{{ old('severity', $resiko->severity) }}'; // Maintain old selected value
+            severitysSelect.appendChild(option);
         });
     }
 }
-
-// Event listener to update severityrisk dropdown when kriteria is selected
 document.getElementById('kriteriaInput').addEventListener('change', updateSeverityDropdown);
-
-// Initialize severity dropdown when page loads
 document.addEventListener('DOMContentLoaded', updateSeverityDropdown);
-
 </script>
 
 <!-- Probability Risk -->

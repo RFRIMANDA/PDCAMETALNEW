@@ -59,9 +59,6 @@
                     <a href="/kelolaakun">
                         <i class="bi bi-circle"></i><span>Kelola Akun</span>
                     </a>
-                    <a href="/kriteria">
-                        <i class="bi bi-circle"></i><span>Kelola Kriteria</span>
-                    </a>
                 </li>
             </ul>
         </li>
