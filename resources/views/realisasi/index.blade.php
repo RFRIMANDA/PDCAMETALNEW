@@ -36,11 +36,11 @@
     </style>
 
 <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 400px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); padding: 20px; text-align: left; color: #333; line-height: 1.6;">
-    <h1 style="font-size: 16px; color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; margin-bottom: 15px;">Track Record</h1>
-    <p style="font-size: 12px; color: #555;">{{$tindak}}</p>
+    <h1 style="font-size: 15px; color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; margin-bottom: 15px;">Track Record</h1>
+    <p style="font-size: 16px; color: #555;">{{$tindak}}</p>
 
     <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px;">
-        <h2 style="font-size: 18px; color: #2c3e50;">PIC: {{$pic}}</h2>
+        <h2 style="font-size: 16px; color: #2c3e50;">PIC: {{$pic}}</h2>
         <p style="font-size: 16px; color: #555; margin-top: 8px;">Target Tanggal: <strong>{{$deadline}}</strong></p>
         <label for="nilai_akhir"><strong> Persentase Tindakan Lanjut: {{ number_format($realisasiList->first()->nilai_akhir ?? 0, 0) }}%</strong></label>
 
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="status" class="form-label"><strong></strong></label>
-                                        <input type="hidden" name="status" class="form-control" value="ON PROGRES">
+                                        <input type="teks" name="status" class="form-control" value="ON PROGRES">
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -232,7 +232,7 @@
 
 
     <!-- Form untuk Mengupdate Status -->
-    <form action="{{ route('realisasi.update', $realisasiList->first()->id ?? 0) }}" method="POST" class="mt-4">
+    <form action="{{ route('realisasi.update', $realisasi->id) }}" method="POST">
         @csrf
         @method('PUT')
 

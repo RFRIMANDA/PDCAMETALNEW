@@ -54,7 +54,8 @@ class DashboardController extends Controller
     $tingkatanDetails = $resikos->groupBy('tingkatan');
 
     // Ambil daftar departemen untuk dropdown filter
-    $departemenList = Divisi::pluck('nama_divisi');
+    $departemenList = Divisi::orderBy('nama_divisi', 'asc')->pluck('nama_divisi');
+
 
     // Passing data ke view
     return view('dashboard.index', compact(

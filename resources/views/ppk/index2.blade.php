@@ -157,8 +157,8 @@
                                     <td>{{ $ppk->emailpembuat }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Edit
+                                            <button type="button" title="Edit PPK" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bx bx-edit"></i>
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
@@ -179,14 +179,22 @@
                                             </ul>
                                         </div>
 
+                                        <form action="{{ route('ppk.kirimEmailVerifikasi', $ppk->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" title="Kirim Email" class="btn btn-success btn-sm">
+                                                <i class="ri-mail-add-line"></i>
+                                            </button>
+                                        </form>
+
                                         <form action="{{ route('ppk.destroy', $ppk->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                            <button type="submit" title="Hapus PPK" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                 <i class="ri ri-delete-bin-fill"></i>
                                             </button>
                                         </form>
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -215,40 +223,38 @@
                         </thead>
                         <tbody>
                             @foreach($ppks as $ppk)
-                            <tr>
-                                <!-- Menampilkan nomor_surat untuk Sending -->
-                                <td>
-                                    @if($ppk->pembuat == auth()->user()->id)
-                                        <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF"><!-- Jika PPK dibuat oleh user -->
-                                            {{ $ppk->nomor_surat }}
+                                <tr>
+                                    <!-- Kolom Sending -->
+                                    <td style="text-align: center;">
+                                        @if($ppk->pembuatUser && $ppk->pembuat == $user->id)
+                                        <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF">
+                                            {{ $ppk->nomor_surat ?? '-' }}
                                         </a>
-                                    @else
-                                        <!-- Kosongkan jika bukan data yang dibuat oleh user -->
-                                        -
-                                    @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
 
-                                </td>
-
-                                <td>
-                                    @if($ppk->penerima == auth()->user()->id) <!-- Jika PPK diterima oleh user -->
-                                        <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF"><!-- Jika PPK dibuat oleh user -->
-                                            {{ $ppk->nomor_surat }}
+                                    <!-- Kolom Accepting -->
+                                    <td style="text-align: center;">
+                                        @if($ppk->penerimaUser && $ppk->penerima == $user->id)
+                                        <a href="{{ route('ppk.pdf', $ppk->id) }}" title="Export to PDF">
+                                            {{ $ppk->nomor_surat ?? '-' }}
                                         </a>
-                                    @else
-                                    <!-- Kosongkan jika bukan data yang diterima oleh user -->
-                                    -
-                                @endif
-                                </td>
-                            </tr>
-                            @endforeach
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                </tr>
+                             @endforeach
+
                         </tbody>
+
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-
 
 {{-- Modal --}}
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -341,6 +347,7 @@
                             <button type="submit" class="btn btn-primary px-4 d-flex align-items-center">
                                 <i class="fa fa-filter"></i> Filter
                             </button>
+
                         </div>
                     </div>
                 </form>

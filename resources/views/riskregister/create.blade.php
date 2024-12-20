@@ -236,7 +236,7 @@
 <br>
 <!-- Severity Dropdown -->
 <div class="row mb-3">
-    <label for="severity" class="col-sm-2 col-form-label"><strong>Severity*</strong></label>
+    <label for="severity" class="col-sm-2 col-form-label"><strong>Severity / Dampak*</strong></label>
     <div class="col-sm-10">
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownMenuSeverityButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -282,7 +282,7 @@
 
 <!-- Probability Dropdown -->
 <div class="row mb-3">
-    <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Dampak*</strong></label>
+    <label for="probability" class="col-sm-2 col-form-label"><strong>Probability / Kemungkinan*</strong></label>
     <div class="col-sm-4">
         <select class="form-select" name="probability" id="probability" onchange="calculateTingkatan();">
             <option value="">--Silahkan Pilih Probability--</option>

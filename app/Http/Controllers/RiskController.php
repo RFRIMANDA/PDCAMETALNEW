@@ -28,7 +28,9 @@ class RiskController extends Controller
 
         $accesArray = json_decode($acces, true) ?? [];
 
-        $divisi = Divisi::whereIn('id', $accesArray)->get();
+        $divisi = Divisi::whereIn('id', $accesArray)
+        ->orderBy('nama_divisi', 'asc')
+        ->get();
         // $divisi = Divisi::whereIn('id',$acces)->get();
 
         foreach ($divisi as $d) {
@@ -80,7 +82,7 @@ foreach ($kriteria as $k) {
 
 
     // Filter users berdasarkan nama divisi yang sesuai
-    $users = User::all();
+    $users = User::orderBy('nama_user', 'asc')->get();
     // $users = User::where('divisi', $nama_divisi)->get();
 
     return view('riskregister.create', compact('enchan', 'divisi', 'id', 'kriteria', 'users','severityOptions'));
@@ -213,7 +215,7 @@ public function edit($id)
 
     // Ambil target PIC berdasarkan targetpicId
     $targetpicId = $riskregister->targetpic;
-    $users = User::all(); // Ambil semua pengguna untuk dropdown select
+    $users = User::orderBy('nama_user', 'asc')->get();
 
     // Kembalikan tampilan edit dengan data yang diperlukan
     return view('riskregister.edit', compact('riskregister', 'divisi', 'tindakanList','resikoList', 'selectedDivisi', 'users','three','kriteria'));
@@ -639,7 +641,8 @@ if ($top10Filter) {
 }
 
 // Get list of divisions for filtering in the view
-$divisiList = Divisi::all();
+$divisiList = Divisi::orderBy('nama_divisi', 'asc')->get();
+
 $defaultDivisiId = $divisiList->first()->id ?? null;
 
 $divisi = Riskregister::all();

@@ -68,52 +68,41 @@ class PpkController extends Controller
     }
 
     public function index2(Request $request)
-    {
-        // Periksa apakah pengguna memiliki peran 'admin' atau 'manajemen'
-        // if (!in_array(auth()->user()->role, ['admin', 'manajemen'])) {
-        //     abort(403, 'Anda tidak memiliki akses ke halaman ini.');
-        // }
+{
+    // Periksa apakah ada filter input dari pengguna
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+    $semester = $request->input('semester');
+    $user = $request->input('user'); // Ambil ID pengguna
+    $keyword = $request->input('keyword');
+    $status = $request->input('status');
 
-        // Ambil filter dari input pengguna
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $semester = $request->input('semester');
-        $user = $request->input('user');
-        $keyword = $request->input('keyword');
-        $status = $request->input('status');
+    $statusPpkList = StatusPpk::all();
 
-        // Query untuk mendapatkan semua status dari model StatusPpk
-        $statusPpkList = StatusPpk::all();
+    // Query data PPK berdasarkan filter
+    $ppks = Ppk::query()
+        ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+        ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+        ->when($semester, fn($query) => $query->where('nomor_surat', 'like', "%$semester%"))
+        ->when($user, function ($query) use ($user) {
+            $query->where(function ($query) use ($user) {
+                $query->where('pembuat', $user)
+                      ->orWhere('penerima', $user); // Filter untuk sending & accepting
+            });
+        })
+        ->when($keyword, fn($query) => $query->where('nomor_surat', 'like', "%$keyword%"))
+        ->when($status, fn($query) => $query->where('statusppk', $status))
+        ->get();
 
-        // Query data PPK untuk "Sending"
-        $sendingPpks = Ppk::query()
-            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
-            ->when($semester, fn($query) => $query->where('nomor_surat', 'like', "%$semester%"))
-            ->when($user, fn($query) => $query->where('pembuat', $user))
-            ->when($keyword, fn($query) => $query->where('nomor_surat', 'like', "%$keyword%"))
-            ->when($status, fn($query) => $query->where('statusppk', $status))
-            ->get();
+    $user = auth()->user();
+    // Ambil daftar pengguna untuk dropdown
+    $userList = User::orderBy('nama_user', 'asc')->pluck('nama_user', 'id');
 
-        // Query data PPK untuk "Accepting"
-        $acceptingPpks = Ppk::query()
-            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
-            ->when($semester, fn($query) => $query->where('nomor_surat', 'like', "%$semester%"))
-            ->when($user, fn($query) => $query->where('penerima', $user))
-            ->when($keyword, fn($query) => $query->where('nomor_surat', 'like', "%$keyword%"))
-            ->when($status, fn($query) => $query->where('statusppk', $status))
-            ->get();
 
-        // Gabungkan data PPK
-        $ppks = $sendingPpks->merge($acceptingPpks);
+    // Kirim data ke view
+    return view('ppk.index2', compact('ppks', 'userList','statusPpkList', 'status', 'user'));
+}
 
-        // Ambil daftar pengguna untuk dropdown
-        $userList = User::pluck('nama_user', 'id');
-
-        // Kirim data ke view
-        return view('ppk.index2', compact('ppks', 'userList', 'statusPpkList', 'status'));
-    }
 
     public function detail($id)
     {
@@ -130,7 +119,7 @@ class PpkController extends Controller
 
     public function create()
     {
-        $data = User::all();
+        $data = User::all()->sortBy('nama_user');
         $status = StatusPpk::all();
         return view('ppk.create', compact('data','status'));
     }
@@ -225,7 +214,7 @@ class PpkController extends Controller
                 Ppkkedua::create(['id_formppk' => $buatppk->id]);
                 Ppkketiga::create(['id_formppk' => $buatppk->id]);
 
-                // Mendapatkan Data User untuk Email
+
                 $penerimaUser = User::find($request->penerima); // Ambil user berdasarkan ID penerima
                 if (!$penerimaUser) {
                     return response()->json(['error' => 'Penerima tidak ditemukan'], 404);
@@ -347,7 +336,7 @@ class PpkController extends Controller
 
             DB::commit();
 
-            return redirect()->route('ppk.index')->with('success', 'PPK updated successfully!');
+            return redirect()->route('ppk.index')->with('success', 'PPK updated successfully! ✅');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to update data: ' . $e->getMessage()]);
@@ -362,7 +351,7 @@ class PpkController extends Controller
         // Cek apakah evidence ada dan tidak kosong, kemudian ubah menjadi array
         $evidenceFiles = $ppk->evidence ? explode(',', $ppk->evidence) : [];
 
-        $users = User::all();
+        $users = User::all()->sortBy('nama_user'); // Ganti 'name' dengan kolom yang ingin diurutkan
 
         return view('ppk.edit', compact('ppk', 'users', 'evidenceFiles', 'status'));
     }
@@ -370,7 +359,7 @@ class PpkController extends Controller
 
     public function create2($id)
     {
-        $data = User::all();
+        $data = User::all()->sortBy('nama_user');
         $ppk = Ppk::findOrFail($id);  // This will throw an exception if not found
         if (!$ppk) {
             // Handle the case where Ppk is not found (optional)
@@ -467,7 +456,20 @@ class PpkController extends Controller
             $ppkkedua->tgl_penanggulangan &&
             $ppkkedua->tgl_pencegahan) {
 
-            // Kirim email jika semua field memiliki data
+            // Cek jika pencegahan, penanggulangan, dan tgl_pencegahan tidak null
+            if ($ppkkedua->pencegahan && $ppkkedua->penanggulangan && $ppkkedua->tgl_pencegahan) {
+                $formPpk = Ppk::find($request->id_formppk);
+
+                if ($formPpk && ($formPpk->created_at->gt($ppkkedua->tgl_pencegahan) || $formPpk->updated_at->gt($ppkkedua->tgl_pencegahan))) {
+                    $statusLewatTanggal = StatusPpk::where('nama_statusppk', 'OPEN (Lewat Tanggal)')->first();
+
+                    if ($statusLewatTanggal) {
+                        $formPpk->update(['statusppk' => 'OPEN (Lewat Tanggal)']);
+                    }
+                }
+
+            }
+
             $data_email = [
                 'subject' => 'VERIFIKASI',
                 'sender_name' => "{$request->emailpembuat}, {$request->divisipembuat}",
@@ -498,6 +500,7 @@ class PpkController extends Controller
         return view('ppk.edit2', compact( 'data','ppk', ));
     }
 
+
     public function update2(Request $request, $id)
 {
     // Validasi data
@@ -514,14 +517,11 @@ class PpkController extends Controller
     ]);
 
     try {
-        // Cari data berdasarkan id
         $ppk = Ppkkedua::findOrFail($id);
 
-        // Mengubah pic1 dan pic2 menjadi string (menggabungkan dengan koma)
         $pic1 = is_array($request->pic1) ? implode(',', $request->pic1) : $request->pic1;
         $pic2 = is_array($request->pic2) ? implode(',', $request->pic2) : $request->pic2;
 
-        // Data yang akan diperbarui
         $updateData = [
             'identifikasi' => $request->identifikasi,
             'penanggulangan' => $request->penanggulangan,
@@ -534,53 +534,78 @@ class PpkController extends Controller
             'pic2_other' => $request->pic2_other,
         ];
 
-        // Perbarui data Ppkkedua
         $ppk->update($updateData);
 
-        // Cek apakah penanggulangan dan pencegahan sudah terisi
-        if ($ppk->penanggulangan && $ppk->pencegahan && $ppk->signaturepenerima && $ppk->signaturepenerima_file) {
-            // Update status Ppk terkait menjadi 'OPEN'
-            $ppkData = Ppk::find($ppk->id_formppk); // Dapatkan Ppk berdasarkan id_formppk
-            if ($ppkData) {
-                $ppkData->statusppk = 'OPEN'; // Ganti status menjadi 'OPEN'
-                $ppkData->save(); // Simpan perubahan
+        // Cek jika semua data terkait terisi dan update status jika melebihi tanggal
+        if ($ppk->penanggulangan && $ppk->pencegahan && $ppk->tgl_pencegahan) {
+            $formPpk = Ppk::find($ppk->id_formppk);
+
+            if ($formPpk && ($formPpk->created_at->gt($ppk->tgl_pencegahan) || $formPpk->updated_at->gt($ppk->tgl_pencegahan))) {
+                $statusLewatTanggal = StatusPpk::where('nama_statusppk', 'OPEN (Lewat Tanggal)')->first();
+
+                if ($statusLewatTanggal) {
+                    $formPpk->update(['statusppk' => 'OPEN (Lewat Tanggal)']);
+                }
             }
         }
 
-        // Hitung selisih waktu dengan Carbon
-// $updatedAt = \Carbon\Carbon::parse($ppk->updated_at);
-// $isExpired = $updatedAt->diffInMinutes(now()) >= 1; // Cek apakah lebih dari 1 menit
+        // Kirim email jika semua data sudah terisi
+        if ($ppk->identifikasi &&
+            $ppk->penanggulangan &&
+            $ppk->pencegahan &&
+            $ppk->tgl_penanggulangan &&
+            $ppk->tgl_pencegahan) {
+            $data_email = [
+                'subject' => "VERIFIKASI",
+                'sender_name' => "",
+                'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+            ];
 
-// Kirim email jika semua field memiliki data dan sudah lebih dari 1 menit
-if (
-    $ppk->identifikasi &&
-    $ppk->penanggulangan &&
-    $ppk->pencegahan &&
-    $ppk->tgl_penanggulangan &&
-    $ppk->tgl_pencegahan
-    // $isExpired
-) {
-    $data_email = [
-        'subject' => "VERIFIKASI",
-        'sender_name' => "",
-        'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
-    ];
+            $pembuat = Ppk::find($ppk->id_formppk)->emailpembuat;
 
-    $pembuat = Ppk::find($ppk->id_formppk)->emailpembuat;
-
-    if ($pembuat) {
-        // Delay pengiriman 1 menit setelah update terakhir
-        Mail::to($pembuat)->later(now()->addMinute(), new KirimEmail2($data_email));
-    }
-}
-
+            if ($pembuat) {
+                Mail::to($pembuat)->later(now()->addMinute(), new KirimEmail2($data_email));
+            }
+        }
 
         return redirect()->route('ppk.index')->with('success', 'Data berhasil diperbarui.✅');
     } catch (\Exception $e) {
-        // Tangkap dan tampilkan error
         return back()->withErrors(['error' => 'Gagal memperbarui data: ' . $e->getMessage()]);
     }
 }
+
+public function kirimEmailVerifikasi(Request $request, $id)
+{
+    // Ambil data PPK berdasarkan ID yang diberikan
+    $ppk = Ppk::find($id);
+
+    // Pastikan data PPK ditemukan
+    if ($ppk) {
+        // Siapkan data untuk email
+        $data_email = [
+            'subject' => "VERIFIKASI",
+            'sender_name' => "", // Bisa disesuaikan dengan nama pengirim
+            'isi' => "Dear PIC Departemen Inisiator, Mohon segera memverifikasi & Close PPK.",
+        ];
+
+        // Ambil email penerima dari data PPK
+        if ($ppk->emailpenerima) {
+            // Kirim email langsung
+            Mail::to($ppk->emailpenerima)->send(new KirimEmail2($data_email));
+
+            // Jika berhasil, kembali ke halaman /adminppk
+            return redirect()->route('ppk.index2')->with('success', 'Email berhasil dikirim! ✅');
+        } else {
+            // Jika email penerima tidak ditemukan
+            return back()->with('error', 'Email penerima tidak ditemukan.');
+        }
+    } else {
+        // Jika data PPK tidak ditemukan
+        return back()->with('error', 'Data PPK tidak ditemukan.');
+    }
+}
+
+
 
     public function create3($id)
     {
@@ -909,6 +934,7 @@ if (
         return view('pdf.ppk', $data);
     }
 
+
     public function destroy(Request $request, $id)
     {
         // Periksa apakah pengguna memiliki peran 'admin'
@@ -923,7 +949,7 @@ if (
         $ppk->delete();
 
         // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('ppk.index2')->with('success', 'Data PPK berhasil dihapus.');
+        return redirect()->route('ppk.index2')->with('success', 'Data PPK berhasil dihapus.✅');
     }
         public function email()
         {

@@ -10,8 +10,6 @@ use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\PpkController;
 use App\Http\Controllers\StatusPpkController;
 use App\Http\Controllers\KriteriaController;
-use App\Models\Riskregister;
-use App\Models\StatusPpk;
 use Illuminate\Support\Facades\Route;
 
 //Dashboard PIECHART
@@ -109,6 +107,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ppk/store-3', [PpkController::class, 'store3'])->name('ppk.store3');
     Route::get('/ppk/export/{id}', [PpkController::class, 'exportSingle'])->name('ppk.export');
     Route::get('/kirimemail', [PpkController::class, 'email'])->name('ppk.email');
+    Route::post('/ppk/send-email/{ppk}', [PpkController::class, 'kirimEmailVerifikasi'])->name('ppk.kirimEmailVerifikasi');
     Route::get('/ppk/{id}/detail', [PpkController::class, 'detail'])->name('ppk.detail');
     Route::get('/ppk/{id}/edit', [PpkController::class, 'edit'])->name('ppk.edit');
     Route::get('/ppk/{id}/edit2', [PpkController::class, 'edit2'])->name('ppk.edit2');
@@ -123,7 +122,7 @@ Route::middleware('auth')->group(function () {
 
 // });
 // STATUS PPK
-Route::get('admin/statusppk', [StatusPpkController::class, 'index'])->name('admin.statusppk');
+Route::get('statusppk', [StatusPpkController::class, 'index'])->name('admin.statusppk');
 Route::post('statusppk', [StatusPpkController::class, 'store'])->name('admin.statusppk.store');
 Route::put('statusppk/{id}', [StatusPpkController::class, 'update'])->name('statusppk.update');
 Route::delete('statusppk/{id}', [StatusPpkController::class, 'destroy'])->name('statusppk.destroy');

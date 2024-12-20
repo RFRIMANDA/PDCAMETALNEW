@@ -59,6 +59,12 @@
                     <a href="/kelolaakun">
                         <i class="bi bi-circle"></i><span>Kelola Akun</span>
                     </a>
+                    <a href="/kriteria">
+                        <i class="bi bi-circle"></i><span>Kelola Kriteria Risk & Opportunity Register</span>
+                    </a>
+                    <a href="/statusppk">
+                        <i class="bi bi-circle"></i><span>Kelola Status Proses Peningkatan Kinerja</span>
+                    </a>
                 </li>
             </ul>
         </li>

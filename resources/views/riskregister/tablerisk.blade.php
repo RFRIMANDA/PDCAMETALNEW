@@ -178,7 +178,6 @@
                             <table class="table table-striped" style="width: 180%; font-size: 13px;">
                                 <thead>
                                     <tr>
-                                        <th scope="col"></th>
                                         <th scope="col">No</th>
                                         <th scope="col">Issue (Int:Ex)</th>
                                         <th scope="col">I/E</th>
@@ -192,6 +191,7 @@
                                         <th scope="col">Actual Risk</th>
                                         <th scope="col">Before</th>
                                         <th scope="col">After</th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                     <tbody>
@@ -213,9 +213,6 @@
 
                                             @if (!$isClosed)
                                                 <tr>
-                                                    <td><a href="{{ route('riskregister.edit', $form->id) }}" title="Edit Issue" class="btn btn-success" style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
-                                                        <i class="bx bx-edit" style="font-size: 14px;"></i>
-                                                    </a></td>
                                                     <td>{{ $no++ }}
                                                     </td>
                                                     <td>{{ $form->issue }}</td>
@@ -361,6 +358,29 @@
                                                             None
                                                         @endif
                                                     </td>
+                                                    <td>
+                                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                                            <a href="{{ route('riskregister.edit', $form->id) }}"
+                                                               title="Edit Issue"
+                                                               class="btn btn-success"
+                                                               style="font-weight: 500; font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 5px;">
+                                                                <i class="bx bx-edit" style="font-size: 14px;"></i>
+                                                            </a>
+                                                            <form action="{{ route('riskregister.destroy', $form['id']) }}"
+                                                                  method="POST"
+                                                                  style="margin: 0;"
+                                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                        class="btn btn-danger btn-sm"
+                                                                        style="display: flex; align-items: center; gap: 5px;">
+                                                                    <i class="ri ri-delete-bin-fill"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+
                                                 </tr>
                                             @endif
                                         @endforeach

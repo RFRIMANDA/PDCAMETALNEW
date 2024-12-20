@@ -58,9 +58,10 @@ public function divisi2()
     return $this->belongsTo(Divisi::class, 'divisipenerima');
 }
 
-public function statusPpk()
+public function status()
 {
-    return $this->belongsTo(StatusPpk::class, 'statusppk'); // Sesuaikan foreign key jika berbeda
+    return $this->belongsTo(StatusPpk::class, 'statusppk', 'id');
 }
+
 
 }

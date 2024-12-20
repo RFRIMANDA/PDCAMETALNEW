@@ -10,34 +10,38 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = User::query();
-        $divisi = Divisi::all(); // Ambil semua data divisi
+{
+    $query = User::query();
+    $divisi = Divisi::orderBy('nama_divisi', 'asc')->get(); // Urutkan divisi A-Z
 
-        // Filter berdasarkan nama_user
-        if ($request->filled('nama_user')) {
-            $query->where('nama_user', 'like', '%' . $request->nama_user . '%');
-        }
-
-        // Filter berdasarkan role
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
-        }
-
-        // Filter berdasarkan divisi
-        if ($request->filled('divisi')) {
-            $query->where('divisi', 'like', '%' . $request->divisi . '%');
-        }
-
-        // Ambil semua data user setelah difilter
-        $users = $query->get();
-
-        return view('admin.index', compact('users', 'divisi'));
+    // Filter berdasarkan nama_user
+    if ($request->filled('nama_user')) {
+        $query->where('nama_user', 'like', '%' . $request->nama_user . '%');
     }
+
+    // Filter berdasarkan role
+    if ($request->filled('role')) {
+        $query->where('role', $request->role);
+    }
+
+    // Filter berdasarkan divisi
+    if ($request->filled('divisi')) {
+        $query->where('divisi', 'like', '%' . $request->divisi . '%');
+    }
+
+    // Urutkan nama_user dan divisi A-Z
+    $query->orderBy('nama_user', 'asc')->orderBy('divisi', 'asc');
+
+    // Ambil semua data user setelah difilter
+    $users = $query->get();
+
+    return view('admin.index', compact('users', 'divisi'));
+}
 
     public function create()
     {
-        $divisi = Divisi::all();
+        // $divisi = Divisi::all();
+        $divisi = Divisi::orderBy('nama_divisi', 'asc')->get();
 
         return view('admin.create',compact('divisi'));
     }
@@ -132,7 +136,7 @@ class AdminController extends Controller
             $query->where('nama_divisi', 'like', '%' . $request->nama_divisi . '%');
         }
 
-        $divisis = $query->get();
+        $divisis = $query->orderBy('nama_divisi', 'asc')->get();
         return view('admin.divisi', compact('divisis'));
     }
 
