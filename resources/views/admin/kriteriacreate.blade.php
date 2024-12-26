@@ -37,6 +37,9 @@
                         </button><br>
                         <br>
 
+                        <a href="javascript:history.back()" class="btn btn-danger" title="Kembali">
+                            <i class="ri-arrow-go-back-line"></i>
+                        </a>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
 

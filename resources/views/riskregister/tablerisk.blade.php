@@ -315,40 +315,45 @@
                                                             None
                                                         @endif
                                                         <td>
-                                                            @if($resikos->isNotEmpty())
-                                                                @foreach($resikos as $resiko)
-                                                                    <a href="{{ route('resiko.matriks2', ['id' => $form->id]) }}"
-                                                                       title="Matriks After"
-                                                                       class="btn
-                                                                           @if($resiko->risk == 'HIGH') btn-danger
-                                                                           @elseif($resiko->risk == 'MEDIUM') btn-warning
-                                                                           @elseif($resiko->risk == 'LOW') btn-success
-                                                                           @else btn-info @endif"
-                                                                       style="font-size: 9px; padding: 2px; color: white; margin-bottom: 5px;">
-                                                                        <strong>{{ $resiko->risk }}</strong>
-                                                                        <i class="ri-grid-line" style="font-size: 14px;"></i>
-                                                                    </a>
-                                                                @endforeach
-                                                            @else
-                                                                None
-                                                            @endif
 
-                                                            <a class="btn btn-success mt-2"
-                                                               href="{{ route('resiko.edit', ['id' => $form]) }}"
-                                                               title="Edit Matriks"
-                                                               style="font-size: 10px; padding: 3px; color: white;">
-                                                                <strong>Edit</strong>
-                                                                <i class="bx bx-edit" style="font-size: 10px;"></i>
-                                                            </a>
+                                                            @if($resikos->isNotEmpty())
+                                                            @foreach($resikos as $resiko)
+                                                                @php
+                                                                    $btnClass = '';
+                                                                    if ($resiko->risk === 'HIGH') {
+                                                                        $btnClass = 'btn-danger';
+                                                                    } elseif ($resiko->risk === 'MEDIUM') {
+                                                                        $btnClass = 'btn-warning';
+                                                                    } elseif ($resiko->risk === 'LOW') {
+                                                                        $btnClass = 'btn-success';
+                                                                    }
+                                                                @endphp
+
+                                                                    <a href="{{ route('resiko.matriks2', ['id' => $form->id, 'risk' => $resiko->risk]) }}"
+                                                                        title="Matriks After"
+                                                                        class="btn {{ $btnClass }}"
+                                                                        style="font-size: 9px; padding: 2px; color: white;">
+                                                                        <strong>{{ $resiko->risk }}</strong><i class="ri-grid-line" style="font-size: 14px;"></i>
+                                                                    </a>
+
+                                                                 <br>
+                                                                 <a class="btn btn-success mt-2" href="{{ route('resiko.edit', ['id' => $form]) }}" title="Edit Matriks" style="font-size: 10px; padding: 3px; color: white;">
+                                                                     <strong>Edit</strong><i class="bx bx-edit" style="font-size: 13px;"></i>
+                                                                 </a>
+                                                            @endforeach
+                                                        @else
+                                                            None
+                                                        @endif
                                                         </td>
 
-                                                    <td>@if($resikos->isNotEmpty())
-                                                        @foreach($resikos as $resiko)
-                                                            {{ $resiko->before }}
-                                                        @endforeach
-                                                    @else
-                                                        None
-                                                    @endif</td>
+                                                    <td>
+                                                            @if($resikos->isNotEmpty())
+                                                            @foreach($resikos as $resiko)
+                                                                {{ $resiko->before }}
+                                                            @endforeach
+                                                        @else
+                                                            None
+                                                        @endif</td>
                                                     <td>
                                                         @if($resikos->isNotEmpty())
                                                             @foreach($resikos as $resiko)

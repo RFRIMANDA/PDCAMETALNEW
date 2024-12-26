@@ -45,8 +45,7 @@ class ResikoController extends Controller
     $request->validate([
         'id_riskregister' => 'required|exists:riskregister,id', // Validasi keberadaan riskregister
         'nama_resiko' => 'nullable|string|max:255',
-        'kriteria' => 'required|array',        // Pastikan kriteria berupa array
-        'kriteria.*' => 'required|string', // Validasi setiap item kriteria
+        'kriteria' => 'required|string',        // Pastikan kriteria berupa array
         'probability' => 'nullable|integer|min:1|max:5',  // Probability 1 - 5
         'severity' => 'nullable|integer|min:1|max:5', // Severity 1 - 5
         'probabilityrisk' => 'nullable|integer|min:1|max:5', // Probability untuk risk
@@ -142,15 +141,15 @@ public function update(Request $request, $id)
     // dd($request->all());
     $request->validate([
         'nama_resiko' => 'nullable|string|max:255',
-        'kriteria' => 'nullable|in:Unsur keuangan / Kerugian,Safety & Health,Enviromental (lingkungan),Reputasi,Financial,Operational,Kinerja',
+        'kriteria' => 'nullable|string',
         'probability' => 'nullable|integer|min:1|max:5',
         'severity' => 'nullable|integer|min:1|max:5',
         'status' => 'nullable|in:OPEN,ON PROGRES,CLOSE',
         'probabilityrisk' => 'nullable|integer|min:1|max:5',
         'severityrisk' => 'nullable|integer|min:1|max:5',
         'risk' => 'nullable|string|max:255',
-        'before' => 'nullable|string|max:255',
-        'after' => 'nullable|string|max:255',
+        // 'before' => 'required|string|max:255',
+        // 'after' => 'nullable|string|max:255',
     ]);
 
     // Temukan data resiko berdasarkan ID
@@ -161,7 +160,7 @@ public function update(Request $request, $id)
     $resiko->kriteria = $request->input('kriteria');
     $resiko->probability = $request->input('probability');
     $resiko->severity = $request->input('severity');
-    $resiko->before = $request->input('before');
+    // $resiko->before = $request->input('before');
     $resiko->risk = $request->input('risk');
 
     // Hitung ulang tingkatan
@@ -184,7 +183,9 @@ public function update(Request $request, $id)
     // Update nilai risiko baru
     $resiko->probabilityrisk = $request->input('probabilityrisk');
     $resiko->severityrisk = $request->input('severityrisk');
-    $resiko->after = $request->input('after');
+    $resiko->kriteria = $request->input('kriteria');
+    // $resiko->after = $request->input('after');
+    // $resiko->before = $request->input('before');
 
     // Hitung ulang nilai risiko
     $resiko->calculateRisk();
@@ -303,7 +304,7 @@ private function calculateTingkatan($probability, $severity)
             $tingkatan = $resiko->tingkatan;
 
             // Adjust matrix and colors based on kategori
-            if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational', 'Unsur Keuangan / Kerugian', 'Safety & Health', 'Enviromental (lingkungan)'])) {
+            if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational', 'Unsur Keuangan atau Kerugian', 'Safety & Health', 'Enviromental (lingkungan)'])) {
                 $matriks_used = $matriks;
                 $colors_used = $colors;
             } else {
@@ -409,7 +410,7 @@ public function matriks2($id)
         $riskscore = $probability * $severity;
         $tingkatan = $resiko->tingkatan;
 
-        if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational', 'Unsur Keuangan / Kerugian', 'Safety & Health', 'Enviromental (lingkungan)'])) {
+        if (in_array($kategori, ['Reputasi', 'Financial', 'Kinerja', 'Operational', 'Unsur Keuangan atau Kerugian', 'Safety & Health', 'Enviromental (lingkungan)'])) {
             $matriks_used = $matriks;
             $colors_used = $colors;
         } else {

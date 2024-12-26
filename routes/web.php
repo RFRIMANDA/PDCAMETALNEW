@@ -27,7 +27,7 @@ Route::get('password', [UserController::class, 'password'])->name('password')->m
 Route::post('password', [UserController::class, 'password_action'])->name('password.action')->middleware('auth');
 Route::get('logout', [UserController::class, 'logout'])->name('logout');
 
-Route::middleware('admin','manajemen')->group(function () {
+Route::middleware('admin')->group(function () {
     // Admin kelola user
     Route::get('/kelolaakun', [AdminController::class, 'index'])->name('admin.kelolaakun');
     Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
@@ -66,19 +66,17 @@ Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(funct
     Route::get('/riskregister/export-filtered/{id}', [RiskController::class, 'exportFilteredExcel'])->name('riskregister.exportFilteredExcel');
     Route::get('/export-pdf/{id}', [RiskController::class, 'exportFilteredPDF'])->name('riskregister.export-pdf');
     Route::delete('/riskregister/{id}', [RiskController::class, 'destroy'])->name('riskregister.destroy');
-    // Route::delete('/tindakan/{id}', [RiskController::class, 'destroytindakan'])->name('tindakan.delete');
 });
 Route::get('/riskregister', [RiskController::class, 'index'])->name('riskregister.index');
 Route::get('/riskregister/{id}', [RiskController::class, 'tablerisk'])->name('riskregister.tablerisk');
 // Resiko
-Route::middleware('manager','manajemen','supervisor','admin')->group(function () {
+Route::middleware(['checkrole:admin,manager,manajemen,supervisor'])->group(function () {
     Route::get('/resiko/{id}', [ResikoController::class, 'index'])->name('resiko.index');
     Route::get('/resiko/create/{id}', [ResikoController::class, 'create'])->name('resiko.create');
     Route::post('/resiko/store', [ResikoController::class, 'store'])->name('resiko.store');
     Route::get('/resiko/{id}/edit', [ResikoController::class, 'edit'])->name('resiko.edit');
     Route::post('/resiko/{id}/update', [ResikoController::class, 'update'])->name('resiko.update');
     Route::get('/resiko-matriks/{id}/{tingkatan}', [ResikoController::class, 'matriks'])->name('resiko.matriks');
-
     Route::get('/resiko/matriks2/{id}', [ResikoController::class, 'matriks2'])->name('resiko.matriks2');
     Route::get('/matriks-risiko/{id}', [ResikoController::class, 'show'])->name('matriks-risiko.show');
 });
@@ -119,14 +117,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/ppk/accept/{id}', [PpkController::class, 'accept'])->name('ppk.accept');
     Route::get('/adminppk', [PpkController::class, 'index2'])->name('ppk.index2');
     Route::delete('/admin/ppk/{id}', [PpkController::class, 'destroy'])->name('ppk.destroy');
-
 // });
 // STATUS PPK
 Route::get('statusppk', [StatusPpkController::class, 'index'])->name('admin.statusppk');
 Route::post('statusppk', [StatusPpkController::class, 'store'])->name('admin.statusppk.store');
 Route::put('statusppk/{id}', [StatusPpkController::class, 'update'])->name('statusppk.update');
 Route::delete('statusppk/{id}', [StatusPpkController::class, 'destroy'])->name('statusppk.destroy');
-
 // });
 
 

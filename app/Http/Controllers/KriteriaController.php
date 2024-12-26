@@ -62,7 +62,7 @@ class KriteriaController extends Controller
         'nilai_kriteria' => $nilaiKriteria, // Simpan sebagai string tanpa []
     ]);
 
-    return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil ditambahkan dengan deskripsi dan nilai!');
+    return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil ditambahkan dengan deskripsi dan nilai!✅');
 }
 
 
@@ -97,7 +97,7 @@ class KriteriaController extends Controller
         'nilai_kriteria' => $nilaiKriteria, // Simpan sebagai string biasa
     ]);
 
-    return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil diperbarui!');
+    return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil diperbarui!✅');
 }
 
 
@@ -105,7 +105,7 @@ class KriteriaController extends Controller
     {
         $kriteria = Kriteria::findOrFail($id);
         $kriteria->delete();
-        return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil dihapus!');
+        return redirect()->route('admin.kriteria')->with('success', 'Kriteria berhasil dihapus!✅');
     }
 
 }

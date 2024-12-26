@@ -10,7 +10,7 @@
 
 <div class="card shadow-lg border-0">
     <div class="card-body">
-        <h5 class="card-title text-center text-uppercase fw-bold text-primary">Identifikasi Proses Peningkatan Kinerja</h5>
+        <h5 class="card-title text-center text-uppercase fw-bold text-primary">Identifikasi Proses Peningkatan Kinerja*</h5>
         <hr class="mb-4" style="border: 1px solid #0d6efd;">
 
         <!-- General Form Elements -->
@@ -31,7 +31,7 @@
 
             <!-- Identifikasi -->
             <div class="mb-3">
-                <label for="identifikasi" class="form-label fw-bold">2. Identifikasi, evaluasi & pastikan akar penyebab masalah/Root Cause</label>
+                <label for="identifikasi" class="form-label fw-bold">2. Identifikasi, evaluasi & pastikan akar penyebab masalah/Root Cause*</label>
                 <textarea placeholder="" name="identifikasi" class="form-control" id="identifikasi" rows="7">{{ old('identifikasi', $ppk->identifikasi ?? '') }}</textarea>
                 <span style="font-size: 0.750em;">*Gunakan metode 5WHYS untuk menentukan Root Cause; Fish Bone; Diagram alir; Penilaian situasi; Kendali proses dan peningkatan.</span>
 
@@ -44,14 +44,14 @@
             <div class="mb-3">
                 <br>
                 <br>
-                <label for="penanggulangan" class="form-label fw-bold">Penanggulangan</label>
+                <label for="penanggulangan" class="form-label fw-bold">Penanggulangan*</label>
                 <textarea name="penanggulangan" class="form-control" placeholder="" cols="50" rows="7">{{ old('penanggulangan') }}</textarea>
             </div>
 
 
             <!-- Target Tanggal Penanggulangan -->
             <div class="mb-3">
-                <label for="tgl_penanggulangan" class="form-label fw-bold">Target Tanggal Penanggulangan</label>
+                <label for="tgl_penanggulangan" class="form-label fw-bold">Target Tanggal Penanggulangan*</label>
                 <input type="date" name="tgl_penanggulangan" class="form-control" value="{{ old('tgl_penanggulangan') }}">
             </div>
 
@@ -118,25 +118,25 @@
 
             <!-- Pencegahan -->
             <div class="mb-3">
-                <label for="pencegahan" class="form-label fw-bold">Pencegahan</label>
+                <label for="pencegahan" class="form-label fw-bold">Pencegahan*</label>
                 <textarea name="pencegahan" class="form-control" placeholder="" cols="50" rows="7">{{ old('pencegahan') }}</textarea>
             </div>
 
             <!-- Target Tanggal Pencegahan -->
             <div class="mb-3">
-                <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan</label>
+                <label for="tgl_pencegahan" class="form-label fw-bold">Target Tanggal Pencegahan*</label>
                 <input type="date" name="tgl_pencegahan" class="form-control" value="{{ old('tgl_pencegahan') }}">
             </div>
 
             <!-- PIC 2 -->
             <div class="mb-3" id="pic2-dropdown">
-                <label class="form-label fw-bold">Pilih PIC 2</label>
+                <label class="form-label fw-bold">Pilih PIC 2*</label>
 
                 <!-- Checkbox untuk memilih antara PIC 2 atau PIC Other -->
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="use-pic2" name="use_pic2" value="1"
                            {{ old('use_pic2', $ppk->use_pic2) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="use-pic2">Pilih PIC 2</label>
+                    <label class="form-check-label" for="use-pic2">Pilih Opsi</label>
                 </div>
 
                 <!-- Dropdown PIC 2 -->
@@ -244,7 +244,7 @@
             </script>
              <!-- Tanda Tangan -->
              <div class="row mb-3">
-                <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan (Pilih Opsi)</label>
+                <label for="signaturepenerima" class="col-sm-2 col-form-label fw-bold">Tanda Tangan Penerima* (Pilih Opsi)</label>
                 <div class="col-sm-10">
                     <!-- Pilihan Opsi -->
                     <div class="row mb-3 mt-1">

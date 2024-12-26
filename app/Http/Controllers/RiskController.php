@@ -503,7 +503,7 @@ private function calculateTingkatan($probability, $severity)
     // Get divisi and users for dropdown
     $divisiData = Divisi::findOrFail($id);
     $nama_divisi = $divisiData->nama_divisi;
-    $users = User::where('divisi', $nama_divisi)->get();
+    $users = User::orderBy('nama_user', 'asc')->get();
 
     $divisiList = $nama_divisi;
 

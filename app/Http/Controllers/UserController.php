@@ -72,19 +72,20 @@ class UserController extends Controller
     }
 
     public function password_action(Request $request)
-    {
-        $request->validate([
-            'old_password' => 'required|current_password',
-            'new_password' => 'required|confirmed',
-        ]);
+{
+    $request->validate([
+        'old_password' => 'required|current_password',
+        'new_password' => 'required|confirmed|min:8', // Tambahkan aturan min:8
+    ]);
 
-        $user = User::find(Auth::id());
-        $user->password = Hash::make($request->new_password);
-        $user->save();
+    $user = User::find(Auth::id());
+    $user->password = Hash::make($request->new_password);
+    $user->save();
 
-        $request->session()->regenerate();
-        return back()->with('success', 'Password changed! ✅');
-    }
+    $request->session()->regenerate();
+    return back()->with('success', 'Password changed! ✅');
+}
+
 
     public function logout(Request $request)
     {

@@ -22,9 +22,10 @@
                             <label for="desc_kriteria" class="form-label"><strong>Deskripsi Kriteria</strong></label>
                             <div id="desc_kriteria">
                                 @php
-                                    $descArray = json_decode($kriteria->desc_kriteria, true) ?? [];
-                                    $nilaiArray = json_decode($kriteria->nilai_kriteria, true) ?? [];
-                                @endphp
+                                $descArray = explode(',', $kriteria->desc_kriteria ?? '');
+                                $nilaiArray = explode(',', $kriteria->nilai_kriteria ?? '');
+                            @endphp
+
 
                                 @foreach ($descArray as $index => $desc)
                                     <div class="input-group mb-2">

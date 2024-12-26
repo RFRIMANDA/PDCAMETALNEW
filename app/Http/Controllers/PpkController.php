@@ -491,7 +491,8 @@ class PpkController extends Controller
         // Retrieve the PPK record by ID
         $ppk = Ppkkedua::findOrFail($id);
         // Get all users for PIC dropdowns
-        $data = User::all();
+        // $data = User::all();
+        $data = User::all()->sortBy('nama_user');
         $pic1 = $ppk->pic1; // Assuming this contains a comma-separated list of PIC ids
         $pic2 = $ppk->pic2;
     // dd($data;
@@ -589,9 +590,9 @@ public function kirimEmailVerifikasi(Request $request, $id)
         ];
 
         // Ambil email penerima dari data PPK
-        if ($ppk->emailpenerima) {
+        if ($ppk->emailpembuat) {
             // Kirim email langsung
-            Mail::to($ppk->emailpenerima)->send(new KirimEmail2($data_email));
+            Mail::to($ppk->emailpembuat)->send(new KirimEmail2($data_email));
 
             // Jika berhasil, kembali ke halaman /adminppk
             return redirect()->route('ppk.index2')->with('success', 'Email berhasil dikirim! ✅');

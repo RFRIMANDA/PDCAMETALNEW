@@ -24,13 +24,13 @@
 
                 <!-- Judul PPK -->
                 <div class="mb-3">
-                    <label for="inputJudul" class="form-label fw-bold">1. Jelaskan ketidaksesuaian yang terjadi atau peningkatan yang akan dibuat</label>
+                    <label for="inputJudul" class="form-label fw-bold">1. Jelaskan ketidaksesuaian yang terjadi atau peningkatan yang akan dibuat*</label>
                     <textarea name="judul" class="form-control" placeholder="" rows="3">{{ old('judul') }}</textarea>
                 </div>
 
                 <!-- Evidence -->
                 <div class="mb-3">
-                    <label for="evidence" class="form-label fw-bold">Evidence</label>
+                    <label for="evidence" class="form-label fw-bold">Evidence*</label>
                     <div>
                         <input type="file" id="evidence" name="evidence[]" class="form-control" multiple>
                         <!-- Preview container for uploaded files -->
@@ -40,7 +40,7 @@
 
                 <!-- Jenis Ketidaksesuaian -->
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Jenis Ketidaksesuaian</label>
+                    <label class="form-label fw-bold">Jenis Ketidaksesuaian*</label>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="jenisketidaksesuaian[]" value="SISTEM">
                         <label class="form-check-label">Sistem</label>
@@ -63,7 +63,7 @@
                 <div class="row g-3 mb-3">
                     <!-- Nama Inisiator -->
                     <div class="col-md-6">
-                        <label for="pembuat" class="form-label fw-bold">Nama Inisiator</label>
+                        <label for="pembuat" class="form-label fw-bold">Nama Inisiator*</label>
                         <select id="pembuat" name="pembuat" class="form-select">
                             <option value="">Pilih Pembuat</option>
                             @foreach($data as $user)
@@ -77,7 +77,7 @@
                     </div>
                     <!-- Divisi Inisiator -->
                     <div class="col-md-6">
-                        <label for="divisipembuat" class="form-label fw-bold">Divisi Inisiator</label>
+                        <label for="divisipembuat" class="form-label fw-bold">Divisi Inisiator*</label>
                         <input type="text" id="divisipembuat" name="divisipembuat"class="form-control"placeholder="Divisi" value="{{ old('divisipembuat') }}"readonly>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="row g-3 mb-3">
                     <!-- Email Inisiator -->
                     <div class="col-md-6">
-                        <label for="emailpembuat" class="form-label fw-bold">Email Inisiator</label>
+                        <label for="emailpembuat" class="form-label fw-bold">Email Inisiator*</label>
                         <input type="email" id="emailpembuat" name="emailpembuat" class="form-control"placeholder="Email" value="{{ old('emailpembuat') }}"readonly>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                 <!-- Penerima -->
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label for="penerima" class="form-label fw-bold">Nama Penerima</label>
+                        <label for="penerima" class="form-label fw-bold">Nama Penerima*</label>
                         <select id="penerima" name="penerima" class="form-select">
                             <option value="">Pilih Penerima</option>
                             @foreach($data as $user)
@@ -105,14 +105,14 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="divisipenerima" class="form-label fw-bold">Divisi Penerima</label>
+                        <label for="divisipenerima" class="form-label fw-bold">Divisi Penerima*</label>
                         <input placeholder="Divisi" type="text" name="divisipenerima" id="divisipenerima" class="form-control" value="{{ old('divisipenerima') }}" readonly>
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
                     <!-- Email Inisiator -->
                     <div class="col-md-6">
-                        <label for="emailpenerima" class="form-label fw-bold">Email Penerima</label>
+                        <label for="emailpenerima" class="form-label fw-bold">Email Penerima*</label>
                         <input type="email" id="emailpenerima" name="emailpenerima" class="form-control" placeholder="Email" value="{{ old('emailpenerima') }}"readonly>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
 
                 <!-- Tanda Tangan -->
                 <div class="row mb-3">
-                    <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan (Pilih Opsi)</label>
+                    <label for="signature" class="col-sm-2 col-form-label fw-bold">Tanda Tangan* (Pilih Opsi)</label>
                     <div class="col-sm-10">
                         <!-- Pilihan Opsi -->
                         <div class="row mb-3 mt-1">
@@ -242,7 +242,7 @@
                     </div>
                 </div>
             </div>
-{{-- 
+{{--
             <div class="mb-3">
                 <label for="statusppk" class="form-label"><strong>Status PPK</strong></label>
                 <select name="statusppk" class="form-select">

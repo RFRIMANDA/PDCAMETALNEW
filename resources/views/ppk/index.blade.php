@@ -185,7 +185,7 @@
                                     // Periksa apakah 10 detik sudah berlalu
                                     setInterval(function () {
                                         var savedTimestamp = localStorage.getItem('verifikasiTimestamp-{{ $ppk->id }}');
-                                        if (savedTimestamp && (Date.now() - savedTimestamp >= 10000)) {
+                                        if (savedTimestamp && (Date.now() - savedTimestamp >= 1000)) {
                                             var verifikasiContainer = document.getElementById('verifikasi-container-{{ $ppk->id }}');
                                             if (verifikasiContainer) {
                                                 verifikasiContainer.style.display = 'block';
